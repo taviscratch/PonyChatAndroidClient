@@ -33,8 +33,28 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startIRCService();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, IRCService.class);
+        bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(ircServiceConnection);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopIRCService();
+    }
 
     public void startIRCService() {
         Intent intent = new Intent(this, IRCService.class);

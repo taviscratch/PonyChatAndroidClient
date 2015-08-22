@@ -29,12 +29,20 @@ public class IRCService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        Toast.makeText(this, "Service Bound", Toast.LENGTH_LONG).show();
         return ircServiceBinder;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public boolean onUnbind(Intent intent) {
+        Toast.makeText(this, "Service Unbound", Toast.LENGTH_LONG).show();
+        return super.onUnbind(intent);
+    }
 
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         return START_STICKY;
     }

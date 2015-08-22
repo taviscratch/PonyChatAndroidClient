@@ -2,6 +2,7 @@ package com.taviscratch.ponychatandroidclient;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -9,13 +10,13 @@ public class IRCService extends Service {
 
 
 
+    private final IBinder ircServiceBinder = new IRCServiceBinder();
 
-
-
-
-
-
-
+    public class IRCServiceBinder extends Binder{
+        public IRCService getService() {
+            return IRCService.this;
+        }
+    }
 
 
     public IRCService() { }
@@ -28,7 +29,7 @@ public class IRCService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return ircServiceBinder;
     }
 
     @Override
@@ -42,4 +43,13 @@ public class IRCService extends Service {
     public void onDestroy() {
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
     }
+
+
+
+
+
+
+
+
+
 }

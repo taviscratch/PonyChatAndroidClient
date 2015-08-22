@@ -1,12 +1,33 @@
 package com.taviscratch.ponychatandroidclient;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.IBinder;
 
 public class MainActivity extends Activity {
+
+    IRCService ircService;
+
+    private ServiceConnection ircServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            IRCService.IRCServiceBinder ircServiceBinder = (IRCService.IRCServiceBinder) service;
+            ircService = ircServiceBinder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,38 +35,21 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public void startIRCService() {
         Intent intent = new Intent(this, IRCService.class);
         startService(intent);
+        bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void stopIRCService() {
         Intent intent = new Intent(this, IRCService.class);
         stopService(intent);
     }
+
+
+
+
 
 
 

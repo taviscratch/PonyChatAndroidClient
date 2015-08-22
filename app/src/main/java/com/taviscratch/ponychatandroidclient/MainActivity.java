@@ -1,11 +1,12 @@
 package com.taviscratch.ponychatandroidclient;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,4 +35,19 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void startIRCService() {
+        Intent intent = new Intent(this, IRCService.class);
+        startService(intent);
+    }
+
+    public void stopIRCService() {
+        Intent intent = new Intent(this, IRCService.class);
+        stopService(intent);
+    }
+
+
+
+
 }

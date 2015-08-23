@@ -1,0 +1,68 @@
+<FrameLayout android:id="@+id/LeftDrawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/navigation_drawer_width"
+    android:layout_height="match_parent"
+    tools:context="com.taviscratch.ponychatandroidclient.LeftDrawer"
+    android:background="@color/background_material_dark">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="PonyChat"
+                android:id="@+id/textView5"
+                android:textColor="@color/abc_primary_text_material_dark"
+                android:layout_weight="1"
+                style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+                android:clickable="true" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button"
+                android:layout_weight="3"
+                android:singleLine="true"
+                android:background="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Channels"
+                android:id="@+id/textView2"
+                android:textColor="@color/abc_primary_text_material_dark"
+                android:textStyle="italic" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView"
+                android:padding="5dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

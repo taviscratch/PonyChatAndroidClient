@@ -14,21 +14,23 @@ public class IRCConnection implements Runnable{
     private static String defaultChannel = "#ponychat";
 
 
-    static Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
-
     public IRCConnection() {}
 
 
     @Override
     public void run() {
-
-
         synchronized (this) {
+
+
+            Handler ircThreadHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+
+                }
+            };
+
+
+
             try {
                 //setupIRCHandler();
             }

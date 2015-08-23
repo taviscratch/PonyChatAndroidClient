@@ -19,23 +19,28 @@ public class IRCService extends Service {
     }
 
 
+
+
+
+
+
+
     public IRCService() { }
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Toast.makeText(this, "Service Bound", Toast.LENGTH_LONG).show();
         return ircServiceBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Toast.makeText(this, "Service Unbound", Toast.LENGTH_LONG).show();
         return super.onUnbind(intent);
     }
 
@@ -44,6 +49,10 @@ public class IRCService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+
+        Thread thread = new Thread(new IRCConnection());
+        thread.start();
+
         return START_STICKY;
     }
 

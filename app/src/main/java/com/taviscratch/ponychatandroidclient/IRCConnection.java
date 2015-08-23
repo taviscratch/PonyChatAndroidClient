@@ -1,7 +1,10 @@
 package com.taviscratch.ponychatandroidclient;
 
+import android.os.Handler;
+import android.os.Message;
+
 /**
- * Created by sam on 8/22/15.
+ * Created by tavi on 8/22/15.
  */
 public class IRCConnection implements Runnable{
 
@@ -10,6 +13,13 @@ public class IRCConnection implements Runnable{
     private static String defaultHostname = "irc.ponychat.net";
     private static String defaultChannel = "#ponychat";
 
+
+    static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    };
 
     public IRCConnection() {}
 
@@ -20,7 +30,7 @@ public class IRCConnection implements Runnable{
 
         synchronized (this) {
             try {
-                setupIRCHandler();
+                //setupIRCHandler();
             }
             catch (Exception e) {
                 System.out.println(e.getStackTrace());

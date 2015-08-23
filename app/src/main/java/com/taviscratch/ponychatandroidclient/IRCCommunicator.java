@@ -3,7 +3,7 @@ package com.taviscratch.ponychatandroidclient;
 import org.jibble.pircbot.PircBot;
 
 /**
- * Created by sam on 8/22/15.
+ * Created by tavi on 8/22/15.
  */
 public class IRCCommunicator extends PircBot {
 

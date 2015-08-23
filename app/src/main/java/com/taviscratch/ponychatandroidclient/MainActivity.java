@@ -12,8 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Handler;
 
@@ -22,6 +25,13 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         RightDrawer.OnFragmentInteractionListener,
         ConnectionSettingsPopup.OnFragmentInteractionListener {
 
+
+    // Fragments
+    Chatroom chatroom;
+    LeftDrawer leftDrawer;
+    RightDrawer rightDrawer;
+    ConnectionSettingsPopup connectionSettingsPopup;
+
     IRCService ircService;
 
     private ServiceConnection ircServiceConnection = new ServiceConnection() {
@@ -29,20 +39,12 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         public void onServiceConnected(ComponentName name, IBinder service) {
             IRCService.IRCServiceBinder ircServiceBinder = (IRCService.IRCServiceBinder) service;
             ircService = ircServiceBinder.getService();
+            ircService.setupNotificationHandling(MainActivity.this);
+            Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
-
-
-
-    static Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
 
         }
     };
@@ -66,10 +68,10 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
 
         // Making the fragments
-        Fragment chatroom = Chatroom.newInstance(null,null);
-        Fragment leftDrawer = LeftDrawer.newInstance(null,null);
-        Fragment rightDrawer = RightDrawer.newInstance(null,null);
-        //Fragment connectionSettingsPopup = ConnectionSettingsPopup.newInstance(null,null);
+        chatroom = new Chatroom();
+        leftDrawer = LeftDrawer.newInstance(null,null);
+         rightDrawer = RightDrawer.newInstance(null,null);
+        //connectionSettingsPopup = ConnectionSettingsPopup.newInstance(null,null);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -84,13 +86,20 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         ft.hide(rightDrawer);
         //ft.hide(connectionSettingsPopup);
         ft.commit();
+
+
+
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+
         Intent intent = new Intent(this, IRCService.class);
         bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
+
+
     }
 
     @Override
@@ -103,7 +112,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopIRCService();
+        //stopIRCService();
     }
 
     public void startIRCService() {
@@ -124,7 +133,9 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     }
 
-
+    public void sendIRCMessage(String message) {
+        ircService.sendMessage(message);
+    }
 
 
 

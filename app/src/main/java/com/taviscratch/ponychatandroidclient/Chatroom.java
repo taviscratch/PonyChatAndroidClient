@@ -13,14 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Chatroom.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Chatroom#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Chatroom extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,33 +25,19 @@ public class Chatroom extends Fragment {
     private String mParam2;
 
 
+    IRCService ircService;
+
+    EditText inputBox;
+    Button sendMessageButton;
+
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Chatroom.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Chatroom newInstance(String param1, String param2) {
-        Chatroom fragment = new Chatroom();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-
-
-        return fragment;
-
-    }
 
     public Chatroom() {
         // Required empty public constructor
     }
 
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,22 +57,22 @@ public class Chatroom extends Fragment {
         View theview = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
 
+        inputBox = (EditText) theview.findViewById(R.id.chatInput);
+        sendMessageButton = (Button) theview.findViewById(R.id.sendMessage_button);
 
-        /*
-        final EditText messageBox = (EditText) theview.findViewById(R.id.chatInput);
-        Button sendbtn = (Button) theview.findViewById(R.id.sendMessage_button);
-
-        sendbtn.setOnClickListener(new View.OnClickListener() {
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = messageBox.getText().toString();
+                String message = inputBox.getText().toString();
                 if (!message.isEmpty()) {
-                    messageBox.setText("");
-                    bot.sendMessage(defaultChannel, message);
+                    inputBox.setText("");
+                    ((MainActivity) getActivity()).sendIRCMessage(message);
+                    //comm.sendMessage(defaultChannel, message);
                 }
-                hideKeyboardAndClearFocus(v, messageBox);
+                hideKeyboardAndClearFocus(v, inputBox);
             }
-        });*/
+        });
+
 
         return theview;
 

@@ -1,12 +1,15 @@
 package com.taviscratch.ponychatandroidclient;
 
-import org.jibble.pircbot.PircBot;
 
+import org.jibble.pircbot.PircBot;
 
 public class IRCCommunicator extends PircBot {
 
+    private static String defaultUsername = "PonyChatAndroidClient";
+
+
     public IRCCommunicator() {
-        this.setName("PonyChatAndroidClient");
+        this.setName(defaultUsername);
     }
 
     @Override
@@ -14,7 +17,4 @@ public class IRCCommunicator extends PircBot {
                           String login, String hostname, String message) {
 
     }
-
-
-
 }

@@ -1,36 +1,44 @@
 package com.taviscratch.ponychatandroidclient;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 
 public class Chatroom extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
 
     IRCService ircService;
 
     EditText inputBox;
     Button sendMessageButton;
+    ListView listView;
+
+    ArrayAdapter<String> adapter;
 
     private OnFragmentInteractionListener mListener;
+
+    BroadcastReceiver msgReceiver;
+
+    public final String ACTION_PASS_MESSAGE = "com.taviscratch.ponychatandroidclient.PASS_MESSAGE";
+
+
 
 
     public Chatroom() {
@@ -41,10 +49,18 @@ public class Chatroom extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        msgReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                String msg = extras.getString("msg");
+                adapter.add(msg);
+            }
+        };
+
+        IntentFilter passMessageFilter = new IntentFilter(ACTION_PASS_MESSAGE);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(msgReceiver, passMessageFilter);
 
     }
 
@@ -59,6 +75,14 @@ public class Chatroom extends Fragment {
 
         inputBox = (EditText) theview.findViewById(R.id.chatInput);
         sendMessageButton = (Button) theview.findViewById(R.id.sendMessage_button);
+        listView = (ListView) theview.findViewById(R.id.chatroomListView);
+
+
+        adapter = new ArrayAdapter<String>(getActivity(), R.layout.mytextview);
+        //for(int i = 0; i<50; i++) adapter.add(" ");
+
+        listView.setAdapter(adapter);
+
 
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override

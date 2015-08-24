@@ -28,9 +28,9 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     // Fragments
     Chatroom chatroom;
-    LeftDrawer leftDrawer;
-    RightDrawer rightDrawer;
-    ConnectionSettingsPopup connectionSettingsPopup;
+    //LeftDrawer leftDrawer;
+    //RightDrawer rightDrawer;
+    //ConnectionSettingsPopup connectionSettingsPopup;
 
     IRCService ircService;
 
@@ -39,7 +39,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         public void onServiceConnected(ComponentName name, IBinder service) {
             IRCService.IRCServiceBinder ircServiceBinder = (IRCService.IRCServiceBinder) service;
             ircService = ircServiceBinder.getService();
-            ircService.setupNotificationHandling(MainActivity.this);
             Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
         }
 
@@ -62,15 +61,16 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         setContentView(R.layout.activity_main);
 
 
-
-        // Starts the IRCService
-        startIRCService();
-
+        bindToService();
 
         // Making the fragments
-        chatroom = new Chatroom();
-        leftDrawer = LeftDrawer.newInstance(null,null);
-         rightDrawer = RightDrawer.newInstance(null,null);
+        if(chatroom==null) {
+            chatroom = new Chatroom();
+            chatroom.setRetainInstance(true);
+        }
+
+        //leftDrawer = LeftDrawer.newInstance(null,null);
+        //rightDrawer = RightDrawer.newInstance(null,null);
         //connectionSettingsPopup = ConnectionSettingsPopup.newInstance(null,null);
 
         FragmentManager fm = getFragmentManager();
@@ -78,15 +78,14 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
         ft.add(R.id.Chatroom_container, chatroom);
         //ft.add(R.id.ConnectionSettingsPopup_container, connectionSettingsPopup);
-        ft.add(R.id.LeftDrawer_container, leftDrawer);
-        ft.add(R.id.RightDrawer_container, rightDrawer);
+        //ft.add(R.id.LeftDrawer_container, leftDrawer);
+        //ft.add(R.id.RightDrawer_container, rightDrawer);
 
         //ft.hide(chatroom);
-        ft.hide(leftDrawer);
-        ft.hide(rightDrawer);
+        //ft.hide(leftDrawer);
+        //ft.hide(rightDrawer);
         //ft.hide(connectionSettingsPopup);
         ft.commit();
-
 
 
     }
@@ -96,8 +95,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     protected void onResume() {
         super.onResume();
 
-        Intent intent = new Intent(this, IRCService.class);
-        bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
+        bindToService();
 
 
     }
@@ -112,20 +110,21 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //stopIRCService();
+        stopIRCService();
     }
 
-    public void startIRCService() {
-        Intent intent = new Intent(this, IRCService.class);
-        startService(intent);
-        bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
-    }
+
 
     public void stopIRCService() {
         Intent intent = new Intent(this, IRCService.class);
         stopService(intent);
     }
 
+
+    public void bindToService() {
+        Intent intent = new Intent(this, IRCService.class);
+        bindService(intent, ircServiceConnection, Context.BIND_IMPORTANT);
+    }
 
     @Override
     // TODO

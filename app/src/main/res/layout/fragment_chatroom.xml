@@ -16,19 +16,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
-            android:id="@+id/chatHistory"
+        <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
-            android:layout_weight="1" >
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="top"></LinearLayout>
-        </ScrollView>
+            android:id="@+id/chatroomListView"
+            android:transcriptMode="alwaysScroll"
+            android:layout_weight="1"
+            android:minHeight="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="2dp"
+            android:stackFromBottom="true"
+            android:textFilterEnabled="false" />
 
         <LinearLayout
             android:orientation="horizontal"

@@ -7,7 +7,7 @@ import android.os.Message;
 import android.widget.Toast;
 
 import org.jibble.pircbot.PircBot;
-
+import com.taviscratch.ponychatandroidclient.IRCService.IRCCommunicator;
 
 /**
  * Created by tavi on 8/22/15.
@@ -22,7 +22,9 @@ public class IRCConnection extends Thread {
 
     private boolean keepThreadAlive;
 
-
+    public IRCConnection(IRCCommunicator comm) {
+        this.comm = comm;
+    }
 
 
     @Override
@@ -44,7 +46,7 @@ public class IRCConnection extends Thread {
 
     public void setupIRCConnection() throws Exception {
         // Now start our comm up.
-        comm = new IRCCommunicator();
+        //comm = new IRCCommunicator();
 
         // Enable debugging output.
         comm.setVerbose(true);

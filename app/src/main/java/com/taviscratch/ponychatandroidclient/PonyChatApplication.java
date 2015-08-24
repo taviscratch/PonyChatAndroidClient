@@ -1,35 +1,53 @@
 package com.taviscratch.ponychatandroidclient;
 
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.widget.Toast;
 
-/**
- * Created by sam on 8/23/15.
- */
+
 public class PonyChatApplication extends Application{
 
 
+    private static Context context;
+
+
+    /**
+     * Called when the application is starting, before any activity, service,
+     * or receiver objects (excluding content providers) have been created.
+     * Implementations should be as quick as possible (for example using
+     * lazy initialization of state) since the time spent in this function
+     * directly impacts the performance of starting the first activity,
+     * service, or receiver in a process.
+     * If you override this method, be sure to call super.onCreate().
+     */
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // Start Service
-        Intent serviceIntent = new Intent(this,IRCService.class);
+        context = getApplicationContext();
+
+
+        Intent serviceIntent = new Intent(this, IRCService.class);
         startService(serviceIntent);
 
-        // Start the launch activiy
-        Intent activityIntent = new Intent(this,MainActivity.class);
-        startActivity(activityIntent);
+
+
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    public void onTerminate() {
+        super.onTerminate();
+
     }
 
-    public Application getApplication() {
-        return this;
-    };
+
+    public static Context getAppContext() {
+        return context;
+    }
+
 
 }

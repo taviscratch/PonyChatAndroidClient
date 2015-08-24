@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -113,7 +114,10 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         stopIRCService();
     }
 
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     public void stopIRCService() {
         Intent intent = new Intent(this, IRCService.class);

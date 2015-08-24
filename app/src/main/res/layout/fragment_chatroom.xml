@@ -40,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textImeMultiLine"
                 android:imeOptions="actionSend"
+
                 android:ems="10"
 
                 android:minHeight="10dp"

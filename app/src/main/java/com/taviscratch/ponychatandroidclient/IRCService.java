@@ -41,25 +41,7 @@ public class IRCService extends Service {
         }
     }
 
-    public class IRCCommunicator extends PircBot {
 
-        private String defaultUsername = "PonyChatAndroid";
-
-
-        public IRCCommunicator() {
-            this.setName(defaultUsername);
-        }
-
-        @Override
-        public void onMessage(String channel, String sender,
-                              String login, String hostname, String message) {
-            Intent msgIntent = new Intent("com.taviscratch.ponychatandroidclient.PASS_MESSAGE");
-            msgIntent.putExtra("message", message);
-            msgIntent.putExtra("sender", sender);
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(msgIntent);
-            pushNotification(sender + ": " + message);
-        }
-    }
 
 
     public IRCService() { }
@@ -89,7 +71,7 @@ public class IRCService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
 
-        ircConnectionThread = new IRCConnection(new IRCCommunicator());
+        ircConnectionThread = new IRCConnection();
         ircConnectionThread.start();
 
 
@@ -118,10 +100,6 @@ public class IRCService extends Service {
 
     }
 
-
-    public void sendMessage(String message){
-        ircConnectionThread.sendMessage(message);
-    }
 
     public void pushNotification(String text) {
         Intent activityIntent = new Intent(this,MainActivity.class);

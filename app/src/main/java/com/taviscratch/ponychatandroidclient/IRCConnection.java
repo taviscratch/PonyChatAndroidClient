@@ -1,29 +1,44 @@
 package com.taviscratch.ponychatandroidclient;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import org.jibble.pircbot.PircBot;
-import com.taviscratch.ponychatandroidclient.IRCService.IRCCommunicator;
+import com.taviscratch.ponychatandroidclient.IRCCommunicator;
 
-/**
- * Created by tavi on 8/22/15.
- */
+
 public class IRCConnection extends Thread {
 
     IRCCommunicator comm;
 
+    private static String defaultUsername = "PonyChatAndroid";
     private static String defaultHostname = "irc.ponychat.net";
     private static String defaultChannel = "#ponychatandroidclient";
     private String currentChannel = defaultChannel;
 
     private boolean keepThreadAlive;
+    BroadcastReceiver receiver;
 
-    public IRCConnection(IRCCommunicator comm) {
-        this.comm = comm;
+    public IRCConnection() {
+        /*receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                String message = extras.getString("message");
+                sendMessage(message);
+            }
+        };
+
+        IntentFilter passMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(receiver, passMessageFilter);*/
     }
 
 
@@ -45,8 +60,8 @@ public class IRCConnection extends Thread {
     }
 
     public void setupIRCConnection() throws Exception {
-        // Now start our comm up.
-        //comm = new IRCCommunicator();
+        // Start the comm up.
+        comm = new IRCCommunicator(defaultHostname, defaultChannel, defaultUsername);
 
         // Enable debugging output.
         comm.setVerbose(true);
@@ -54,7 +69,7 @@ public class IRCConnection extends Thread {
         // Connect to the IRC server.
         comm.connect(defaultHostname);
 
-        // Join the #pircbot channel.
+        // Join the default channel.
         comm.joinChannel(defaultChannel);
     }
 

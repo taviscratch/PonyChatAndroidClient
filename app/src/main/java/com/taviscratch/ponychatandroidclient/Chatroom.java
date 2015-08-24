@@ -36,7 +36,6 @@ public class Chatroom extends Fragment {
 
     BroadcastReceiver msgReceiver;
 
-    public final String ACTION_PASS_MESSAGE = "com.taviscratch.ponychatandroidclient.PASS_MESSAGE";
 
 
 
@@ -60,7 +59,7 @@ public class Chatroom extends Fragment {
             }
         };
 
-        IntentFilter passMessageFilter = new IntentFilter(ACTION_PASS_MESSAGE);
+        IntentFilter passMessageFilter = new IntentFilter(Constants.MESSAGE_RECEIVED);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(msgReceiver, passMessageFilter);
 
     }
@@ -80,7 +79,6 @@ public class Chatroom extends Fragment {
 
 
         adapter = new ArrayAdapter<String>(getActivity(), R.layout.mytextview);
-        //for(int i = 0; i<50; i++) adapter.add(" ");
 
         listView.setAdapter(adapter);
 
@@ -91,10 +89,11 @@ public class Chatroom extends Fragment {
                 String message = inputBox.getText().toString();
                 if (!message.isEmpty()) {
                     inputBox.setText("");
-                    ((MainActivity) getActivity()).sendIRCMessage(message);
-                    //comm.sendMessage(defaultChannel, message);
+                    Intent msgIntent = new Intent(Constants.MESSAGE_TO_SEND);
+                    msgIntent.putExtra("message", message);
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msgIntent);
                 }
-                hideKeyboardAndClearFocus(v, inputBox);
+                //hideKeyboardAndClearFocus(v, inputBox);
             }
         });
 

@@ -136,10 +136,5 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     }
 
-    public void sendIRCMessage(String message) {
-        ircService.sendMessage(message);
-    }
-
-
 
 }

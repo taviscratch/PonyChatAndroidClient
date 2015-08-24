@@ -34,7 +34,8 @@ public class Chatroom extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    BroadcastReceiver msgReceiver;
+    BroadcastReceiver serverMessageReceiver;
+    BroadcastReceiver myMessageReceiver;
 
 
 
@@ -49,7 +50,8 @@ public class Chatroom extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        msgReceiver = new BroadcastReceiver() {
+
+        serverMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle extras = intent.getExtras();
@@ -58,9 +60,20 @@ public class Chatroom extends Fragment {
                 adapter.add(sender + ": " + message);
             }
         };
+        IntentFilter serverMessageFilter = new IntentFilter(Constants.MESSAGE_RECEIVED);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(serverMessageReceiver, serverMessageFilter);
 
-        IntentFilter passMessageFilter = new IntentFilter(Constants.MESSAGE_RECEIVED);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(msgReceiver, passMessageFilter);
+
+        myMessageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                String message = extras.getString("message");
+                adapter.add("Me" + ": " + message); // TODO change so this references the username in the shared preferences
+            }
+        };
+        IntentFilter myMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(myMessageReceiver, myMessageFilter);
 
     }
 

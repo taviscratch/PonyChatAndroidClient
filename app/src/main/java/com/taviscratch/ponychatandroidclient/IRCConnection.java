@@ -28,17 +28,6 @@ public class IRCConnection extends Thread {
     BroadcastReceiver receiver;
 
     public IRCConnection() {
-        /*receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Bundle extras = intent.getExtras();
-                String message = extras.getString("message");
-                sendMessage(message);
-            }
-        };
-
-        IntentFilter passMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(receiver, passMessageFilter);*/
     }
 
 

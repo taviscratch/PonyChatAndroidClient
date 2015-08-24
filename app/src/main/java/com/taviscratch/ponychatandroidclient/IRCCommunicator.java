@@ -16,7 +16,7 @@ public class IRCCommunicator extends PircBot {
     private static String hostname;
     private String currentChannel;
 
-    BroadcastReceiver receiver;
+    BroadcastReceiver outgoingMessageReceiver;
 
 
     public IRCCommunicator(String hostname, String channel, String username) {
@@ -28,7 +28,7 @@ public class IRCCommunicator extends PircBot {
 
 
 
-        receiver = new BroadcastReceiver() {
+        outgoingMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle extras = intent.getExtras();
@@ -37,8 +37,8 @@ public class IRCCommunicator extends PircBot {
             }
         };
 
-        IntentFilter passMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(receiver, passMessageFilter);
+        IntentFilter outgoingMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(outgoingMessageReceiver, outgoingMessageFilter);
     }
 
     @Override

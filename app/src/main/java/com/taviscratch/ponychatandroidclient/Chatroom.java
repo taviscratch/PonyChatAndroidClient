@@ -54,8 +54,9 @@ public class Chatroom extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle extras = intent.getExtras();
-                String msg = extras.getString("msg");
-                adapter.add(msg);
+                String message = extras.getString("message");
+                String sender = extras.getString("sender");
+                adapter.add(sender + ": " + message);
             }
         };
 

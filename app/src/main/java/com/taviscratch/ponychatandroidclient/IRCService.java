@@ -28,9 +28,6 @@ public class IRCService extends Service {
     NotificationManager notificationManager;
     TaskStackBuilder stackBuilder;
 
-    // Parent Activity
-    Activity parentActivity;
-
 
 
 
@@ -57,7 +54,8 @@ public class IRCService extends Service {
         public void onMessage(String channel, String sender,
                               String login, String hostname, String message) {
             Intent msgIntent = new Intent("com.taviscratch.ponychatandroidclient.PASS_MESSAGE");
-            msgIntent.putExtra("msg", message);
+            msgIntent.putExtra("message", message);
+            msgIntent.putExtra("sender", sender);
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(msgIntent);
             pushNotification(sender + ": " + message);
         }
@@ -123,7 +121,6 @@ public class IRCService extends Service {
 
     public void sendMessage(String message){
         ircConnectionThread.sendMessage(message);
-        //pushNotification(message);
     }
 
     public void pushNotification(String text) {

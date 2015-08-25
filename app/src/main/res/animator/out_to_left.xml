@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator
+    android:duration="500"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false"
+    android:propertyName="translationX"
+    android:valueTo="-240dp"
+    android:valueFrom="0dp"
+    >
+
+</objectAnimator>

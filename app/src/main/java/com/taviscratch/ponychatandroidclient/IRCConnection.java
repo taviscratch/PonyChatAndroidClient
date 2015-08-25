@@ -21,7 +21,7 @@ public class IRCConnection extends Thread {
 
     private static String defaultUsername = "PonyChatAndroid";
     private static String defaultHostname = "irc.ponychat.net";
-    private static String defaultChannel = "#ponychatandroidclient";
+    private static String defaultChannel = "#octaviaisbestpony";
     private String currentChannel = defaultChannel;
 
     private boolean keepThreadAlive;

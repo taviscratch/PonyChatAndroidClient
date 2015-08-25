@@ -1,5 +1,6 @@
 package com.taviscratch.ponychatandroidclient;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -12,14 +13,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Handler;
 
 public class MainActivity extends Activity implements Chatroom.OnFragmentInteractionListener,
         LeftDrawer.OnFragmentInteractionListener,
@@ -29,9 +28,16 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     // Fragments
     Chatroom chatroom;
-    //LeftDrawer leftDrawer;
-    //RightDrawer rightDrawer;
+    LeftDrawer leftDrawer;
+    RightDrawer rightDrawer;
     //ConnectionSettingsPopup connectionSettingsPopup;
+
+
+    // animation stuff
+    int ANIMATION_DURATION;
+    float xStart, yStart, xEnd, yEnd = -1.0f;
+    int dpi;
+
 
     IRCService ircService;
 
@@ -60,9 +66,13 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
+        dpi = getResources().getDisplayMetrics().densityDpi;
 
 
-        bindToService();
+        // animation stuff
+        ANIMATION_DURATION = getResources().getInteger(R.integer.animation_duration);
+        // set all to an invalid position
+        xStart = yStart = xEnd = yEnd = -1.0f;
 
         // Making the fragments
         if(chatroom==null) {
@@ -70,22 +80,28 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
             chatroom.setRetainInstance(true);
         }
 
-        //leftDrawer = LeftDrawer.newInstance(null,null);
-        //rightDrawer = RightDrawer.newInstance(null,null);
+        leftDrawer = LeftDrawer.newInstance(null,null);
+        rightDrawer = RightDrawer.newInstance(null,null);
         //connectionSettingsPopup = ConnectionSettingsPopup.newInstance(null,null);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        ft.add(R.id.Chatroom_container, chatroom);
+        ft.add(R.id.Chatroom_container, chatroom, "CHATROOM");
         //ft.add(R.id.ConnectionSettingsPopup_container, connectionSettingsPopup);
-        //ft.add(R.id.LeftDrawer_container, leftDrawer);
-        //ft.add(R.id.RightDrawer_container, rightDrawer);
+        ft.add(R.id.LeftDrawer_container, leftDrawer, "LEFT DRAWER");
+        ft.add(R.id.RightDrawer_container, rightDrawer, "RIGHT DRAWER");
 
-        //ft.hide(chatroom);
-        //ft.hide(leftDrawer);
-        //ft.hide(rightDrawer);
-        //ft.hide(connectionSettingsPopup);
+
+
+        ft.hide(leftDrawer);
+
+        ft.show(rightDrawer);
+        ft.hide(rightDrawer);
+
+        ft.show(chatroom);
+
+
         ft.commit();
 
 
@@ -135,6 +151,126 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        handleTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+
+
+    public void handleTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+
+        switch(action) {
+            case MotionEvent.ACTION_DOWN:
+                xStart = event.getX();
+                yStart = event.getY();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                xEnd = event.getX();
+                yEnd = event.getY();
+                if(xStart >= 0.0f && yStart >= 0.0f)
+                    handleInput(xStart,xEnd,yStart,yEnd);
+                // set all to an invalid position
+                xStart = yStart = xEnd = yEnd = -1.0f;
+                break;
+        }
+    }
+
+
+
+
+    public void handleInput(float xStart, float xEnd, float yStart, float yEnd) {
+
+        float x = Math.abs(xStart - xEnd);
+        float y = Math.abs(yStart-yEnd);
+
+        // if the input is a swipe
+        if(x>1.0f || y>1.0f) {
+            SwipeControls.SWIPE_DIRECTION swipe = SwipeControls.interpretSwipe(xStart,xEnd,yStart,yEnd);
+
+
+            Fragment leftDrawer =getFragmentManager().findFragmentByTag("LEFT DRAWER");
+            Fragment rightDrawer = getFragmentManager().findFragmentByTag("RIGHT DRAWER");
+
+            switch (swipe) {
+                case LEFT:
+                    if(leftDrawer.isVisible()) {
+                        closeLeftDrawer(leftDrawer);
+                    }
+                    else if(rightDrawer.isVisible()) {
+                        // Do nothing
+                    }
+                    else {
+                        openRightDrawer(rightDrawer);
+                    }
+                    break;
+
+                case RIGHT:
+                    if(leftDrawer.isVisible()) {
+                        // Do nothing
+                    }
+                    else if(rightDrawer.isVisible()) {
+                        closeRightDrawer(rightDrawer);
+                    }
+                    else {
+                        openLeftDrawer(leftDrawer);
+                    }
+                    break;
+
+                case UP:
+                    // not supported
+                    break;
+                case DOWN:
+                    // not supported
+                    break;
+            }
+
+
+        }
+
+
+    }
+
+
+
+
+    private void openLeftDrawer(Fragment frag) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
+        ft.show(frag);
+        ft.commit();
+    }
+    private void closeLeftDrawer(Fragment frag) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
+        ft.hide(frag);
+        ft.commit();
+    }
+    private void openRightDrawer(Fragment frag) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.show(frag);
+        ft.commit();
+    }
+    private void closeRightDrawer(Fragment frag) {
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //((RightDrawer) frag).slideRight();
+        ft.hide(frag);
+/*        try {
+            ft.wait(500);
+        } catch (InterruptedException e) {
+            System.out.println(e.toString());
+        }*/
+        ft.commit();
+    }
+
+
+
 
 
 }

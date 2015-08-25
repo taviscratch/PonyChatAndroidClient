@@ -52,6 +52,9 @@ public class IRCCommunicator extends PircBot {
     }
 
 
+
+
+
     private void parseMessage(String message) {
         sendMessage(currentChannel,message);
         // TODO actually make this function properly

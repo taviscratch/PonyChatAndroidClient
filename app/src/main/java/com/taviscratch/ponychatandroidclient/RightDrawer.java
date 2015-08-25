@@ -1,13 +1,19 @@
 package com.taviscratch.ponychatandroidclient;
 
+import android.animation.Animator;
 import android.app.Activity;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.transition.Transition;
+import android.transition.TransitionValues;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.view.ViewPropertyAnimator;
 
 
 /**
@@ -29,6 +35,12 @@ public class RightDrawer extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+
+    float drawerWidth, screenWidth;
+
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -59,14 +71,154 @@ public class RightDrawer extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_right_drawer, container, false);
+        View theview = inflater.inflate(R.layout.fragment_right_drawer, container, false);
+
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        theview.setX(screenWidth);
+
+        drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
+
+        return theview;
     }
+
+
+/*    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        view.setX(getResources().getDisplayMetrics().widthPixels);
+
+        ViewPropertyAnimator animator = view.animate();
+        float width = view.getWidth();
+        animator.translationXBy(width);
+        animator.setDuration(500);
+        animator.start();
+
+
+    }*/
+
+
+/*
+    @Override
+    public void onStart() {
+        super.onStart();
+        View view = getView();
+        float screenWidth = getResources().getDisplayMetrics().widthPixels;
+        view.setX(screenWidth);
+
+        ViewPropertyAnimator animator = view.animate();
+        float width = view.getWidth();
+        animator.translationX(screenWidth / 2);
+        animator.setDuration(500);
+        animator.start();
+    }
+*/
+
+/*    @Override
+    public void onResume() {
+        super.onResume();
+        View view = getView();
+        float screenWidth = getResources().getDisplayMetrics().widthPixels;
+        view.setX(screenWidth);
+
+        ViewPropertyAnimator animator = view.animate();
+        float width = view.getWidth();
+        animator.translationX(screenWidth / 2);
+        animator.setDuration(500);
+        animator.start();
+    }*/
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if(hidden == false) {
+            final View view = getView();
+            view.setX(screenWidth);
+
+            ViewPropertyAnimator animator = view.animate();
+            animator.translationXBy(-drawerWidth);
+            animator.setDuration(500);
+            animator.setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animator.start();
+        } else {
+            final View view = getView();
+            if(view != null) {
+                ViewPropertyAnimator animator = view.animate();
+                animator.translationXBy(drawerWidth);
+                animator.setDuration(500);
+                animator.setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        view.setVisibility(view.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.start();
+
+
+
+            }
+        }
+
+
+    }
+
+/*    public void slideRight() {
+        View view = getView();
+        ViewPropertyAnimator animator = view.animate();
+        animator.translationXBy(drawerWidth);
+        animator.setDuration(500);
+        animator.start();
+
+    }*/
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -105,6 +257,11 @@ public class RightDrawer extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public void setXPosition(float x) {
+        View v = getView();
+        v.setX(x);
     }
 
 }

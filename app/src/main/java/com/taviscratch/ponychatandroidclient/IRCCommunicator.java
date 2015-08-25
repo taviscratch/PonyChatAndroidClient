@@ -24,6 +24,7 @@ public class IRCCommunicator extends PircBot {
         this.currentChannel = channel;
         this.username = username;
         this.setName(username);
+        this.setVersion("PonyChat Android Client");
 
 
 

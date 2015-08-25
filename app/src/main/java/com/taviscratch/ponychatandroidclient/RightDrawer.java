@@ -149,7 +149,7 @@ public class RightDrawer extends Fragment {
 
             ViewPropertyAnimator animator = view.animate();
             animator.translationXBy(-drawerWidth);
-            animator.setDuration(500);
+            animator.setDuration(300);
             animator.setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -177,7 +177,7 @@ public class RightDrawer extends Fragment {
             if(view != null) {
                 ViewPropertyAnimator animator = view.animate();
                 animator.translationXBy(drawerWidth);
-                animator.setDuration(500);
+                animator.setDuration(300);
                 animator.setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {

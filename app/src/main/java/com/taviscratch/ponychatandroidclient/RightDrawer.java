@@ -38,7 +38,7 @@ public class RightDrawer extends Fragment {
 
 
     float drawerWidth, screenWidth;
-
+    private static final int animationDuration = 300;
 
 
 
@@ -92,51 +92,6 @@ public class RightDrawer extends Fragment {
     }
 
 
-/*    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        view.setX(getResources().getDisplayMetrics().widthPixels);
-
-        ViewPropertyAnimator animator = view.animate();
-        float width = view.getWidth();
-        animator.translationXBy(width);
-        animator.setDuration(500);
-        animator.start();
-
-
-    }*/
-
-
-/*
-    @Override
-    public void onStart() {
-        super.onStart();
-        View view = getView();
-        float screenWidth = getResources().getDisplayMetrics().widthPixels;
-        view.setX(screenWidth);
-
-        ViewPropertyAnimator animator = view.animate();
-        float width = view.getWidth();
-        animator.translationX(screenWidth / 2);
-        animator.setDuration(500);
-        animator.start();
-    }
-*/
-
-/*    @Override
-    public void onResume() {
-        super.onResume();
-        View view = getView();
-        float screenWidth = getResources().getDisplayMetrics().widthPixels;
-        view.setX(screenWidth);
-
-        ViewPropertyAnimator animator = view.animate();
-        float width = view.getWidth();
-        animator.translationX(screenWidth / 2);
-        animator.setDuration(500);
-        animator.start();
-    }*/
 
 
     @Override
@@ -149,27 +104,20 @@ public class RightDrawer extends Fragment {
 
             ViewPropertyAnimator animator = view.animate();
             animator.translationXBy(-drawerWidth);
-            animator.setDuration(300);
+            animator.setDuration(animationDuration);
             animator.setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     view.setVisibility(View.VISIBLE);
                 }
-
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     view.setVisibility(View.VISIBLE);
                 }
-
                 @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
+                public void onAnimationCancel(Animator animation) { }
                 @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
+                public void onAnimationRepeat(Animator animation) { }
             });
             animator.start();
         } else {
@@ -177,46 +125,26 @@ public class RightDrawer extends Fragment {
             if(view != null) {
                 ViewPropertyAnimator animator = view.animate();
                 animator.translationXBy(drawerWidth);
-                animator.setDuration(300);
+                animator.setDuration(animationDuration);
                 animator.setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         view.setVisibility(view.VISIBLE);
                     }
-
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         view.setVisibility(View.INVISIBLE);
                     }
-
                     @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
+                    public void onAnimationCancel(Animator animation) { }
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
+                    public void onAnimationRepeat(Animator animation) { }
                 });
                 animator.start();
-
-
-
             }
         }
-
-
     }
 
-/*    public void slideRight() {
-        View view = getView();
-        ViewPropertyAnimator animator = view.animate();
-        animator.translationXBy(drawerWidth);
-        animator.setDuration(500);
-        animator.start();
-
-    }*/
 
 
 
@@ -244,6 +172,8 @@ public class RightDrawer extends Fragment {
         mListener = null;
     }
 
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -259,9 +189,10 @@ public class RightDrawer extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void setXPosition(float x) {
-        View v = getView();
-        v.setX(x);
-    }
+
+
+
+
+
 
 }

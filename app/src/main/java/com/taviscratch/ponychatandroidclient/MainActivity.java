@@ -241,13 +241,11 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     private void openLeftDrawer(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
         ft.show(frag);
         ft.commit();
     }
     private void closeLeftDrawer(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
         ft.hide(frag);
         ft.commit();
     }
@@ -259,13 +257,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     private void closeRightDrawer(Fragment frag) {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        //((RightDrawer) frag).slideRight();
         ft.hide(frag);
-/*        try {
-            ft.wait(500);
-        } catch (InterruptedException e) {
-            System.out.println(e.toString());
-        }*/
         ft.commit();
     }
 

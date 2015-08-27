@@ -1,5 +1,6 @@
 package com.taviscratch.ponychatandroidclient;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 
 
 /**
@@ -28,6 +30,14 @@ public class LeftDrawer extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+
+    float drawerWidth, screenWidth;
+    private static final int animationDuration = 300;
+
+
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -64,7 +74,14 @@ public class LeftDrawer extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_left_drawer, container, false);
+        View theview = inflater.inflate(R.layout.fragment_left_drawer, container, false);
+
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        theview.setX(screenWidth);
+
+        drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
+
+        return theview;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -82,6 +99,58 @@ public class LeftDrawer extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if(hidden == false) {
+            final View view = getView();
+            view.setX(-drawerWidth);
+
+            ViewPropertyAnimator animator = view.animate();
+            animator.translationXBy(drawerWidth);
+            animator.setDuration(animationDuration);
+            animator.setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(View.VISIBLE);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) { }
+                @Override
+                public void onAnimationRepeat(Animator animation) { }
+            });
+            animator.start();
+        } else {
+            final View view = getView();
+            if(view != null) {
+                ViewPropertyAnimator animator = view.animate();
+                animator.translationXBy(-drawerWidth);
+                animator.setDuration(animationDuration);
+                animator.setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        view.setVisibility(view.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animation) { }
+                    @Override
+                    public void onAnimationRepeat(Animator animation) { }
+                });
+                animator.start();
+            }
         }
     }
 

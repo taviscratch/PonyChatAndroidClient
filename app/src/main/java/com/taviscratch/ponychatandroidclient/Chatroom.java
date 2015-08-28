@@ -1,13 +1,11 @@
 package com.taviscratch.ponychatandroidclient;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -22,9 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import com.taviscratch.ponychatandroidclient.MyFrameLayout;
 
 
 public class Chatroom extends Fragment {

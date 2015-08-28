@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
 
 
-    public void handleTouchEvent(MotionEvent event) {
+    private void handleTouchEvent(MotionEvent event) {
         int action = event.getAction();
 
         switch(action) {
@@ -184,7 +184,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
 
 
-    public void handleInput(float xStart, float xEnd, float yStart, float yEnd) {
+    private void handleInput(float xStart, float xEnd, float yStart, float yEnd) {
 
         float x = Math.abs(xStart - xEnd);
         float y = Math.abs(yStart-yEnd);
@@ -192,7 +192,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         // if the input is a swipe
         if(x>1.0f || y>1.0f) {
             SwipeControls.SWIPE_DIRECTION swipe = SwipeControls.interpretSwipe(xStart,xEnd,yStart,yEnd);
-
 
             Fragment leftDrawer =getFragmentManager().findFragmentByTag("LEFT DRAWER");
             Fragment rightDrawer = getFragmentManager().findFragmentByTag("RIGHT DRAWER");
@@ -229,15 +228,8 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                     // not supported
                     break;
             }
-
-
         }
-
-
     }
-
-
-
 
     private void openLeftDrawer(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();

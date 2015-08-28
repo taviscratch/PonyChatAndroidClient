@@ -57,8 +57,62 @@ public class IRCCommunicator extends PircBot {
 
 
     private void parseMessage(String message) {
-        sendMessage(currentChannel,message);
-        // TODO actually make this function properly
+        if(message.charAt(0) == '/') {
+            int firstSpacePosition = message.indexOf(" ");
+            String command, payload;
+            if(firstSpacePosition != -1) {
+
+                command = message.substring(1, firstSpacePosition);
+                payload = message.substring(firstSpacePosition);
+            }
+            else {
+                command = message.substring(1);
+                payload = "";
+            }
+
+            try {
+                parseCommand(command.toLowerCase(), payload);
+            } catch(Exception e) {
+                System.out.println(e.toString());
+            }
+        } else {
+            sendMessage(currentChannel, message);
+        }
     }
+
+    private void parseCommand(String command, String message) throws Exception {
+
+
+        if(command.equals("me")) {
+            sendMessage(currentChannel, "\001ACTION" + message + "\001");
+        } /*else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        }*/
+
+
+
+
+        throw new Exception("Command not supported");
+    }
+
+
 
 }

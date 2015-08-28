@@ -60,13 +60,15 @@ public class IRCConnection extends Thread {
 
         // Join the default channel.
         comm.joinChannel(defaultChannel);
+
+        //comm.sendMessage(currentChannel, "\001ACTION says hello to everypony.\001");
     }
 
     public void stopThread() {
         keepThreadAlive = false;
     }
 
-    public void sendMessage(String message) {
+/*    public void sendMessage(String message) {
         if(message.charAt(0) == '/') {
             int firstSpacePosition = message.indexOf(" ");
             String command, payload;
@@ -81,7 +83,7 @@ public class IRCConnection extends Thread {
             }
 
             try {
-                parseCommand(command, payload);
+                parseCommand(command.toLowerCase(), payload);
             } catch(Exception e) {
                 System.out.println(e.toString());
             }
@@ -93,7 +95,36 @@ public class IRCConnection extends Thread {
     }
 
     private void parseCommand(String command, String message) throws Exception {
+
+
+        if(command.equals("me")) {
+            comm.sendMessage(currentChannel, "\001ACTION" + message + "\001");
+        } *//*else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        } else if(command.equals()) {
+
+        }*//*
+
+
+
+
         throw new Exception("Command not supported");
-    }
+    }*/
 
 }

@@ -107,7 +107,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -123,23 +122,23 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         unbindService(ircServiceConnection);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         stopIRCService();
     }
 
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
+
     public void stopIRCService() {
         Intent intent = new Intent(this, IRCService.class);
         stopService(intent);
     }
-
 
     public void bindToService() {
         Intent intent = new Intent(this, IRCService.class);
@@ -153,13 +152,13 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     }
 
 
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         handleTouchEvent(event);
         return super.onTouchEvent(event);
     }
-
-
 
     private void handleTouchEvent(MotionEvent event) {
         int action = event.getAction();
@@ -180,9 +179,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                 break;
         }
     }
-
-
-
 
     private void handleInput(float xStart, float xEnd, float yStart, float yEnd) {
 

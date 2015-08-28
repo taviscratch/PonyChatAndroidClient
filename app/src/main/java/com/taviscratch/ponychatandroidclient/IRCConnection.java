@@ -60,8 +60,6 @@ public class IRCConnection extends Thread {
 
         // Join the default channel.
         comm.joinChannel(defaultChannel);
-
-        //comm.sendMessage(currentChannel, "\001ACTION says hello to everypony.\001");
     }
 
     public void stopThread() {

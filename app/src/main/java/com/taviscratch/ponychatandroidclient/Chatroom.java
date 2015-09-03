@@ -38,7 +38,7 @@ public class Chatroom extends Fragment {
     BroadcastReceiver serverMessageReceiver;
     BroadcastReceiver myMessageReceiver;
 
-    float xStart,yStart,xEnd,yEnd = -1.0f;
+    float xStart,yStart,xEnd,yEnd;
 
 
 
@@ -53,6 +53,8 @@ public class Chatroom extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         createReceivers();
+
+        // Invalidate touch coordinates
         xStart = yStart = xEnd = yEnd = -1.0f;
 
     }
@@ -85,19 +87,14 @@ public class Chatroom extends Fragment {
                     msgIntent.putExtra("message", message);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msgIntent);
                 }
-                //hideKeyboardAndClearFocus(v, inputBox);
             }
         });
 
 
-
         // touch listener
-
         theview.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
-                //((MainActivity) getActivity()).handleTouchEvent(event);
                 getActivity().onTouchEvent(event);
                 return true;
             }
@@ -106,7 +103,6 @@ public class Chatroom extends Fragment {
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                //((MainActivity) getActivity()).handleTouchEvent(event);
                 getActivity().onTouchEvent(event);
                 return false;
             }
@@ -122,13 +118,13 @@ public class Chatroom extends Fragment {
         super.onInflate(attrs, savedInstanceState);
     }
 
+
     // Hides the soft keyboard and clears the focus from the EditText widget
     private void hideKeyboardAndClearFocus(View v, EditText inputbox) {
         inputbox.clearFocus();
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
 
 
 
@@ -154,7 +150,6 @@ public class Chatroom extends Fragment {
     }
 
 
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -164,12 +159,10 @@ public class Chatroom extends Fragment {
 
 
 
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
 
 
 
@@ -287,31 +280,23 @@ public class Chatroom extends Fragment {
 
     private void openLeftDrawer(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-
-
-        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
         ft.show(frag);
-        //ft.replace(R.id.LeftDrawer_container,frag);
         ft.commit();
     }
     private void closeLeftDrawer(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.in_from_left, R.animator.out_to_left);
-        //ft.replace(R.id.LeftDrawer_container, new Fragment());
         ft.hide(frag);
         ft.commit();
     }
     private void openRightDrawer(Fragment frag) {
-/*        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.in_from_left,R.animator.out_to_left);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.show(frag);
-        ft.commit();*/
+        ft.commit();
     }
     private void closeRightDrawer(Fragment frag) {
-/*        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.animator.in_from_left,R.animator.out_to_left);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.show(frag);
-        ft.commit();*/
+        ft.commit();
     }
 
 

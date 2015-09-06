@@ -1,7 +1,6 @@
 package com.taviscratch.ponychatandroidclient;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,22 +23,17 @@ import android.widget.ListView;
 
 public class Chatroom extends Fragment {
 
-    IRCService ircService;
+    IRCBackgroundService ircService;
 
     EditText inputBox;
     Button sendMessageButton;
     ListView listView;
 
-    ArrayAdapter<String> adapter;
-
     private OnFragmentInteractionListener mListener;
-
-    BroadcastReceiver serverMessageReceiver;
-    BroadcastReceiver myMessageReceiver;
 
     float xStart,yStart,xEnd,yEnd;
 
-
+    private String currentConversation;
 
 
     public Chatroom() {
@@ -52,11 +45,12 @@ public class Chatroom extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createReceivers();
+        //createReceivers();
 
         // Invalidate touch coordinates
         xStart = yStart = xEnd = yEnd = -1.0f;
 
+        currentConversation = Constants.NETWORK_LOBBY;
     }
 
 
@@ -73,8 +67,9 @@ public class Chatroom extends Fragment {
         listView = (ListView) theview.findViewById(R.id.chatroomListView);
 
         // Set up the listview array adapter
-        adapter = new ArrayAdapter<String>(getActivity(), R.layout.mytextview);
-        listView.setAdapter(adapter);
+        IRCMessageAdapter messageAdapter = IRCSession.getInstance().getMessageAdapter(currentConversation);
+        listView.setAdapter(messageAdapter);
+
 
         // Set button's onClick
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +79,8 @@ public class Chatroom extends Fragment {
                 if (!message.isEmpty()) {
                     inputBox.setText("");
                     Intent msgIntent = new Intent(Constants.MESSAGE_TO_SEND);
-                    msgIntent.putExtra("message", message);
+                    msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
+                    msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, currentConversation);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msgIntent);
                 }
             }
@@ -113,20 +109,12 @@ public class Chatroom extends Fragment {
     }
 
 
-    @Override
-    public void onInflate(AttributeSet attrs, Bundle savedInstanceState) {
-        super.onInflate(attrs, savedInstanceState);
-    }
-
-
     // Hides the soft keyboard and clears the focus from the EditText widget
     private void hideKeyboardAndClearFocus(View v, EditText inputbox) {
         inputbox.clearFocus();
         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
-
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -157,146 +145,9 @@ public class Chatroom extends Fragment {
     }
 
 
-
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
-    }
-
-
-
-
-    // Instantiates all the receivers for this object
-    private void createReceivers() {
-        // A receiver for messages sent from the server
-        serverMessageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Bundle extras = intent.getExtras();
-                String message = extras.getString("message");
-                String sender = extras.getString("sender");
-                adapter.add(sender + ": " + message);
-            }
-        };
-        IntentFilter serverMessageFilter = new IntentFilter(Constants.MESSAGE_RECEIVED);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(serverMessageReceiver, serverMessageFilter);
-
-        // A reciever for messages made by the current user
-        myMessageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Bundle extras = intent.getExtras();
-                String message = extras.getString("message");
-                adapter.add("Me" + ": " + message); // TODO change so this references the username in the shared preferences
-            }
-        };
-        IntentFilter myMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(myMessageReceiver, myMessageFilter);
-    }
-
-
-
-
-
-    public void handleTouchEvent(MotionEvent event) {
-        int action = event.getAction();
-
-        switch(action) {
-            case MotionEvent.ACTION_DOWN:
-                xStart = event.getX();
-                yStart = event.getY();
-                break;
-
-            case MotionEvent.ACTION_UP:
-                xEnd = event.getX();
-                yEnd = event.getY();
-                if(xStart >= 0.0f && yStart >= 0.0f)
-                    handleInput(xStart,xEnd,yStart,yEnd);
-                // set all to an invalid position
-                xStart = yStart = xEnd = yEnd = -1.0f;
-                break;
-        }
-    }
-
-
-
-
-
-    public void handleInput(float xStart, float xEnd, float yStart, float yEnd) {
-
-        float x = Math.abs(xStart - xEnd);
-        float y = Math.abs(yStart-yEnd);
-
-        // if the input is a swipe
-        if(x>1.0f || y>1.0f) {
-            SwipeControls.SWIPE_DIRECTION swipe = SwipeControls.interpretSwipe(xStart,xEnd,yStart,yEnd);
-
-
-            Fragment leftDrawer =getFragmentManager().findFragmentByTag("LEFT DRAWER");
-            Fragment rightDrawer = getFragmentManager().findFragmentByTag("RIGHT DRAWER");
-
-            switch (swipe) {
-                case LEFT:
-                    if(leftDrawer.isVisible()) {
-                        closeLeftDrawer(leftDrawer);
-                    }
-                    else if(rightDrawer.isVisible()) {
-                        // Do nothing
-                    }
-                    else {
-                        openRightDrawer(rightDrawer);
-                    }
-                    break;
-
-                case RIGHT:
-                    if(leftDrawer.isVisible()) {
-                        // Do nothing
-                    }
-                    else if(rightDrawer.isVisible()) {
-                        closeRightDrawer(rightDrawer);
-                    }
-                    else {
-                        openLeftDrawer(leftDrawer);
-                    }
-                    break;
-
-                case UP:
-                    // not supported
-                    break;
-                case DOWN:
-                    // not supported
-                    break;
-            }
-
-
-        }
-
-
-    }
-
-
-
-
-    private void openLeftDrawer(Fragment frag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.show(frag);
-        ft.commit();
-    }
-    private void closeLeftDrawer(Fragment frag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.hide(frag);
-        ft.commit();
-    }
-    private void openRightDrawer(Fragment frag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.show(frag);
-        ft.commit();
-    }
-    private void closeRightDrawer(Fragment frag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.show(frag);
-        ft.commit();
     }
 
 

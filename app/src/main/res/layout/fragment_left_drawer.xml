@@ -29,11 +29,12 @@
                 android:textColor="@color/abc_primary_text_material_dark"
                 android:layout_weight="1"
                 style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
-                android:clickable="true" />
+                android:clickable="true"
+                android:textStyle="bold" />
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/button"
                 android:layout_weight="3"
                 android:singleLine="true"
@@ -41,27 +42,61 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp">
+            android:id="@+id/scrollView" >
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Channels"
-                android:id="@+id/textView2"
-                android:textColor="@color/abc_primary_text_material_dark"
-                android:textStyle="italic" />
+                android:layout_height="match_parent"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/listView"
-                android:padding="5dp" />
-        </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Channels"
+                        android:textColor="@color/abc_primary_text_material_dark"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/channelsList"
+                        android:padding="5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Private Messages"
+                        android:textColor="@color/abc_primary_text_material_dark"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/privateMessagesList"
+                        android:padding="5dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

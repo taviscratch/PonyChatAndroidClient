@@ -1,6 +1,5 @@
 package com.taviscratch.ponychatandroidclient;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -14,8 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -39,12 +36,12 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     int dpi;
 
 
-    IRCService ircService;
+    IRCBackgroundService ircService;
 
     private ServiceConnection ircServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            IRCService.IRCServiceBinder ircServiceBinder = (IRCService.IRCServiceBinder) service;
+            IRCBackgroundService.IRCServiceBinder ircServiceBinder = (IRCBackgroundService.IRCServiceBinder) service;
             ircService = ircServiceBinder.getService();
             Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
         }
@@ -68,6 +65,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         setContentView(R.layout.activity_main);
         dpi = getResources().getDisplayMetrics().densityDpi;
 
+        bindToService();
 
         // animation stuff
         ANIMATION_DURATION = getResources().getInteger(R.integer.animation_duration);
@@ -136,12 +134,12 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
 
     public void stopIRCService() {
-        Intent intent = new Intent(this, IRCService.class);
+        Intent intent = new Intent(this, IRCBackgroundService.class);
         stopService(intent);
     }
 
     public void bindToService() {
-        Intent intent = new Intent(this, IRCService.class);
+        Intent intent = new Intent(this, IRCBackgroundService.class);
         bindService(intent, ircServiceConnection, Context.BIND_IMPORTANT);
     }
 

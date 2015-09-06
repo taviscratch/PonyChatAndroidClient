@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="20">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="15"
+        android:weightSum="2"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:gravity="right"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/irc_message_normal_sendername"
+            android:textColor="@color/abc_primary_text_material_light" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            android:gravity="right"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/irc_message_normal_timeposted"
+            android:textColor="#39747474" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:id="@+id/irc_message_normal_message"
+        android:textColor="@color/abc_secondary_text_material_light" />
+
+</LinearLayout>

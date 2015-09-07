@@ -25,9 +25,10 @@ public class Chatroom extends Fragment {
 
     IRCBackgroundService ircService;
 
+
     EditText inputBox;
     Button sendMessageButton;
-    ListView listView;
+    static ListView listView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -151,7 +152,10 @@ public class Chatroom extends Fragment {
     }
 
 
-
+    public static void switchConversationInView(String conversationKey) {
+        IRCMessageAdapter adapter = IRCSession.getInstance().getMessageAdapter(conversationKey);
+        listView.setAdapter(adapter);
+    }
 
 
 }

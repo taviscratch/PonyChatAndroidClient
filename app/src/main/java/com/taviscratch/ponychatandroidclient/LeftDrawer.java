@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 /**
@@ -35,7 +38,7 @@ public class LeftDrawer extends Fragment {
     float drawerWidth, screenWidth;
     private static final int animationDuration = 300;
 
-
+    static IRCSession session;
 
 
 
@@ -75,13 +78,115 @@ public class LeftDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View theview = inflater.inflate(R.layout.fragment_left_drawer, container, false);
-
+        session = IRCSession.getInstance();
+        
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         theview.setX(screenWidth);
 
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
 
+
+        LinearLayout channelsList = (LinearLayout) theview.findViewById(R.id.channelsList);
+        LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
+        
+        String[] channelNames = session.getChannelNames();
+        String[] privateMessageNames = session.getPrivateMessageNames();
+
+/*        for(String channelName: channelNames) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(channelName);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            channelsList.addView(textView);
+        }
+        for(String privateMessageName: privateMessageNames) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(privateMessageName);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            privateMessagesList.addView(textView);
+        }*/
+
+        for (int i = 0; i < channelNames.length; i++) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(channelNames[i]);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            channelsList.addView(textView);
+        }
+        for (int i = 0; i < privateMessageNames.length; i++) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(privateMessageNames[i]);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            privateMessagesList.addView(textView);
+        }
+
+
+
+
+        theview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getActivity().onTouchEvent(event);
+                return false;
+            }
+        });
+
+
+
         return theview;
+    }
+
+
+    private void updateLists(View view) {
+        LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
+        LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
+
+        String[] channelNames = session.getChannelNames();
+        String[] privateMessageNames = session.getPrivateMessageNames();
+
+
+        for(String channelName: channelNames) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(channelName);
+            textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            channelsList.addView(textView);
+        }
+        for(String privateMessageName: privateMessageNames) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(privateMessageName);
+            textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String text = ((TextView) v).getText().toString();
+                }
+            });
+            privateMessagesList.addView(textView);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,6 +215,8 @@ public class LeftDrawer extends Fragment {
         if(hidden == false) {
             final View view = getView();
             view.setX(-drawerWidth);
+
+            updateLists(view);
 
             ViewPropertyAnimator animator = view.animate();
             animator.translationXBy(drawerWidth);

@@ -209,4 +209,12 @@ public class IRCSession extends Thread {
             throw new IllegalArgumentException("key does not exist");
     }
 
+    public String[] getChannelNames() {
+        return sessionData.getChannelNames();
+    }
+
+    public String[] getPrivateMessageNames() {
+        return sessionData.getPrivateMessageNames();
+    }
+
 }

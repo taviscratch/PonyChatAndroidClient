@@ -1,7 +1,8 @@
 package com.taviscratch.ponychatandroidclient;
 
-import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.PriorityQueue;
 
 
 public class SessionData {
@@ -52,6 +53,31 @@ public class SessionData {
 
     public boolean conversationExists(String key){
         return conversations.containsKey(key);
+    }
+
+
+    public String[] getChannelNames() {
+        PriorityQueue<String> channelNames = new PriorityQueue<String>();
+
+        Enumeration e = conversations.keys();
+        while(e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            if(name.startsWith("#"))
+                channelNames.add(name);
+        }
+        return channelNames.toArray(new String[channelNames.size()]);
+    }
+
+    public String[] getPrivateMessageNames() {
+        PriorityQueue<String> privateMessageNames = new PriorityQueue<String>();
+
+        Enumeration e = conversations.keys();
+        while(e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            if(!name.startsWith("#") && !name.equals(Constants.NETWORK_LOBBY))
+                privateMessageNames.add(name);
+        }
+        return (String[]) privateMessageNames.toArray(new String[privateMessageNames.size()]);
     }
 
 }

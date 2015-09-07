@@ -21,9 +21,14 @@ public class IRCSession extends Thread {
     Hashtable<String, IRCMessageAdapter> messageAdapters;
     BroadcastReceiver incomingMessageReceiver, outgoingMessageReceiver;
 
+
+
     private String username;
     private boolean keepRunning;
 
+    public String getUsername() {
+        return username;
+    }
 
 
     private IRCSession() {

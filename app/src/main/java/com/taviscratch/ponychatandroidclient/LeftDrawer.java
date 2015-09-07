@@ -85,58 +85,26 @@ public class LeftDrawer extends Fragment {
 
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
 
-
+        TextView networkLobbyText = (TextView) theview.findViewById(R.id.networkLobbyText);
         LinearLayout channelsList = (LinearLayout) theview.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
-        
+
+        networkLobbyText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Chatroom.switchConversationInView(Constants.NETWORK_LOBBY);
+                hideSelf();
+            }
+        });
+
+
+
         String[] channelNames = session.getChannelNames();
         String[] privateMessageNames = session.getPrivateMessageNames();
 
-/*        for(String channelName: channelNames) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(channelName);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            channelsList.addView(textView);
-        }
-        for(String privateMessageName: privateMessageNames) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(privateMessageName);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            privateMessagesList.addView(textView);
-        }*/
 
-        for (int i = 0; i < channelNames.length; i++) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(channelNames[i]);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            channelsList.addView(textView);
-        }
-        for (int i = 0; i < privateMessageNames.length; i++) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(privateMessageNames[i]);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            privateMessagesList.addView(textView);
-        }
+
+        updateLists(theview);
 
 
 
@@ -154,6 +122,10 @@ public class LeftDrawer extends Fragment {
         return theview;
     }
 
+    private final void hideSelf() {
+        ((MainActivity)getActivity()).hideFragment(this);
+    }
+
 
     private void updateLists(View view) {
         LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
@@ -163,29 +135,42 @@ public class LeftDrawer extends Fragment {
         String[] privateMessageNames = session.getPrivateMessageNames();
 
 
-        for(String channelName: channelNames) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(channelName);
-            textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            channelsList.addView(textView);
+        // Check the current textviews for channels, and add new ones if necessary
+        for(int i = 0; i < channelNames.length; i++) {
+            TextView t = (TextView) channelsList.getChildAt(i);
+            if(t==null || !channelNames[i].equals(t.getText().toString())){
+                TextView textView = new TextView(getActivity());
+                textView.setText(channelNames[i]);
+                textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String text = ((TextView) v).getText().toString();
+                        Chatroom.switchConversationInView(text);
+                        hideSelf();
+                    }
+                });
+                channelsList.addView(textView,i);
+            }
         }
-        for(String privateMessageName: privateMessageNames) {
-            TextView textView = new TextView(getActivity());
-            textView.setText(privateMessageName);
-            textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String text = ((TextView) v).getText().toString();
-                }
-            });
-            privateMessagesList.addView(textView);
+
+        // Check the current textviews for private messages, and add new ones if necessary
+        for(int i = 0; i < privateMessageNames.length; i++) {
+            TextView t = (TextView) privateMessagesList.getChildAt(i);
+            if(t==null || !privateMessageNames[i].equals(t.getText().toString())){
+                TextView textView = new TextView(getActivity());
+                textView.setText(privateMessageNames[i]);
+                textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String text = ((TextView) v).getText().toString();
+                        Chatroom.switchConversationInView(text);
+                        hideSelf();
+                    }
+                });
+                privateMessagesList.addView(textView,i);
+            }
         }
     }
 

@@ -34,7 +34,7 @@ public class Chatroom extends Fragment {
 
     float xStart,yStart,xEnd,yEnd;
 
-    private String currentConversation;
+    private static String currentConversation;
 
 
     public Chatroom() {
@@ -81,7 +81,7 @@ public class Chatroom extends Fragment {
                     inputBox.setText("");
                     Intent msgIntent = new Intent(Constants.MESSAGE_TO_SEND);
                     msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
-                    msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, currentConversation);
+                    msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, currentConversation);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msgIntent);
                 }
             }
@@ -155,6 +155,7 @@ public class Chatroom extends Fragment {
     public static void switchConversationInView(String conversationKey) {
         IRCMessageAdapter adapter = IRCSession.getInstance().getMessageAdapter(conversationKey);
         listView.setAdapter(adapter);
+        currentConversation = conversationKey;
     }
 
 

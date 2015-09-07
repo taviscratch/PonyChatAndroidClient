@@ -16,8 +16,7 @@ public class IRCMessenger extends PircBot {
 
 
     private static String defaultRealname = "Ponychat Android Client";
-    private static String currentChannel;
-
+    private TypeOfSend tag;
     BroadcastReceiver outgoingMessageReceiver;
 
     public IRCMessenger(String username) {
@@ -38,7 +37,8 @@ public class IRCMessenger extends PircBot {
             public void onReceive(Context context, Intent intent) {
                 Bundle extras = intent.getExtras();
                 String message = extras.getString(Constants.IntentExtrasConstants.MESSAGE);
-                parseMessage(message);
+                String target = extras.getString(Constants.IntentExtrasConstants.MESSAGE_TARGET);
+                handleOutgoingMessage(target,message);
             }
         };
         IntentFilter outgoingMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
@@ -98,7 +98,16 @@ public class IRCMessenger extends PircBot {
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
     }
 
-    private void parseMessage(String message) {
+
+    private String parseTarget(String target) {
+        if(target.equals(Constants.NETWORK_LOBBY))
+            return "";
+
+        return target;
+    }
+
+    private String parseMessage(String message) {
+
         if(message.charAt(0) == '/') {
             int firstSpacePosition = message.indexOf(" ");
             String command, payload;
@@ -113,20 +122,21 @@ public class IRCMessenger extends PircBot {
             }
 
             try {
-                parseCommand(command.toLowerCase(), payload);
+                return parseCommand(command.toLowerCase(), payload);
             } catch(Exception e) {
                 System.out.println(e.toString());
             }
-        } else {
-            sendMessage(currentChannel, message);
         }
+        tag = TypeOfSend.PRIVMSG;
+        return message;
     }
 
-    private void parseCommand(String command, String message) throws Exception {
+    private String parseCommand(String command, String message) throws Exception {
 
 
         if(command.equals("me")) {
-            sendMessage(currentChannel, "\001ACTION" + message + "\001");
+            tag = TypeOfSend.ACTION;
+            return "\001ACTION" + message + "\001";
         } /*else if(command.equals()) {
 
         } else if(command.equals()) {
@@ -162,8 +172,30 @@ public class IRCMessenger extends PircBot {
 
     }
 
-    private void handleOutgoingMessage(String message) {
+    private void handleOutgoingMessage(String target, String message) {
+        target = parseTarget(target);
+        message = parseMessage(message);
+
+
+        switch(tag) {
+            case PRIVMSG:
+                sendMessage(target,message);
+                break;
+            case ACTION:
+                sendAction(target,message);
+                break;
+        }
+
+        tag = null;
+
 
     }
+
+
+    enum TypeOfSend {
+        PRIVMSG,
+        ACTION
+    }
+
 
 }

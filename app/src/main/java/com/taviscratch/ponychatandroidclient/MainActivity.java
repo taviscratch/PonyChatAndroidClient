@@ -193,13 +193,13 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
             switch (swipe) {
                 case LEFT:
                     if(leftDrawer.isVisible()) {
-                        closeLeftDrawer(leftDrawer);
+                        hideFragment(leftDrawer);
                     }
                     else if(rightDrawer.isVisible()) {
                         // Do nothing
                     }
                     else {
-                        openRightDrawer(rightDrawer);
+                        showFragment(rightDrawer);
                     }
                     break;
 
@@ -208,10 +208,10 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                         // Do nothing
                     }
                     else if(rightDrawer.isVisible()) {
-                        closeRightDrawer(rightDrawer);
+                        hideFragment(rightDrawer);
                     }
                     else {
-                        openLeftDrawer(leftDrawer);
+                        showFragment(leftDrawer);
                     }
                     break;
 
@@ -225,30 +225,16 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         }
     }
 
-    private void openLeftDrawer(Fragment frag) {
+    public void showFragment(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.show(frag);
         ft.commit();
     }
-    private void closeLeftDrawer(Fragment frag) {
+    public void hideFragment(Fragment frag) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.hide(frag);
         ft.commit();
     }
-    private void openRightDrawer(Fragment frag) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.show(frag);
-        ft.commit();
-    }
-    private void closeRightDrawer(Fragment frag) {
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.hide(frag);
-        ft.commit();
-    }
-
-
-
 
 
 }

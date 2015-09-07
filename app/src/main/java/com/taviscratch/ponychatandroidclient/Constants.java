@@ -35,7 +35,7 @@ public class Constants {
         public static final int PORT = 6667;
         public static final String REALNAME = "Ponychat Android Client";
         public static final int MAX_MESSAGE_LOG_SIZE = 100;
-        public static final String[] DEFAULT_CHANNELS = {"#ponyville"};
+        public static final String[] DEFAULT_CHANNELS = {"#ponyville","#octaviaisbestpony"};
     }
 
 
@@ -46,6 +46,7 @@ public class Constants {
         public static final String CHANNEL = "CHANNEL";
         public static final String SENDER = "SENDER";
         public static final String MESSAGE_TYPE = "MESSAGE_TYPE";
+        public static final String MESSAGE_TARGET = "MESSAGE_TARGET";
     }
 
     public static final class MessageType {

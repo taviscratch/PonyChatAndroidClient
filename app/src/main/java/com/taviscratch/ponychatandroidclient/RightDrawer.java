@@ -107,7 +107,8 @@ public class RightDrawer extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
                 IRCSession session = IRCSession.getInstance();
-                session.startNewPrivateConversation(username);
+                if(!session.doesConversationExist(username))
+                    session.startNewPrivateConversation(username);
                 Chatroom.switchConversationInView(username);
                 hideSelf();
             }

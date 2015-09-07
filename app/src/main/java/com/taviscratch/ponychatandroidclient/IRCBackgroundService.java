@@ -43,17 +43,12 @@ public class IRCBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
-
-
         IRCSession.getInstance().start();
-
-
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        //IRCSession.getInstance().stopThread();
         stopForeground(true);
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
     }

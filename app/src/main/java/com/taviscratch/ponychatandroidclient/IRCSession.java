@@ -26,7 +26,6 @@ public class IRCSession extends Thread {
 
 
     private String username;
-    private boolean keepRunning;
 
     public String getUsername() {
         return username;
@@ -62,14 +61,8 @@ public class IRCSession extends Thread {
     @Override
     public void run() {
         synchronized (this){
-            keepRunning = true;
-
             createReceivers();
             connect();
-
-/*            while(keepRunning) {
-                // TODO
-            }*/
         }
 
 
@@ -113,17 +106,6 @@ public class IRCSession extends Thread {
             messenger.joinChannel(channelName);
         }
     }
-
-
-
-
-
-
-/*    public void stopThread() {
-        synchronized (this) {
-            keepRunning = false;
-        }
-    }*/
 
 
 
@@ -271,5 +253,10 @@ public class IRCSession extends Thread {
 
         return usernames;
     }
+
+    public boolean doesConversationExist(String key) {
+        return messageAdapters.containsKey(key);
+    }
+
 
 }

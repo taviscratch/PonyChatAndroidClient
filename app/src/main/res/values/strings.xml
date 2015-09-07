@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_first_run_setup">FirstRunSetupActivity</string>
+    <string name="title_activity_bootstrap">BootstrapActivity</string>
+    <string name="title_activity_ircsettings">IRCSettingsActivity</string>
 </resources>

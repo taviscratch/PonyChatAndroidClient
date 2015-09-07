@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.taviscratch.ponychatandroidclient" >
 
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".PonyChatApplication"
@@ -12,22 +10,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
-
-
         <activity
             android:name=".ui.MainActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboard"
+            android:label="@string/app_name"
             android:launchMode="standard"
-            android:screenOrientation="portrait">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
 
         <service
@@ -36,14 +25,23 @@
             android:exported="false" >
         </service>
 
-
-<!--        <reciever>
+        <activity
+            android:name=".ui.FirstRunSetupActivity"
+            android:label="@string/title_activity_first_run_setup" >
+        </activity>
+        <activity
+            android:name=".ui.BootstrapActivity"
+            android:label="@string/title_activity_bootstrap" >
             <intent-filter>
-                <action android:name="com.taviscratch.ponychatandroidclient.PASS_MESSAGE"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </reciever>-->
-
-
+        </activity>
+        <activity
+            android:name=".ui.IRCSettingsActivity"
+            android:label="@string/title_activity_ircsettings" >
+        </activity>
     </application>
 
 </manifest>

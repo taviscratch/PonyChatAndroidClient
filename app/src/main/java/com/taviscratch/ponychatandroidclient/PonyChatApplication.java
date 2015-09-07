@@ -44,16 +44,14 @@ public class PonyChatApplication extends Application{
 
         context = getApplicationContext();
 
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
         if(preferences.getString("firstRun","true").equals("true")){
             editor.remove(PreferenceConstants.DEFAULT_CHANNELS);
-            editor.commit();
+            editor.apply();
             checkPreferences(preferences);
-        }
-
-        editor.remove(PreferenceConstants.DEFAULT_CHANNELS);
+        };
 
 
         if(preferences.getString(PreferenceConstants.RANDOMIZE_USERNAME, "true").equals("true")){
@@ -61,7 +59,7 @@ public class PonyChatApplication extends Application{
             editor.putString(PreferenceConstants.USERNAME, Util.getRandomUsername());
 
         }
-        editor.commit();
+        editor.apply();
 
         Intent serviceIntent = new Intent(this, IRCBackgroundService.class);
         startService(serviceIntent);
@@ -108,7 +106,7 @@ public class PonyChatApplication extends Application{
         }
 
 
-        editor.commit();
+        editor.apply();
     }
 
 

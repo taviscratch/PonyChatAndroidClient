@@ -70,7 +70,7 @@ public class Util {
             "RainbowDash",
             "Fluttershy",
             "Rarity",
-            "Appljack",
+            "Applejack",
             "PinkiePie",
             "DerpyHooves",
             "DoctorWhooves",

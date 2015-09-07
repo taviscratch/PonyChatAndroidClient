@@ -9,6 +9,14 @@ public class MessageLog extends LinkedList<IRCMessage> {
 
     private int maxSize;
 
+    private String topic = "";
+    public String getTopic() {
+        return topic;
+    }
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
     // Creates a new empty message log
     public MessageLog(int maxSize) {
         this(maxSize, null);

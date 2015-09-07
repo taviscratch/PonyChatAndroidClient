@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class Chatroom extends Fragment {
@@ -29,6 +30,7 @@ public class Chatroom extends Fragment {
     EditText inputBox;
     Button sendMessageButton;
     static ListView listView;
+    static TextView topicMarquee;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,13 +64,19 @@ public class Chatroom extends Fragment {
         // Inflate the layout for this fragment
         View theview = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
+        IRCSession session = IRCSession.getInstance();
+
         // Create widgets
         inputBox = (EditText) theview.findViewById(R.id.chatInput);
         sendMessageButton = (Button) theview.findViewById(R.id.sendMessage_button);
         listView = (ListView) theview.findViewById(R.id.chatroomListView);
+        topicMarquee = (TextView) theview.findViewById(R.id.topicMarquee);
+
+
+
 
         // Set up the listview array adapter
-        IRCMessageAdapter messageAdapter = IRCSession.getInstance().getMessageAdapter(currentConversation);
+        IRCMessageAdapter messageAdapter = session.getMessageAdapter(currentConversation);
         listView.setAdapter(messageAdapter);
 
 
@@ -104,6 +112,11 @@ public class Chatroom extends Fragment {
                 return false;
             }
         });
+
+        switchConversationInView(Constants.NETWORK_LOBBY);
+        topicMarquee.setSelected(true);
+        topicMarquee.setText(session.getTopic(currentConversation));
+
 
         return theview;
 
@@ -157,9 +170,20 @@ public class Chatroom extends Fragment {
 
 
     public static void switchConversationInView(String conversationKey) {
-        IRCMessageAdapter adapter = IRCSession.getInstance().getMessageAdapter(conversationKey);
+        IRCSession session = IRCSession.getInstance();
+        IRCMessageAdapter adapter = session.getMessageAdapter(conversationKey);
         listView.setAdapter(adapter);
         currentConversation = conversationKey;
+
+        String topic = session.getTopic(conversationKey);
+        String formattedTopic= conversationKey;
+        if(topic.equals(conversationKey) || topic.equals("")){
+            if(!Util.isChannel(conversationKey) && !conversationKey.equals(Constants.NETWORK_LOBBY))
+                formattedTopic = "[Private Message] " + conversationKey;
+        } else
+            formattedTopic = conversationKey + " |> TOPIC: " + topic;
+
+        topicMarquee.setText(formattedTopic);
     }
 
 

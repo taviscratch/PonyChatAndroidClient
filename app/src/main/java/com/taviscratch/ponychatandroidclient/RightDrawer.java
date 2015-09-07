@@ -110,6 +110,7 @@ public class RightDrawer extends Fragment {
                 if(!session.doesConversationExist(username))
                     session.startNewPrivateConversation(username);
                 Chatroom.switchConversationInView(username);
+
                 hideSelf();
             }
         });

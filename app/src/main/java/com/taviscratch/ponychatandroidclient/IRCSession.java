@@ -44,7 +44,10 @@ public class IRCSession extends Thread {
         // Initialize the adapter hashtable
         messageAdapters = new Hashtable<String, IRCMessageAdapter>();
 
-        IRCMessageAdapter lobbyAdapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, sessionData.getConversation(Constants.NETWORK_LOBBY));
+        MessageLog networkLobby = sessionData.getConversation(Constants.NETWORK_LOBBY);
+        networkLobby.setTopic(Constants.NETWORK_LOBBY);
+
+        IRCMessageAdapter lobbyAdapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, networkLobby);
 
         messageAdapters.put(Constants.NETWORK_LOBBY, lobbyAdapter);
     }
@@ -64,8 +67,6 @@ public class IRCSession extends Thread {
             createReceivers();
             connect();
         }
-
-
     }
 
     public void connect() {
@@ -258,5 +259,16 @@ public class IRCSession extends Thread {
         return messageAdapters.containsKey(key);
     }
 
+    // If channelName is infact a channel name, then it return's its topic.
+    // Otherwise, it returns ChannelName
+    public String getTopic(String channelName) {
+        if (Util.isChannel(channelName))
+            return sessionData.getConversation(channelName).getTopic();
 
+        return channelName;
+    }
+
+    public void setChannelTopic(String channelName, String topic) {
+        sessionData.getConversation(channelName).setTopic(topic);
+    }
 }

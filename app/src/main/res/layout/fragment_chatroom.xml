@@ -17,23 +17,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="channel: #ponyville |  pony pony pony pony pony pony pony pony pony pony pony pony pony"
+            android:id="@+id/topicMarquee"
+            android:background="@color/background_floating_material_dark"
+            android:textColor="@color/abc_secondary_text_material_dark"
+            android:gravity="center"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:focusable="false"
+            android:scrollHorizontally="true" />
+
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/chatroomListView"
             android:transcriptMode="alwaysScroll"
-            android:layout_weight="1"
             android:minHeight="20dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="2dp"
             android:stackFromBottom="true"
-            android:textFilterEnabled="false" />
+            android:textFilterEnabled="false"
+            android:layout_weight="3" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/darker_gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="11">
+            android:layout_weight="25">
 
             <EditText
                 android:id="@+id/chatInput"

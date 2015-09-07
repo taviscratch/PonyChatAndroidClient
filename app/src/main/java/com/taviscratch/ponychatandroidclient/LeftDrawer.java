@@ -46,6 +46,7 @@ public class LeftDrawer extends Fragment {
 
     static IRCSession session;
 
+    TextView currentConversationView;
 
 
     /**
@@ -143,7 +144,7 @@ public class LeftDrawer extends Fragment {
     }
 
 
-    private void updateLists(View view) {
+    public void updateLists(View view) {
         LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
 
@@ -154,38 +155,45 @@ public class LeftDrawer extends Fragment {
 
         // Check the current textviews for channels, and add new ones if necessary
         for(int i = 0; i < channelNames.length; i++) {
-            TextView t = (TextView) channelsList.getChildAt(i);
-            if(t==null || !channelNames[i].equals(t.getText().toString())){
+            TextView textView = (TextView) channelsList.getChildAt(i);
+            if(textView==null || !channelNames[i].equals(textView.getText().toString())){
 
                 LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+                textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
 
                 textView.setText(channelNames[i]);
+                textView.setClickable(true);
 
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String text = ((TextView) v).getText().toString();
                         Chatroom.switchConversationInView(text);
+                        if(currentConversationView != null)
+                            unhighlightTextView(currentConversationView);
+                        currentConversationView = (TextView) v;
+                        highlightTextView(currentConversationView);
                         hideSelf();
                     }
                 });
 
                 channelsList.addView(textView,i);
 
-            } else  if(t.getText().toString().equals(currentConversation)) {
-                t.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+            }
+            if(textView.getText().toString().equals(currentConversation)) {
+                currentConversationView = textView;
+                highlightTextView(textView);
             } else
-                t.setBackgroundColor(0);
+                unhighlightTextView(textView);
         }
 
         // Check the current textviews for private messages, and add new ones if necessary
         for(int i = 0; i < privateMessageNames.length; i++) {
-            TextView t = (TextView) privateMessagesList.getChildAt(i);
-            if(t==null || !privateMessageNames[i].equals(t.getText().toString())){
+            TextView textView = (TextView) privateMessagesList.getChildAt(i);
+            if(textView==null || !privateMessageNames[i].equals(textView.getText().toString())){
 
                 LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+                textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
 
                 textView.setText(privateMessageNames[i]);
 
@@ -194,17 +202,30 @@ public class LeftDrawer extends Fragment {
                     public void onClick(View v) {
                         String text = ((TextView) v).getText().toString();
                         Chatroom.switchConversationInView(text);
+                        if(currentConversationView != null)
+                            unhighlightTextView(currentConversationView);
+                        currentConversationView = (TextView) v;
+                        highlightTextView(currentConversationView);
                         hideSelf();
                     }
                 });
 
                 privateMessagesList.addView(textView,i);
 
-            } else  if(t.getText().toString().equals(currentConversation)) {
-                t.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+            }
+            if(textView.getText().toString().equals(currentConversation)) {
+                currentConversationView = textView;
+                highlightTextView(textView);
             } else
-                t.setBackgroundColor(0);
+                unhighlightTextView(textView);
         }
+    }
+
+    public void highlightTextView(TextView textView) {
+        textView.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+    }
+    public void unhighlightTextView(TextView textView) {
+        textView.setBackgroundColor(0);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

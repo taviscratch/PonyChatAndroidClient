@@ -41,13 +41,13 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@drawable/abc_list_divider_mtrl_alpha"
-            android:adjustViewBounds="false"
-            android:layout_margin="5dp"
-            android:alpha=".5" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:background="@android:color/darker_gray"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
         <ScrollView
             android:layout_width="match_parent"

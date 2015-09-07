@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import org.jibble.pircbot.PircBot;
 
+import java.util.StringTokenizer;
+
 
 public class IRCMessenger extends PircBot {
 
@@ -105,6 +107,24 @@ public class IRCMessenger extends PircBot {
         IRCSession session = IRCSession.getInstance();
         if(sender.equals(session.getUsername()))
             session.joinedChannel(channel);
+    }
+
+    /**
+     * This method is called whenever a user sets the topic, or when
+     * PircBot joins a new channel and discovers its topic.
+     * <p/>
+     * The implementation of this method in the PircBot abstract class
+     * performs no actions and may be overridden as required.
+     *
+     * @param channel The channel that the topic belongs to.
+     * @param topic   The topic for the channel.
+     * @param setBy   The nick of the user that set the topic.
+     * @param date    When the topic was set (milliseconds since the epoch).
+     * @param changed True if the topic has just been changed, false if
+     */
+    @Override
+    protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        IRCSession.getInstance().setChannelTopic(channel,topic);
     }
 
     /**

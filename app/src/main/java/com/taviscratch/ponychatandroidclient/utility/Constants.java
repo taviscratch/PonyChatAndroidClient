@@ -1,4 +1,4 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.utility;
 
 
 import android.support.annotation.NonNull;

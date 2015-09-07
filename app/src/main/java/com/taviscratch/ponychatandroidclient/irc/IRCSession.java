@@ -1,4 +1,4 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.irc;
 
 
 import android.content.BroadcastReceiver;
@@ -8,6 +8,12 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.ui.Chatroom;
+import com.taviscratch.ponychatandroidclient.utility.Constants;
+import com.taviscratch.ponychatandroidclient.utility.Util;
 
 import org.jibble.pircbot.User;
 

@@ -1,16 +1,13 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.services;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 
 import android.widget.Toast;
+
+import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 
 public class IRCBackgroundService extends Service {
 

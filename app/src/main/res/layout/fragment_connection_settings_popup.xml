@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.taviscratch.ponychatandroidclient.ConnectionSettingsPopup"
+    tools:context="com.taviscratch.ponychatandroidclient.ui.ConnectionSettingsPopup"
     android:paddingTop="80dp"
     android:paddingBottom="80dp"
     android:paddingRight="20dp"

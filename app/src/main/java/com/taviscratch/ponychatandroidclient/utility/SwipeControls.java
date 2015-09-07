@@ -1,4 +1,4 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.utility;
 
 /**
  * Created by sam on 8/16/15.

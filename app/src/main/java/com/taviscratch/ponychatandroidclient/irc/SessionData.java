@@ -1,4 +1,6 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.irc;
+
+import com.taviscratch.ponychatandroidclient.utility.Constants;
 
 import java.util.Enumeration;
 import java.util.Hashtable;

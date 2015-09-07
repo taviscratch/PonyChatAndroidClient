@@ -5,16 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
-import com.taviscratch.ponychatandroidclient.Constants.PreferenceConstants;
-import com.taviscratch.ponychatandroidclient.Constants.PreferenceDefaults;
+import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
+import com.taviscratch.ponychatandroidclient.utility.Constants;
+import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceConstants;
+import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceDefaults;
+import com.taviscratch.ponychatandroidclient.utility.Util;
 
 public class PonyChatApplication extends Application{
 

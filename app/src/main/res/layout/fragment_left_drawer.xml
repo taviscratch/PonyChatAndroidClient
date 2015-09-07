@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/navigation_drawer_width"
     android:layout_height="match_parent"
-    tools:context="com.taviscratch.ponychatandroidclient.LeftDrawer"
+    tools:context="com.taviscratch.ponychatandroidclient.ui.LeftDrawer"
     android:background="@color/background_material_dark">
 
     <!-- TODO: Update blank fragment layout -->

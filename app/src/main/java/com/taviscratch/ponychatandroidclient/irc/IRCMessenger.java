@@ -1,4 +1,4 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.irc;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
-import org.jibble.pircbot.PircBot;
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.utility.Constants;
 
-import java.util.StringTokenizer;
+import org.jibble.pircbot.PircBot;
 
 
 public class IRCMessenger extends PircBot {

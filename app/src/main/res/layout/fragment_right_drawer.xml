@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/navigation_drawer_width"
     android:layout_height="match_parent"
-    tools:context="com.taviscratch.ponychatandroidclient.RightDrawer"
+    tools:context="com.taviscratch.ponychatandroidclient.ui.RightDrawer"
     android:background="@color/background_material_dark"
     android:transitionGroup="false">
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.taviscratch.ponychatandroidclient.Chatroom"
+    tools:context="com.taviscratch.ponychatandroidclient.ui.Chatroom"
     android:background="@color/background_material_light" >
 
     <!-- TODO: Update blank fragment layout -->

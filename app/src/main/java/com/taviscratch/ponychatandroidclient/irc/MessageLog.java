@@ -1,7 +1,6 @@
-package com.taviscratch.ponychatandroidclient;
+package com.taviscratch.ponychatandroidclient.irc;
 
 
-import java.util.Collection;
 import java.util.LinkedList;
 
 public class MessageLog extends LinkedList<IRCMessage> {

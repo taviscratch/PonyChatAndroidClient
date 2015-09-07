@@ -17,8 +17,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="match_parent"
@@ -34,7 +33,7 @@
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/button"
                 android:layout_weight="3"
                 android:singleLine="true"
@@ -42,17 +41,23 @@
 
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/abc_list_divider_mtrl_alpha"
+            android:adjustViewBounds="false"
+            android:layout_margin="5dp"
+            android:alpha=".5" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollView" >
+            android:id="@+id/conversationsScrollView" >
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -65,14 +70,14 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Channels"
                         android:textColor="@color/abc_primary_text_material_dark"
-                        android:textStyle="bold|italic" />
+                        android:textStyle="bold|italic"
+                        android:paddingLeft="10dp" />
 
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/channelsList"
-                        android:padding="5dp" />
+                        android:id="@+id/channelsList" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -86,14 +91,14 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Private Messages"
                         android:textColor="@color/abc_primary_text_material_dark"
-                        android:textStyle="bold|italic" />
+                        android:textStyle="bold|italic"
+                        android:paddingLeft="10dp" />
 
                     <LinearLayout
                         android:orientation="vertical"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/privateMessagesList"
-                        android:padding="5dp" />
+                        android:id="@+id/privateMessagesList" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

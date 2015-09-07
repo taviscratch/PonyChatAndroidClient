@@ -109,6 +109,10 @@ public class Chatroom extends Fragment {
 
     }
 
+    public static String getCurrentConversation() {
+        return currentConversation;
+    }
+
 
     // Hides the soft keyboard and clears the focus from the EditText widget
     private void hideKeyboardAndClearFocus(View v, EditText inputbox) {

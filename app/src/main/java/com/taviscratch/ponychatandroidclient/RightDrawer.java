@@ -2,18 +2,18 @@ package com.taviscratch.ponychatandroidclient;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.transition.Transition;
-import android.transition.TransitionValues;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 /**
@@ -80,6 +80,8 @@ public class RightDrawer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ArrayAdapter<String> adapter;
+
         // Inflate the layout for this fragment
         View theview = inflater.inflate(R.layout.fragment_right_drawer, container, false);
 
@@ -88,10 +90,44 @@ public class RightDrawer extends Fragment {
 
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
 
+        ListView userList = (ListView) theview.findViewById(R.id.userList);
+
+
+        String currentConversation = Chatroom.getCurrentConversation();
+        if(Util.isChannel(currentConversation)) {
+            String[] userlist = IRCSession.getInstance().getUserList(currentConversation);
+            adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view, userlist);
+        } else
+            adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view);
+        userList.setAdapter(adapter);
+
+
+        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String username = ((TextView) view).getText().toString();
+                IRCSession session = IRCSession.getInstance();
+                session.startNewPrivateConversation(username);
+                Chatroom.switchConversationInView(username);
+                hideSelf();
+            }
+        });
+
+        userList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getActivity().onTouchEvent(event);
+                return false;
+            }
+        });
+
+
         return theview;
     }
 
-
+    private final void hideSelf() {
+        ((MainActivity)getActivity()).hideFragment(this);
+    }
 
 
     @Override
@@ -101,6 +137,11 @@ public class RightDrawer extends Fragment {
         if(hidden == false) {
             final View view = getView();
             view.setX(screenWidth);
+
+            ListView userList = (ListView) view.findViewById(R.id.userList);
+            String[] userlist = IRCSession.getInstance().getUserList(Chatroom.getCurrentConversation());
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view, userlist);
+            userList.setAdapter(adapter);
 
             ViewPropertyAnimator animator = view.animate();
             animator.translationXBy(-drawerWidth);

@@ -54,7 +54,7 @@ public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             ViewHolder viewHolder = new ViewHolder();
 
-            if(message.getType() == IRCMessage.MessageType.NORMAL) {
+            if(message.getType() == IRCMessage.MessageType.PRIVMSG) {
                 rowView = inflater.inflate(R.layout.irc_message_normal, parent, false);
 
                 viewHolder.sendernameTextView = (TextView) rowView.findViewById(R.id.irc_message_normal_sendername);
@@ -76,7 +76,7 @@ public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
         } else {
             ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 
-            if(message.getType() == IRCMessage.MessageType.NORMAL) {
+            if(message.getType() == IRCMessage.MessageType.PRIVMSG) {
                 viewHolder.sendernameTextView.setText(message.getSender());
                 viewHolder.timepostedTextView.setText(message.getFormattedTime());
                 viewHolder.normalMessageTextView.setText(message.getMessage());

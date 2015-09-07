@@ -50,7 +50,7 @@ public class Constants {
     }
 
     public static final class MessageType {
-        public static final String NORMAL = "NORMAL";
+        public static final String PRIVMSG = "PRIVMSG";
         public static final String ACTION = "ACTION";
     }
 

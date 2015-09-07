@@ -1,16 +1,22 @@
 package com.taviscratch.ponychatandroidclient;
 
 import android.animation.Animator;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -85,9 +91,19 @@ public class LeftDrawer extends Fragment {
 
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
 
+        ScrollView conversationsScrollView = (ScrollView) theview.findViewById(R.id.conversationsScrollView);
         TextView networkLobbyText = (TextView) theview.findViewById(R.id.networkLobbyText);
         LinearLayout channelsList = (LinearLayout) theview.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
+
+        conversationsScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getActivity().onTouchEvent(event);
+                return false;
+            }
+        });
+
 
         networkLobbyText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,14 +150,18 @@ public class LeftDrawer extends Fragment {
         String[] channelNames = session.getChannelNames();
         String[] privateMessageNames = session.getPrivateMessageNames();
 
+        String currentConversation = Chatroom.getCurrentConversation();
 
         // Check the current textviews for channels, and add new ones if necessary
         for(int i = 0; i < channelNames.length; i++) {
             TextView t = (TextView) channelsList.getChildAt(i);
             if(t==null || !channelNames[i].equals(t.getText().toString())){
-                TextView textView = new TextView(getActivity());
+
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+
                 textView.setText(channelNames[i]);
-                textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -150,17 +170,25 @@ public class LeftDrawer extends Fragment {
                         hideSelf();
                     }
                 });
+
                 channelsList.addView(textView,i);
-            }
+
+            } else  if(t.getText().toString().equals(currentConversation)) {
+                t.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+            } else
+                t.setBackgroundColor(0);
         }
 
         // Check the current textviews for private messages, and add new ones if necessary
         for(int i = 0; i < privateMessageNames.length; i++) {
             TextView t = (TextView) privateMessagesList.getChildAt(i);
             if(t==null || !privateMessageNames[i].equals(t.getText().toString())){
-                TextView textView = new TextView(getActivity());
+
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+
                 textView.setText(privateMessageNames[i]);
-                textView.setTextColor(getResources().getColor(R.color.abc_primary_text_material_dark));
+
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -169,8 +197,13 @@ public class LeftDrawer extends Fragment {
                         hideSelf();
                     }
                 });
+
                 privateMessagesList.addView(textView,i);
-            }
+
+            } else  if(t.getText().toString().equals(currentConversation)) {
+                t.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+            } else
+                t.setBackgroundColor(0);
         }
     }
 

@@ -38,6 +38,15 @@ public class Util {
         return dp;
     }
 
+
+
+    public static boolean isChannel(String target) {
+        if(target.startsWith("#"))
+            return true;
+        return false;
+    }
+
+
     // Returns a randomized pony name with numbers appended to the end
     public static String getRandomUsername() {
         Random random = new Random(System.currentTimeMillis());

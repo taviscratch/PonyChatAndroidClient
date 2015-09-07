@@ -199,7 +199,8 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                         // Do nothing
                     }
                     else {
-                        showFragment(rightDrawer);
+                        if(Util.isChannel(Chatroom.getCurrentConversation()))
+                            showFragment(rightDrawer);
                     }
                     break;
 

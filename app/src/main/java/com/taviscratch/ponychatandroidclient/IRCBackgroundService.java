@@ -22,9 +22,6 @@ public class IRCBackgroundService extends Service {
         }
     }
 
-
-
-
     public IRCBackgroundService() { }
 
 
@@ -45,7 +42,7 @@ public class IRCBackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
 
 
         IRCSession.getInstance().start();
@@ -56,9 +53,8 @@ public class IRCBackgroundService extends Service {
 
     @Override
     public void onDestroy() {
-        //ircConnectionThread.stopThread();
-        IRCSession.getInstance().stopThread();
+        //IRCSession.getInstance().stopThread();
         stopForeground(true);
-        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
     }
 }

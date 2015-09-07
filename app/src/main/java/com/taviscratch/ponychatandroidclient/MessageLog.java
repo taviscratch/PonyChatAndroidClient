@@ -16,8 +16,8 @@ public class MessageLog extends LinkedList<IRCMessage> {
 
     // Creates a new message log with a single message in it
     public MessageLog(int maxSize, IRCMessage message) {
-        if(message != null) addMessage(message);
         this.maxSize = maxSize;
+        if(message != null) addMessage(message);
     }
 
 

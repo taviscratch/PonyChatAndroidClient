@@ -6,17 +6,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import org.jibble.pircbot.PircBot;
-
-import java.util.Set;
 
 
 public class IRCMessenger extends PircBot {
 
 
     private static String defaultRealname = "Ponychat Android Client";
-    private TypeOfSend tag;
+    private TypeOfMessage tag;
     BroadcastReceiver outgoingMessageReceiver;
 
     public IRCMessenger(String username) {
@@ -53,17 +52,20 @@ public class IRCMessenger extends PircBot {
         Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
         msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
         msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, channel);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.NORMAL);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, channel);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.PRIVMSG);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
     }
+
+
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
         Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
         msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
         msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.NORMAL);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, sender);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.PRIVMSG);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
     }
 
@@ -72,8 +74,8 @@ public class IRCMessenger extends PircBot {
         Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
         msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, notice);
         msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sourceNick);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, Constants.NETWORK_LOBBY);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.NORMAL);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, Constants.NETWORK_LOBBY);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.PRIVMSG);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
     }
 
@@ -82,8 +84,8 @@ public class IRCMessenger extends PircBot {
         if(code == 372 || code == 375 || code == 376) {
             Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
             msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, response);
-            msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, Constants.NETWORK_LOBBY);
-            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.NORMAL);
+            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, Constants.NETWORK_LOBBY);
+            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.PRIVMSG);
             LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
         }
     }
@@ -93,11 +95,36 @@ public class IRCMessenger extends PircBot {
         Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
         msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, action);
         msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.CHANNEL, Constants.NETWORK_LOBBY);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, target);
         msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.ACTION);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
     }
 
+    @Override
+    protected void onJoin(String channel, String sender, String login, String hostname) {
+        IRCSession session = IRCSession.getInstance();
+        if(sender.equals(session.getUsername()))
+            session.joinedChannel(channel);
+    }
+
+    /**
+     * This method is called whenever someone (possibly us) parts a channel
+     * which we are on.
+     * <p/>
+     * The implementation of this method in the PircBot abstract class
+     * performs no actions and may be overridden as required.
+     *
+     * @param channel  The channel which somebody parted from.
+     * @param sender   The nick of the user who parted from the channel.
+     * @param login    The login of the user who parted from the channel.
+     * @param hostname The hostname of the user who parted from the channel.
+     */
+    @Override
+    protected void onPart(String channel, String sender, String login, String hostname) {
+        IRCSession session = IRCSession.getInstance();
+        if(sender.equals(session.getUsername()))
+            session.leftChannel(channel);
+    }
 
     private String parseTarget(String target) {
         if(target.equals(Constants.NETWORK_LOBBY))
@@ -124,10 +151,10 @@ public class IRCMessenger extends PircBot {
             try {
                 return parseCommand(command.toLowerCase(), payload);
             } catch(Exception e) {
-                System.out.println(e.toString());
+                Toast.makeText(PonyChatApplication.getAppContext(), "Service Started", Toast.LENGTH_SHORT).show();
             }
         }
-        tag = TypeOfSend.PRIVMSG;
+        tag = TypeOfMessage.PRIVMSG;
         return message;
     }
 
@@ -135,8 +162,14 @@ public class IRCMessenger extends PircBot {
 
 
         if(command.equals("me")) {
-            tag = TypeOfSend.ACTION;
-            return "\001ACTION" + message + "\001";
+            tag = TypeOfMessage.ACTION;
+            return message;
+        } else if(command.equals("join")) {
+            tag = TypeOfMessage.JOIN;
+            return message;
+        } else if(command.equals("leave")) {
+            tag = TypeOfMessage.PART;
+            return message;
         } /*else if(command.equals()) {
 
         } else if(command.equals()) {
@@ -147,20 +180,7 @@ public class IRCMessenger extends PircBot {
 
         } else if(command.equals()) {
 
-        } else if(command.equals()) {
-
-        } else if(command.equals()) {
-
-        } else if(command.equals()) {
-
-        } else if(command.equals()) {
-
-        } else if(command.equals()) {
-
         }*/
-
-
-
 
         else
             throw new Exception("Command not supported");
@@ -173,16 +193,28 @@ public class IRCMessenger extends PircBot {
     }
 
     private void handleOutgoingMessage(String target, String message) {
+        IRCSession session = IRCSession.getInstance();
+        IRCMessage msg;
+
         target = parseTarget(target);
         message = parseMessage(message);
 
-
         switch(tag) {
             case PRIVMSG:
-                sendMessage(target,message);
+                sendMessage(target, message);
+                msg = new IRCMessage(session.getUsername(),message,System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+                session.postOutgoingMessage(target,msg);
                 break;
             case ACTION:
-                sendAction(target,message);
+                sendAction(target, message);
+                msg = new IRCMessage(session.getUsername(),message,System.currentTimeMillis(), IRCMessage.MessageType.ACTION);
+                session.postOutgoingMessage(target,msg);
+                break;
+            case JOIN:
+                joinChannel(message);
+                break;
+            case PART:
+                partChannel(message);
                 break;
         }
 
@@ -192,9 +224,12 @@ public class IRCMessenger extends PircBot {
     }
 
 
-    enum TypeOfSend {
+    enum TypeOfMessage {
         PRIVMSG,
-        ACTION
+        ACTION,
+        JOIN,
+        PART
+
     }
 
 

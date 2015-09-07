@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.jibble.pircbot.User;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,7 +22,7 @@ public class IRCSession extends Thread {
     SessionData sessionData;
     Hashtable<String, IRCMessageAdapter> messageAdapters;
     BroadcastReceiver incomingMessageReceiver, outgoingMessageReceiver;
-
+    IRCMessenger messenger;
 
 
     private String username;
@@ -90,7 +92,7 @@ public class IRCSession extends Thread {
 
 
         // Initialize the messenger
-        IRCMessenger messenger =  new IRCMessenger(username, realname);
+        messenger =  new IRCMessenger(username, realname);
         messenger.setVerbose(true);
 
         // Attempt a connection to the host
@@ -107,61 +109,56 @@ public class IRCSession extends Thread {
         // Join all the default channels
         Iterator<String> channelIterator = defaultChannels.iterator();
         while(channelIterator.hasNext()) {
-            // Add the channel's data structure
             String channelName = channelIterator.next();
-            sessionData.addConversation(channelName);
-
-            // Create and add the adapter for the new channel's data
-            IRCMessageAdapter newAdapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, sessionData.getConversation(channelName));
-            messageAdapters.put(channelName, newAdapter);
-
-            // Join the channel
             messenger.joinChannel(channelName);
         }
     }
 
 
 
-    public void stopThread() {
+
+
+
+/*    public void stopThread() {
         synchronized (this) {
             keepRunning = false;
         }
-    }
+    }*/
+
+
+
 
 
     private void handleIncomingMessage(Bundle bundle) {
-        String channelName, sender, message, messageType;
-        IRCMessage.MessageType type = IRCMessage.MessageType.NORMAL;
-        String key = null;
+        String channelName, sender, message, messageType, target;
+        IRCMessage.MessageType type = IRCMessage.MessageType.PRIVMSG;
 
-        channelName = bundle.getString(Constants.IntentExtrasConstants.CHANNEL);
         sender = bundle.getString(Constants.IntentExtrasConstants.SENDER);
         message = bundle.getString(Constants.IntentExtrasConstants.MESSAGE);
+        target = bundle.getString(Constants.IntentExtrasConstants.MESSAGE_TARGET);
         messageType = bundle.getString(Constants.IntentExtrasConstants.MESSAGE_TYPE);
 
 
         if(messageType.equals(Constants.MessageType.ACTION))
             type = IRCMessage.MessageType.ACTION;
 
-
         IRCMessage msg = new IRCMessage(sender, message, System.currentTimeMillis(), type);
+        sessionData.postToConversation(target, msg);
 
-        if(channelName!=null) {
-            sessionData.postToConversation(channelName,msg);
-            key = channelName;
+        if(!messageAdapters.containsKey(target)) {
+            MessageLog log = sessionData.getConversation(target);
+            IRCMessageAdapter adapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, log);
+            messageAdapters.put(target, adapter);
         }
-
-        else {
-            sessionData.postToConversation(sender, msg);
-            key = sender;
-        }
-
-        messageAdapters.get(key).notifyDataSetChanged();
+        messageAdapters.get(target).notifyDataSetChanged();
     }
 
     private void handleOutgoingMessage(Bundle bundle) {
 
     }
+
+
+
 
 
     // Instantiates all the receivers for this object
@@ -188,6 +185,9 @@ public class IRCSession extends Thread {
     }
 
 
+
+
+
     public MessageLog getChannelData(String channelName) {
         return getMessageLog(channelName);
     }
@@ -202,6 +202,8 @@ public class IRCSession extends Thread {
     }
 
 
+
+
     public IRCMessageAdapter getMessageAdapter(String key) {
         if(messageAdapters.containsKey(key))
             return messageAdapters.get(key);
@@ -214,12 +216,60 @@ public class IRCSession extends Thread {
             throw new IllegalArgumentException("key does not exist");
     }
 
+
+
+
     public String[] getChannelNames() {
         return sessionData.getChannelNames();
     }
 
     public String[] getPrivateMessageNames() {
         return sessionData.getPrivateMessageNames();
+    }
+
+
+
+
+    public void startNewPrivateConversation(String username) {
+        addConversation(username);
+    }
+
+    public void joinedChannel(String channelName) {
+        addConversation(channelName);
+    }
+
+    public void leftChannel(String channelName) {
+        sessionData.removeConversation(channelName);
+        messageAdapters.remove(channelName);
+        if(channelName.equals(Chatroom.getCurrentConversation()))
+            Chatroom.switchConversationInView(Constants.NETWORK_LOBBY);
+    }
+
+
+
+    private void addConversation(String target) {
+        sessionData.addConversation(target);
+        MessageLog log = sessionData.getConversation(target);
+        IRCMessageAdapter adapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, log);
+        messageAdapters.put(target, adapter);
+    }
+
+
+
+
+    public void postOutgoingMessage(String target, IRCMessage message) {
+        sessionData.postToConversation(target, message);
+        messageAdapters.get(target).notifyDataSetChanged();
+    }
+
+    public String[] getUserList(String channelName) {
+        User[] users = messenger.getUsers(channelName);
+        String[] usernames = new String[users.length];
+
+        for(int i = 0; i < users.length; i++)
+            usernames[i] = users[i].getNick();
+
+        return usernames;
     }
 
 }

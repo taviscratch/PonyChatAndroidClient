@@ -50,7 +50,7 @@ public class IRCMessage {
 
 
     public enum MessageType {
-        NORMAL,
+        PRIVMSG,
         ACTION
     }
 }

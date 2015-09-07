@@ -31,7 +31,7 @@ package org.jibble.pircbot;
  * 
  * <pre> sendMessage("#cs", Colors.BOLD + "A bold hello!");
  *     <b>A bold hello!</b>
- * sendMessage("#cs", Colors.RED + "Red" + Colors.NORMAL + " text");
+ * sendMessage("#cs", Colors.RED + "Red" + Colors.PRIVMSG + " text");
  *     <font color="red">Red</font> text
  * sendMessage("#cs", Colors.BOLD + Colors.RED + "Bold and red");
  *     <b><font color="red">Bold and red</font></b></pre>

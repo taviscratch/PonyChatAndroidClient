@@ -12,9 +12,16 @@ import java.util.List;
 
 public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
 
+    static class TypedViewHolder {
+        public IRCMessage.MessageType type;
+    }
 
-    static class ViewHolder {
-        public TextView normalMessageTextView, actionMessageTextView, sendernameTextView, timepostedTextView;
+    static class PRIVMSGViewHolder extends TypedViewHolder {
+        public TextView normalMessageTextView, sendernameTextView, timepostedTextView;
+    }
+    static class ACTIONViewHolder extends TypedViewHolder {
+        public TextView actionMessageTextView;
+
     }
 
 
@@ -45,45 +52,40 @@ public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        //if(position == 0) position = 1;
-
         View rowView = convertView;
         IRCMessage message = super.getItem(position);
 
-        if(rowView == null) {
+        // Ensure that we have a workable rowview
+        if(rowView == null || ((TypedViewHolder)rowView.getTag()).type != message.getType()) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ViewHolder viewHolder = new ViewHolder();
 
             if(message.getType() == IRCMessage.MessageType.PRIVMSG) {
+                PRIVMSGViewHolder viewHolder = new PRIVMSGViewHolder();
                 rowView = inflater.inflate(R.layout.irc_message_normal, parent, false);
-
-                viewHolder.sendernameTextView = (TextView) rowView.findViewById(R.id.irc_message_normal_sendername);
                 viewHolder.timepostedTextView = (TextView) rowView.findViewById(R.id.irc_message_normal_timeposted);
                 viewHolder.normalMessageTextView = (TextView) rowView.findViewById(R.id.irc_message_normal_message);
-
-                viewHolder.sendernameTextView.setText(message.getSender());
-                viewHolder.timepostedTextView.setText(message.getFormattedTime());
-                viewHolder.normalMessageTextView.setText(message.getMessage());
-            }
-            else if(message.getType() == IRCMessage.MessageType.ACTION){
+                viewHolder.sendernameTextView = (TextView) rowView.findViewById(R.id.irc_message_normal_sendername);
+                rowView.setTag(viewHolder);
+            } else if(message.getType() == IRCMessage.MessageType.ACTION) {
+                ACTIONViewHolder viewHolder = new ACTIONViewHolder();
                 rowView = inflater.inflate(R.layout.irc_message_action, parent, false);
                 viewHolder.actionMessageTextView = (TextView) rowView.findViewById(R.id.irc_message_action_text);
-                viewHolder.actionMessageTextView.setText(message.getSender() + " " + message.getMessage());
+                rowView.setTag(viewHolder);
             }
 
-            rowView.setTag(viewHolder);
+        }
 
-        } else {
-            ViewHolder viewHolder = (ViewHolder) rowView.getTag();
+        // Fill data
+        if(message.getType() == IRCMessage.MessageType.PRIVMSG) {
+            PRIVMSGViewHolder viewHolder = (PRIVMSGViewHolder) rowView.getTag();
+            viewHolder.sendernameTextView.setText(message.getSender());
+            viewHolder.timepostedTextView.setText(message.getFormattedTime());
+            viewHolder.normalMessageTextView.setText(message.getMessage());
 
-            if(message.getType() == IRCMessage.MessageType.PRIVMSG) {
-                viewHolder.sendernameTextView.setText(message.getSender());
-                viewHolder.timepostedTextView.setText(message.getFormattedTime());
-                viewHolder.normalMessageTextView.setText(message.getMessage());
-            }
-            else if(message.getType() == IRCMessage.MessageType.ACTION){
-                viewHolder.actionMessageTextView.setText(message.getSender() + " " + message.getMessage());
-            }
+        } else if(message.getType() == IRCMessage.MessageType.ACTION) {
+            ACTIONViewHolder viewHolder = (ACTIONViewHolder) rowView.getTag();
+            viewHolder.actionMessageTextView.setText(message.getSender() + " " + message.getMessage());
+
         }
 
         return rowView;

@@ -19,16 +19,6 @@ public class PonyChatApplication extends Application{
 
     private static Context context;
 
-    private static final String[] defaultPreferenceNames = {
-            PreferenceConstants.DEFAULT_CHANNELS,
-            PreferenceConstants.HOSTNAME,
-            PreferenceConstants.MAX_MESSAGE_LOG_SIZE,
-            PreferenceConstants.PORT,
-            PreferenceConstants.REALNAME,
-            PreferenceConstants.USERNAME };
-
-
-
     /**
      * Called when the application is starting, before any activity, service,
      * or receiver objects (excluding content providers) have been created.
@@ -47,14 +37,14 @@ public class PonyChatApplication extends Application{
         SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
-        if(preferences.getString("firstRun","true").equals("true")){
+        if(preferences.getBoolean(PreferenceConstants.IS_FIRST_RUN, true)){
             editor.remove(PreferenceConstants.DEFAULT_CHANNELS);
             editor.apply();
             checkPreferences(preferences);
         };
 
 
-        if(preferences.getString(PreferenceConstants.RANDOMIZE_USERNAME, "true").equals("true")){
+        if(preferences.getBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true)){
             editor = preferences.edit();
             editor.putString(PreferenceConstants.USERNAME, Util.getRandomUsername());
 

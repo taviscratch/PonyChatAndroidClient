@@ -27,7 +27,8 @@ public class Constants {
         public static final String DEFAULT_CHANNELS = "DEFAULT_CHANNELS";
         public static final String REALNAME = "REALNAME";
         public static final String MAX_MESSAGE_LOG_SIZE = "MAX_MESSAGE_LOG_SIZE";
-        public static final String RANDOMIZE_USERNAME = "RANDOMIZE_USERNAME";
+        public static final String ALWAYS_RANDOMIZE_USERNAME = "ALWAYS_RANDOMIZE_USERNAME";
+        public static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     }
 
     public static final class PreferenceDefaults {
@@ -36,6 +37,7 @@ public class Constants {
         public static final String REALNAME = "Ponychat Android Client";
         public static final int MAX_MESSAGE_LOG_SIZE = 100;
         public static final String[] DEFAULT_CHANNELS = {"#ponyville","#octaviaisbestpony"};
+        public static final boolean ALWAYS_RANDOMIZE_USERNAME = false;
     }
 
 
@@ -43,7 +45,6 @@ public class Constants {
     // Bundle keys for the message passing intent's extras
     public static final class IntentExtrasConstants {
         public static final String MESSAGE = "MESSAGE";
-        public static final String CHANNEL = "CHANNEL";
         public static final String SENDER = "SENDER";
         public static final String MESSAGE_TYPE = "MESSAGE_TYPE";
         public static final String MESSAGE_TARGET = "MESSAGE_TARGET";

@@ -15,55 +15,42 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                    <LinearLayout
-                        android:orientation="vertical"
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:text="Username"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/abc_primary_text_material_light"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="Username"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="@color/abc_primary_text_material_light"
-                            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="always random?"
-                            android:id="@+id/firstrun_randomusername_checkbox"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:onClick="randomUsernameCheckboxOnClick" />
-                    </LinearLayout>
-
-                    <EditText
+                    <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/firstrun_username"
-                        android:layout_weight="1" />
-
+                        android:text="always random?"
+                        android:id="@+id/firstrun_randomusername_checkbox"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:onClick="randomUsernameCheckboxOnClick" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
+                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:id="@+id/firstrun_username"
+                    android:layout_weight="1" />
 
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -132,6 +119,13 @@
                     android:id="@+id/firstrun_port"
                     android:layout_weight="1" />
             </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Start chatting"
+                android:id="@+id/start_button"
+                android:onClick="startMainActivity" />
 
         </LinearLayout>
     </ScrollView>

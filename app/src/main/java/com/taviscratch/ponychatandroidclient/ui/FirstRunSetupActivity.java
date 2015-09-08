@@ -14,4 +14,12 @@ public class FirstRunSetupActivity extends Activity {
         setContentView(R.layout.activity_first_run_setup);
     }
 
+
+
+    public void startMainActivity() {
+
+    }
+    public void randomUsernameCheckboxOnClick() {
+
+    }
 }

@@ -97,6 +97,7 @@ public class IRCSession extends Thread {
         // Initialize the messenger
         messenger =  new IRCMessenger(username, realname);
         messenger.setVerbose(true);
+        messenger.setAutoNickChange(true);
 
 
         // Attempt a connection to the host
@@ -116,9 +117,9 @@ public class IRCSession extends Thread {
             }
 
         } catch (NickAlreadyInUseException e) {
-            Toast.makeText(PonyChatApplication.getAppContext(), "Nickname is already in use", Toast.LENGTH_SHORT).show();
+            // TODO
         } catch (IrcException e) {
-            Toast.makeText(PonyChatApplication.getAppContext(), "Error connecting to IRC network", Toast.LENGTH_SHORT).show();
+            // TODO
         } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }

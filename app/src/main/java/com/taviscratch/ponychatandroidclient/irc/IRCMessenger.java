@@ -237,7 +237,7 @@ public class IRCMessenger extends PircBot {
             try {
                 return parseCommand(command.toLowerCase(), payload);
             } catch(Exception e) {
-                Toast.makeText(PonyChatApplication.getAppContext(), "Service Started", Toast.LENGTH_SHORT).show();
+                // TODO
             }
         }
         tag = TypeOfMessage.PRIVMSG;

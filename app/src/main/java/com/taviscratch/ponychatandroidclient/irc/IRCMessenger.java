@@ -256,9 +256,10 @@ public class IRCMessenger extends PircBot {
         } else if(command.equals("leave")) {
             tag = TypeOfMessage.PART;
             return message;
+        } else if(command.equals("nick")) {
+            tag = TypeOfMessage.NICK;
+            return message;
         } /*else if(command.equals()) {
-
-        } else if(command.equals()) {
 
         } else if(command.equals()) {
 
@@ -302,6 +303,9 @@ public class IRCMessenger extends PircBot {
             case PART:
                 partChannel(message);
                 break;
+            case NICK:
+                changeNick(message);
+                break;
         }
 
         tag = null;
@@ -314,8 +318,8 @@ public class IRCMessenger extends PircBot {
         PRIVMSG,
         ACTION,
         JOIN,
-        PART
-
+        PART,
+        NICK
     }
 
 

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
@@ -15,8 +16,11 @@ import com.taviscratch.ponychatandroidclient.ui.Chatroom;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.User;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -76,35 +80,48 @@ public class IRCSession extends Thread {
     }
 
     public void connect() {
-        String hostname, realname;
+        String password, hostname, realname;
         Set<String> defaultChannels;
         int port;
-
 
         SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
 
         // Get the preferences
         username = preferences.getString(Constants.PreferenceConstants.USERNAME, null);
+        password = preferences.getString(Constants.PreferenceConstants.PASSWORD, null);
         hostname = preferences.getString(Constants.PreferenceConstants.HOSTNAME, null);
         defaultChannels = preferences.getStringSet(Constants.PreferenceConstants.DEFAULT_CHANNELS, null);
         port = preferences.getInt(Constants.PreferenceConstants.PORT, -1);
         realname = preferences.getString(Constants.PreferenceConstants.REALNAME, null);
 
-
         // Initialize the messenger
         messenger =  new IRCMessenger(username, realname);
         messenger.setVerbose(true);
 
+
         // Attempt a connection to the host
         try {
-            if(port == -1)
-                messenger.connect(hostname);
+            if(port==-1)
+                messenger.connect(hostname, Constants.PreferenceDefaults.PORT, password);
             else
-                messenger.connect(hostname,port);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+                messenger.connect(hostname,port,password);
 
+            // Join all the default channels
+            if(defaultChannels!=null) {
+                Iterator<String> channelIterator = defaultChannels.iterator();
+                while (channelIterator.hasNext()) {
+                    String channelName = channelIterator.next();
+                    messenger.joinChannel(channelName);
+                }
+            }
+
+        } catch (NickAlreadyInUseException e) {
+            Toast.makeText(PonyChatApplication.getAppContext(), "Nickname is already in use", Toast.LENGTH_SHORT).show();
+        } catch (IrcException e) {
+            Toast.makeText(PonyChatApplication.getAppContext(), "Error connecting to IRC network", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            System.err.println(e.getStackTrace());
+        }
 
         // Join all the default channels
         Iterator<String> channelIterator = defaultChannels.iterator();

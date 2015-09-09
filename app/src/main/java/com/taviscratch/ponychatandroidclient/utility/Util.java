@@ -52,8 +52,9 @@ public class Util {
         Random random = new Random(System.currentTimeMillis());
 
         int nameIndex = random.nextInt(bigListOfPonyNames.length);
-        int numberToAppend = random.nextInt(998)+1;
 
+        // Generates a random number in the range 001-999
+        int numberToAppend = random.nextInt(998)+1;
         String num2Append = new Integer(numberToAppend).toString();
         if(num2Append.length() == 1)
             num2Append = "00" + num2Append;
@@ -110,8 +111,6 @@ public class Util {
             "Flash_Sentry",
             "Night_Glider",
             "Double_Diamond",
-            "Claude",
-            "Fleur_Dis_Lee",
             "Jet_Set",
             "Upper_Crust",
             "Cloud_Kicker",
@@ -123,10 +122,7 @@ public class Util {
             "Soarin",
             "Fleetfoot",
             "Blossomforth",
-            "Daisy",
             "Amethyst_Star",
-            "Lotus_Blossom",
-            "Aloe",
             "Lemon_Hearts",
             "Diamond_Tiara",
             "Silver_Spoon",
@@ -154,7 +150,6 @@ public class Util {
             "Rumble",
             "Maud_Pie",
             "Zipperwhill",
-            "Hayseed_Turnip_Truck",
             "Night_Light",
             "Twilight_Velvet",
             "Screwball",

@@ -13,6 +13,10 @@ public class Constants {
     public static final String MESSAGE_TO_SEND = "com.taviscratch.ponychatandroidclient.MESSAGE_TO_SEND";
     public static final String MESSAGE_RECEIVED = "com.taviscratch.ponychatandroidclient.MESSAGE_RECEIVED";
     public static final String NOTIFICATION = "com.taviscratch.ponychatandroidclient.NOTIFICATION";
+    public static final String CONNECT_TO_IRC_NETWORK = "com.taviscratch.ponychatandroidclient.CONNECT_TO_IRC_NETWORK";
+    public static final String DISCONNECT_FROM_IRC_NETWORK = "com.taviscratch.ponychatandroidclient.DISCONNECT_FROM_IRC_NETWORK";
+    public static final String IRC_CONNECTION_SUCCESS = "com.taviscratch.ponychatandroidclient.IRC_CONNECTION_SUCCESS";
+    public static final String IRC_CONNECTION_FAILURE = "com.taviscratch.ponychatandroidclient.IRC_CONNECTION_FAILURE";
 
 
     // The channel name fot the network lobby
@@ -22,6 +26,7 @@ public class Constants {
     public static final class PreferenceConstants {
         public static final String PREFS_NAME = "pone";
         public static final String USERNAME = "USERNAME";
+        public static final String PASSWORD = "PASSWORD";
         public static final String HOSTNAME = "HOSTNAME";
         public static final String PORT = "PORT";
         public static final String DEFAULT_CHANNELS = "DEFAULT_CHANNELS";

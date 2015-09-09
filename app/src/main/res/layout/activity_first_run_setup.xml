@@ -4,130 +4,138 @@
     android:layout_height="match_parent"
     tools:context="com.taviscratch.ponychatandroidclient.ui.FirstRunSetupActivity">
 
-    <ScrollView
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="First Run Setup"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:textColor="#b0ccff"
+            android:layout_weight="10" />
+
+        <ScrollView
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="2">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="8">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Username"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:textColor="@color/abc_primary_text_material_light"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:id="@+id/firstrun_username_label" />
+
+                        <CheckBox
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="always random?"
+                            android:id="@+id/firstrun_randomusername_checkbox"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:onClick="randomUsernameCheckboxOnClick"
+                            android:textColor="@color/abc_primary_text_material_light" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/firstrun_username"
+                        android:layout_weight="5" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Username"
-                        android:layout_weight="1"
+                        android:text="Password"
+                        android:layout_weight="8"
                         android:gravity="center"
-                        android:textStyle="bold"
                         android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="bold"
+                        android:id="@+id/firstrun_password_label" />
 
-                    <CheckBox
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="always random?"
-                        android:id="@+id/firstrun_randomusername_checkbox"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:onClick="randomUsernameCheckboxOnClick" />
+                        android:id="@+id/firstrun_password"
+                        android:layout_weight="5"
+                        android:hint="optional"
+                        android:visibility="visible" />
+
                 </LinearLayout>
 
-                <EditText
+                <Space
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/firstrun_username"
-                    android:layout_weight="1" />
+                    android:layout_height="40dp" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Default Channels"
+                        android:textStyle="bold"
+                        android:textColor="@color/abc_primary_text_material_light"
+                        android:gravity="center" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textNoSuggestions|textMultiLine"
+                        android:ems="10"
+                        android:id="@+id/firstrun_default_channels"
+                        android:text="#ponyville, #yolo" />
+                </LinearLayout>
 
             </LinearLayout>
+        </ScrollView>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Start chatting"
+            android:id="@+id/start_button"
+            android:onClick="startMainActivity"
+            android:layout_weight="10" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Password"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/abc_primary_text_material_light"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textStyle="bold"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/firstrun_password"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Hostname"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/abc_primary_text_material_light"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textStyle="bold"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/firstrun_hostname"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Port"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="@color/abc_primary_text_material_light"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textStyle="bold"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/firstrun_port"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Start chatting"
-                android:id="@+id/start_button"
-                android:onClick="startMainActivity" />
-
-        </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
 </FrameLayout>

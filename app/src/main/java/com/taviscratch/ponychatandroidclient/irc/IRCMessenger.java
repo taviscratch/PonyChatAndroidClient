@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
@@ -11,15 +12,22 @@ import android.widget.Toast;
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
+import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceConstants;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class IRCMessenger extends PircBot {
 
 
     private static String defaultRealname = "Ponychat Android Client";
     private TypeOfMessage tag;
-    BroadcastReceiver outgoingMessageReceiver;
+    BroadcastReceiver outgoingMessageReceiver, connectReceiver, disconnectReceiver;
 
     public IRCMessenger(String username) {
         this(username, defaultRealname);
@@ -29,10 +37,11 @@ public class IRCMessenger extends PircBot {
         this.setName(username);
         this.setVersion(realname);
 
-        registerReceiver();
+        registerReceivers();
     }
 
-    private void registerReceiver() {
+    // Setup and register the broadcast receiver
+    private void registerReceivers() {
         // Setup and register the broadcast receiver
         outgoingMessageReceiver = new BroadcastReceiver() {
             @Override
@@ -45,6 +54,62 @@ public class IRCMessenger extends PircBot {
         };
         IntentFilter outgoingMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(outgoingMessageReceiver, outgoingMessageFilter);
+
+/*        BroadcastReceiver connectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String username, password, hostname, realname;
+                int port;
+                Set<String> defaultChannels;
+                boolean connectedSuccessfully = false;
+
+
+                SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+                username = preferences.getString(PreferenceConstants.USERNAME,null);
+                password = preferences.getString(PreferenceConstants.PASSWORD,null);
+                realname = preferences.getString(PreferenceConstants.REALNAME,null);
+                hostname = preferences.getString(PreferenceConstants.HOSTNAME, null);
+                port = preferences.getInt(PreferenceConstants.PORT, -1);
+                defaultChannels = preferences.getStringSet(PreferenceConstants.DEFAULT_CHANNELS,null);
+
+                setName(username);
+                setVersion(realname);
+                setVerbose(true);
+
+
+                try {
+                    connect(hostname,port,password);
+                    // Join all the default channels
+                    if(defaultChannels!=null) {
+                        Iterator<String> channelIterator = defaultChannels.iterator();
+                        while (channelIterator.hasNext()) {
+                            String channelName = channelIterator.next();
+                            joinChannel(channelName);
+                        }
+                    }
+
+                } catch (NickAlreadyInUseException e) {
+                    Toast.makeText(PonyChatApplication.getAppContext(), "Nickname is already in use", Toast.LENGTH_SHORT).show();
+                } catch (IrcException e) {
+                    Toast.makeText(PonyChatApplication.getAppContext(), "Error connecting to IRC network", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    System.err.println(e.getStackTrace());
+                }
+
+
+            }
+        };
+        IntentFilter connectFilter = new IntentFilter(Constants.CONNECT_TO_IRC_NETWORK);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(connectReceiver, connectFilter);
+
+        BroadcastReceiver disconnectReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                disconnect();
+            }
+        };
+        IntentFilter disconnectFilter = new IntentFilter(Constants.CONNECT_TO_IRC_NETWORK);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(disconnectReceiver, disconnectFilter);*/
     }
 
 
@@ -125,7 +190,7 @@ public class IRCMessenger extends PircBot {
      */
     @Override
     protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        IRCSession.getInstance().setChannelTopic(channel,topic);
+        IRCSession.getInstance().setChannelTopic(channel, topic);
     }
 
     /**

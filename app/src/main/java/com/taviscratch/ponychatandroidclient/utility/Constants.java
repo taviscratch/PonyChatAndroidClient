@@ -34,8 +34,11 @@ public class Constants {
         public static final String MAX_MESSAGE_LOG_SIZE = "MAX_MESSAGE_LOG_SIZE";
         public static final String ALWAYS_RANDOMIZE_USERNAME = "ALWAYS_RANDOMIZE_USERNAME";
         public static final String IS_FIRST_RUN = "IS_FIRST_RUN";
+        public static final String NOTIFICATIONS_ENABLED = "NOTIFICATIONS_ENABLED";
+        public static final String KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND = "KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND";
     }
 
+    // Shared preference defaults
     public static final class PreferenceDefaults {
         public static final String HOSTNAME = "irc.ponychat.net";
         public static final int PORT = 6667;
@@ -43,6 +46,8 @@ public class Constants {
         public static final int MAX_MESSAGE_LOG_SIZE = 100;
         public static final String[] DEFAULT_CHANNELS = {"#ponyville","#yolo"};
         public static final boolean ALWAYS_RANDOMIZE_USERNAME = false;
+        public static final boolean NOTIFICATIONS_ENABLED = true;
+        public static final boolean KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND = true;
     }
 
 

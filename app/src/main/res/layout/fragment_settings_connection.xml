@@ -32,7 +32,8 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_username_row">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -47,8 +48,9 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/setttings_username"
-                        android:layout_weight="5" />
+                        android:id="@+id/settings_usernameEdit"
+                        android:layout_weight="5"
+                        android:inputType="textNoSuggestions" />
 
                 </LinearLayout>
 
@@ -58,7 +60,6 @@
                     android:text="always random?"
                     android:id="@+id/settings_randomusername_checkbox"
                     android:gravity="center"
-                    android:onClick="randomUsernameCheckboxOnClick"
                     android:textColor="@color/abc_primary_text_material_light"
                     android:layout_gravity="right"
                     android:layout_marginLeft="50dp"
@@ -66,12 +67,13 @@
 
                 <Space
                     android:layout_width="match_parent"
-                    android:layout_height="10dp" />
+                    android:layout_height="15dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_password_row">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -87,10 +89,11 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/settings_password"
+                        android:id="@+id/settings_passwordEdit"
                         android:layout_weight="5"
                         android:hint="optional"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        android:inputType="textPassword" />
 
                 </LinearLayout>
 
@@ -191,7 +194,7 @@
                         android:layout_height="match_parent"
                         android:inputType="textNoSuggestions|textMultiLine"
                         android:ems="10"
-                        android:id="@+id/settings_default_channels"
+                        android:id="@+id/settings_defaultChannelsEdit"
                         android:singleLine="false" />
                 </LinearLayout>
 
@@ -200,8 +203,8 @@
                     android:layout_height="match_parent"
                     android:text="&lt;/> TEST CONNECTION SETTINGS"
                     android:id="@+id/start_button"
-                    android:onClick="startMainActivity"
-                    android:layout_weight="10" />
+                    android:layout_weight="10"
+                    android:enabled="false" />
 
             </LinearLayout>
         </ScrollView>

@@ -158,8 +158,8 @@ public class Util {
             "Sonata_Dusk",
 
             // Extra names
-            "LittlePip",
-            "SweetieBot",
-            "myOC"
+            "Little_Pip",
+            "Sweetie_Bot",
+            "my_OC"
     };
 }

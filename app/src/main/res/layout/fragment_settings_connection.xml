@@ -8,6 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Connection Settings"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="30sp" />
+
         <ScrollView
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -189,7 +198,7 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Test connection settings"
+                    android:text="&lt;/> TEST CONNECTION SETTINGS"
                     android:id="@+id/start_button"
                     android:onClick="startMainActivity"
                     android:layout_weight="10" />

@@ -122,19 +122,19 @@
                         android:inputType="textNoSuggestions|textMultiLine"
                         android:ems="10"
                         android:id="@+id/firstrun_default_channels"
-                        android:text="#ponyville, #yolo" />
+                        android:singleLine="false" />
                 </LinearLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Start chatting!"
+                    android:id="@+id/start_button"
+                    android:onClick="startMainActivity"
+                    android:layout_weight="10" />
 
             </LinearLayout>
         </ScrollView>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Start chatting"
-            android:id="@+id/start_button"
-            android:onClick="startMainActivity"
-            android:layout_weight="10" />
 
     </LinearLayout>
 

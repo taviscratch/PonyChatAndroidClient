@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 public class FirstRunSetupActivity extends Activity {
 
@@ -38,6 +39,22 @@ public class FirstRunSetupActivity extends Activity {
         passwordLabel = (TextView) findViewById(R.id.firstrun_password_label);
         usernameLabel = (TextView) findViewById(R.id.firstrun_username_label);
 
+        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+
+        String defaultChannelsText = "";
+        Set<String> channelsData = preferences.getStringSet(PreferenceConstants.DEFAULT_CHANNELS,null);
+        if(channelsData.size() >= 1) {
+            String[] channels = new String[0];
+            channels = channelsData.toArray(channels);
+
+            defaultChannelsText += channels[0];
+            for(int i = 1; i< channels.length; i++) {
+                defaultChannelsText += ", " + channels[i];
+            }
+        }
+
+
+        defaultChannelsEdit.setText(defaultChannelsText);
     }
 
 
@@ -50,9 +67,11 @@ public class FirstRunSetupActivity extends Activity {
             return;
         }
 
-        CheckBox randomUsernameCheckbox = (CheckBox) findViewById(R.id.firstrun_randomusername_checkbox);
+
         SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
+
+        CheckBox randomUsernameCheckbox = (CheckBox) findViewById(R.id.firstrun_randomusername_checkbox);
 
         Set<String> defaultChannels;
         defaultChannels = parseDefaultChannels(defaultChannelsEdit.getText().toString());

@@ -14,7 +14,7 @@
             android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboard"
             android:label="@string/app_name"
-            android:launchMode="standard"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
@@ -39,8 +39,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.IRCSettingsActivity"
-            android:label="@string/title_activity_ircsettings" >
+            android:name=".ui.settings.IRCSettingsActivity"
+            android:label="@string/title_activity_ircsettings"
+            android:launchMode="singleTask">
         </activity>
     </application>
 

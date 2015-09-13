@@ -13,26 +13,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.ui.settings.IRCSettingsActivity;
 import com.taviscratch.ponychatandroidclient.utility.SwipeControls;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
 public class MainActivity extends Activity implements Chatroom.OnFragmentInteractionListener,
         LeftDrawer.OnFragmentInteractionListener,
-        RightDrawer.OnFragmentInteractionListener,
-        ConnectionSettingsPopup.OnFragmentInteractionListener {
+        RightDrawer.OnFragmentInteractionListener {
 
 
     // Fragments
     Chatroom chatroom;
     LeftDrawer leftDrawer;
     RightDrawer rightDrawer;
-    //ConnectionSettingsPopup connectionSettingsPopup;
 
 
     // animation stuff
@@ -85,13 +86,11 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
         leftDrawer = LeftDrawer.newInstance(null,null);
         rightDrawer = RightDrawer.newInstance(null,null);
-        //connectionSettingsPopup = ConnectionSettingsPopup.newInstance(null,null);
 
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         ft.add(R.id.Chatroom_container, chatroom, "CHATROOM");
-        //ft.add(R.id.ConnectionSettingsPopup_container, connectionSettingsPopup);
         ft.add(R.id.LeftDrawer_container, leftDrawer, "LEFT DRAWER");
         ft.add(R.id.RightDrawer_container, rightDrawer, "RIGHT DRAWER");
 
@@ -122,12 +121,19 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(ircServiceConnection);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(ircServiceConnection);
         stopIRCService();
     }
 
@@ -147,7 +153,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         Intent intent = new Intent(this, IRCBackgroundService.class);
         bindService(intent, ircServiceConnection, Context.BIND_IMPORTANT);
     }
-
     @Override
     // TODO
     public void onFragmentInteraction(Uri uri) {
@@ -243,4 +248,9 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     }
 
 
+    public void settingsButtonOnClick(View v) {
+        Intent intent = new Intent(PonyChatApplication.getAppContext(), IRCSettingsActivity.class);
+        startActivity(intent);
+        hideFragment(getFragmentManager().findFragmentByTag("LEFT DRAWER"));
+    }
 }

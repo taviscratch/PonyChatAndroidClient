@@ -34,10 +34,11 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/button"
+                android:id="@+id/settings_button"
                 android:layout_weight="3"
                 android:singleLine="true"
-                android:background="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
+                android:background="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+                android:onClick="settingsButtonOnClick" />
 
         </LinearLayout>
 

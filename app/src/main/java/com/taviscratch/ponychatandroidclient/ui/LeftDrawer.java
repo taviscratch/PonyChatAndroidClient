@@ -3,6 +3,7 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.ui.settings.IRCSettingsActivity;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
@@ -106,7 +109,6 @@ public class LeftDrawer extends Fragment {
             }
         });
 
-
         networkLobbyText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,17 +117,10 @@ public class LeftDrawer extends Fragment {
             }
         });
 
-
-
         String[] channelNames = session.getChannelNames();
         String[] privateMessageNames = session.getPrivateMessageNames();
 
-
-
         updateLists(theview);
-
-
-
 
         theview.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -221,6 +216,10 @@ public class LeftDrawer extends Fragment {
                 unhighlightTextView(textView);
         }
     }
+
+
+
+
 
     public void highlightTextView(TextView textView) {
         textView.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));

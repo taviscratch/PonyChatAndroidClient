@@ -1,0 +1,89 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/navigation_drawer_width"
+    android:layout_height="match_parent"
+    tools:context="com.taviscratch.ponychatandroidclient.ui.settings.SettingsDrawerFragment"
+    android:background="@color/background_material_dark">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Connection"
+            android:id="@+id/connection_settings"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:layout_weight="10"
+            android:gravity="center_vertical|left"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:onClick="openConnectionSettingsFragment"
+            android:clickable="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Services"
+            android:id="@+id/services_settings"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:layout_weight="10"
+            android:gravity="center_vertical|left"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:onClick="openServicesSettingsFragment"
+            android:clickable="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="UI"
+            android:id="@+id/ui_settings"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:layout_weight="10"
+            android:gravity="center_vertical|left"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:onClick="openUISettingsFragment"
+            android:clickable="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Misc"
+            android:id="@+id/misc_settings"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:gravity="center_vertical|left"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:layout_weight="10"
+            android:onClick="openMiscSettingsFragment"
+            android:clickable="true" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Apply Changes"
+            android:id="@+id/apply_settings"
+            android:layout_weight="10"
+            android:background="@color/background_floating_material_dark"
+            android:layout_margin="5dp"
+            android:textColor="@color/abc_secondary_text_material_dark"
+            android:onClick="applySettingsButtonOnClick"
+            android:clickable="true" />
+
+    </LinearLayout>
+</FrameLayout>

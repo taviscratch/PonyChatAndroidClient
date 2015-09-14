@@ -9,6 +9,8 @@ import java.util.Set;
 
 public class Constants {
 
+    public static boolean DEBUG = false;
+
     // Intent filters
     public static final String MESSAGE_TO_SEND = "com.taviscratch.ponychatandroidclient.MESSAGE_TO_SEND";
     public static final String MESSAGE_RECEIVED = "com.taviscratch.ponychatandroidclient.MESSAGE_RECEIVED";

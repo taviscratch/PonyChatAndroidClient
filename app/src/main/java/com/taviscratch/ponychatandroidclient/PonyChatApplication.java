@@ -4,8 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
@@ -37,22 +43,32 @@ public class PonyChatApplication extends Application{
         SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
-        if(preferences.getBoolean(PreferenceConstants.IS_FIRST_RUN, true)){
+
+
+
+        boolean firstRun = preferences.getBoolean(PreferenceConstants.IS_FIRST_RUN,true);
+
+
+        if(firstRun) {
+            editor.putBoolean(PreferenceConstants.IS_FIRST_RUN, true);
             editor.remove(PreferenceConstants.DEFAULT_CHANNELS);
-            editor.apply();
+            editor.commit();
             checkPreferences(preferences);
-        };
+        } else {
+            if(preferences.getBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false)){
+                editor.putString(PreferenceConstants.USERNAME, Util.getRandomUsername());
 
-
-        if(preferences.getBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true)){
-            editor = preferences.edit();
-            editor.putString(PreferenceConstants.USERNAME, Util.getRandomUsername());
-
+            }
         }
+
+
+
         editor.apply();
 
-        Intent serviceIntent = new Intent(this, IRCBackgroundService.class);
-        startService(serviceIntent);
+
+
+        Intent ircBackgroundServiceIntent = new Intent(this, IRCBackgroundService.class);
+        startService(ircBackgroundServiceIntent);
 
 
 

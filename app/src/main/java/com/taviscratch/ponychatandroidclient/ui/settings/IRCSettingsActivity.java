@@ -4,26 +4,38 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.ui.Chatroom;
 import com.taviscratch.ponychatandroidclient.ui.MainActivity;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.SwipeControls;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class IRCSettingsActivity extends Activity {
 
     Fragment currentlyViewing;
     float xStart, yStart, xEnd, yEnd;
+
+    Fragment settingsDrawerFragment, connectionSettings, servicesSettings, uiSettings, miscSettings;
 
     public static final String drawerTag = "SETTINGS DRAWER";
     public static final String connectionTag = "CONNECTION SETTINGS";
@@ -50,7 +62,7 @@ public class IRCSettingsActivity extends Activity {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        Fragment settingsDrawerFragment, connectionSettings, servicesSettings, uiSettings, miscSettings;
+
         settingsDrawerFragment = new SettingsDrawerFragment();
         connectionSettings = new SettingsFragment_Connection();
         servicesSettings = new SettingsFragment_Services();
@@ -141,6 +153,8 @@ public class IRCSettingsActivity extends Activity {
                 case RIGHT:
                     if(drawer.isHidden()) {
                         showFragment(drawer);
+                        View currentSettingsView = currentlyViewing.getView();
+                        currentSettingsView.clearFocus();
                     }
 
                     break;
@@ -177,19 +191,75 @@ public class IRCSettingsActivity extends Activity {
         SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
+        // get the views of all the fragments
+        View connectionSettingsView = connectionSettings.getView();
+        View serviceSettingsView = servicesSettings.getView();
+        View uiSettingsView = uiSettings.getView();
+        View miscSettingsView = miscSettings.getView();
 
 
 
 
+        EditText usernameEdit, passwordEdit, hostnameEdit, portEdit, realnameEdit, defaultChannelsEdit;
+        CheckBox randomizeUsernameCheckBox, keepIRCServiceRunningCheckBox, notificationsEnabledCheckBox;
+
+        // get all the widgets from the connection settings fragment
+        usernameEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_usernameEdit);
+        passwordEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_passwordEdit);
+        hostnameEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_hostnameEdit);
+        portEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_portEdit);
+        realnameEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_realnameEdit);
+        defaultChannelsEdit = (EditText) connectionSettingsView.findViewById(R.id.settings_defaultChannelsEdit);
+        randomizeUsernameCheckBox = (CheckBox) connectionSettingsView.findViewById(R.id.settings_randomusername_checkbox);
+
+        //get all the widgets from the services settings fragment
+        keepIRCServiceRunningCheckBox = (CheckBox) serviceSettingsView.findViewById(R.id.settings_keep_service_running_checkbox);
+        notificationsEnabledCheckBox = (CheckBox) serviceSettingsView.findViewById(R.id.settings_enable_notifications_checkbox);
 
 
 
+        // get the data from the widgets
+        String username, password, hostname, realname;
+        int port;
+        Set<String> defaultChannels;
+        boolean alwaysRandomizeUsername, notificationsEnabled, keepIRCServiceRunning;
 
+        username = usernameEdit.getText().toString();
+        password = passwordEdit.getText().toString();
+        hostname = hostnameEdit.getText().toString();
+        realname = realnameEdit.getText().toString();
+        port = Integer.valueOf(portEdit.getText().toString());
+        alwaysRandomizeUsername = randomizeUsernameCheckBox.isChecked();
+        notificationsEnabled = notificationsEnabledCheckBox.isChecked();
+        keepIRCServiceRunning = keepIRCServiceRunningCheckBox.isChecked();
+        defaultChannels = parseDefaultChannels(defaultChannelsEdit.getText().toString());
+
+
+        // edit the shared preferences
+        editor.putString(Constants.PreferenceConstants.USERNAME, username);
+        editor.putString(Constants.PreferenceConstants.PASSWORD, password);
+        editor.putString(Constants.PreferenceConstants.HOSTNAME, hostname);
+        editor.putInt(Constants.PreferenceConstants.PORT, port);
+        editor.putString(Constants.PreferenceConstants.REALNAME, realname);
+        editor.putStringSet(Constants.PreferenceConstants.DEFAULT_CHANNELS, defaultChannels);
+        editor.putBoolean(Constants.PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, alwaysRandomizeUsername);
+        editor.putBoolean(Constants.PreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, keepIRCServiceRunning);
+        editor.putBoolean(Constants.PreferenceConstants.NOTIFICATIONS_ENABLED, notificationsEnabled);
 
         editor.commit();
 
-
-        Intent intent = new Intent(PonyChatApplication.getAppContext(), MainActivity.class);
-        startActivity(intent);
+        Intent startMainActivityIntent = new Intent(PonyChatApplication.getAppContext(), MainActivity.class);
+        startActivity(startMainActivityIntent);
     }
+
+
+    private Set<String> parseDefaultChannels(String defaultChannelsEntry) {
+        defaultChannelsEntry = defaultChannelsEntry.replaceAll(" ", "");
+        String[] defaultChannels = defaultChannelsEntry.split(",");
+        return new HashSet<String>(new ArrayList<String>(Arrays.asList(defaultChannels)));
+    }
+
+
+
+
 }

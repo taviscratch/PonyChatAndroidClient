@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
@@ -52,8 +53,15 @@ public class SettingsDrawerFragment extends Fragment {
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         theview.setX(screenWidth);
-
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
+
+        theview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getActivity().onTouchEvent(event);
+                return true;
+            }
+        });
 
         return theview;
     }
@@ -75,6 +83,9 @@ public class SettingsDrawerFragment extends Fragment {
 
         if(!hidden) {
             view.setX(-drawerWidth);
+
+            view.requestFocus();
+            view.bringToFront();
 
             ViewPropertyAnimator animator = view.animate();
             animator.translationXBy(drawerWidth);

@@ -91,6 +91,8 @@ public class FirstRunSetupActivity extends Activity {
             editor.putString(PreferenceConstants.PASSWORD, passwordEdit.getText().toString());
         }
 
+        editor.putBoolean(PreferenceConstants.IS_FIRST_RUN, false);
+
         editor.commit();
 
 

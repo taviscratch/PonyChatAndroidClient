@@ -37,25 +37,29 @@ public class IRCBackgroundService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         IRCSession.getInstance().start();
+        if(Constants.DEBUG) Toast.makeText(this, "Service Bound", Toast.LENGTH_SHORT).show();
         return ircServiceBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
+        if(Constants.DEBUG) Toast.makeText(this, "Service Unbound", Toast.LENGTH_SHORT).show();
         return super.onUnbind(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
-        /*IRCSession.getInstance().start();*/
+        if(Constants.DEBUG) Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
+
+
+
 
     @Override
     public void onDestroy() {
         stopForeground(true);
-        Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+        if(Constants.DEBUG) Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
     }
 
     // Setup and register the broadcast receivers

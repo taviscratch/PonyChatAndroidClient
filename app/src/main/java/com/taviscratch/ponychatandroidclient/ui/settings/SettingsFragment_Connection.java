@@ -165,11 +165,7 @@ public class SettingsFragment_Connection extends Fragment {
         usernameRow.setAlpha(1);
     }
 
-    public Set<String> parseDefaultChannels(String defaultChannelsEntry) {
-        defaultChannelsEntry = defaultChannelsEntry.replaceAll(" ", "");
-        String[] defaultChannels = defaultChannelsEntry.split(",");
-        return new HashSet<String>(new ArrayList<String>(Arrays.asList(defaultChannels)));
-    }
+
 
 
 

@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.ui.settings.IRCSettingsActivity;
+import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.SwipeControls;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
@@ -49,12 +52,12 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         public void onServiceConnected(ComponentName name, IBinder service) {
             IRCBackgroundService.IRCServiceBinder ircServiceBinder = (IRCBackgroundService.IRCServiceBinder) service;
             ircService = ircServiceBinder.getService();
-            Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
+            if(Constants.DEBUG) Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            if(Constants.DEBUG) Toast.makeText(MainActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -112,29 +115,41 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     @Override
     protected void onResume() {
         super.onResume();
-
-        bindToService();
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
     }
+
+
+
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+
         unbindService(ircServiceConnection);
-        stopIRCService();
+        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
+        boolean keepServiceRunning = preferences.getBoolean(Constants.PreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, false);
+        if(!keepServiceRunning) {
+            Intent intent = new Intent(this,IRCBackgroundService.class);
+            stopService(intent);
+        }
+
+
+
+        super.onDestroy();
+
     }
 
 
@@ -143,15 +158,9 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         super.onConfigurationChanged(newConfig);
     }
 
-
-    public void stopIRCService() {
-        Intent intent = new Intent(this, IRCBackgroundService.class);
-        stopService(intent);
-    }
-
     public void bindToService() {
         Intent intent = new Intent(this, IRCBackgroundService.class);
-        bindService(intent, ircServiceConnection, Context.BIND_IMPORTANT);
+        bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
     }
     @Override
     // TODO

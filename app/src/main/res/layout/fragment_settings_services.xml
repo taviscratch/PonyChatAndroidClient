@@ -35,7 +35,6 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="IRC Background Service"
-                    android:id="@+id/textView2"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -48,7 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Keep service running"
-                        android:id="@+id/checkBox" />
+                        android:id="@+id/settings_keep_service_running_checkbox" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -77,7 +76,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Enable notifications"
-                        android:id="@+id/checkBox2" />
+                        android:id="@+id/settings_enable_notifications_checkbox" />
                 </LinearLayout>
 
             </LinearLayout>

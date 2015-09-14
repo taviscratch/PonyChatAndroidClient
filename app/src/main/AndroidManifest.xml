@@ -22,7 +22,8 @@
         <service
             android:name=".services.IRCBackgroundService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false"
+            android:launchMode="singleTask">
         </service>
 
         <activity
@@ -41,8 +42,9 @@
         <activity
             android:name=".ui.settings.IRCSettingsActivity"
             android:label="@string/title_activity_ircsettings"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
         </activity>
+
     </application>
 
 </manifest>

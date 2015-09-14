@@ -25,6 +25,7 @@ public class PonyChatApplication extends Application{
 
 
     private static Context context;
+    public static boolean I_JUST_DONT_KNOW_WHAT_WENT_WRONG = true;
 
     /**
      * Called when the application is starting, before any activity, service,

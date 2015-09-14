@@ -61,7 +61,7 @@
                 android:id="@+id/chatInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textImeMultiLine"
+                android:inputType="textNoSuggestions|textImeMultiLine|none"
                 android:imeOptions="actionSend"
 
                 android:ems="10"

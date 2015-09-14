@@ -41,6 +41,9 @@ public class IRCSession extends Thread {
     public String getUsername() {
         return username;
     }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
 
     private IRCSession() {
@@ -98,7 +101,7 @@ public class IRCSession extends Thread {
         // Initialize the messenger
         messenger =  new IRCMessenger(username, realname);
         messenger.setVerbose(true);
-        messenger.setAutoNickChange(true);
+        messenger.setAutoNickChange(false);
 
 
         // Attempt a connection to the host
@@ -108,19 +111,26 @@ public class IRCSession extends Thread {
             else
                 messenger.connect(hostname,port,password);
 
-            // Join all the default channels
-            if(defaultChannels!=null) {
-                Iterator<String> channelIterator = defaultChannels.iterator();
-                while (channelIterator.hasNext()) {
-                    String channelName = channelIterator.next();
-                    messenger.joinChannel(channelName);
-                }
+        } catch (NickAlreadyInUseException e) {
+            messenger.setNewName(Util.getRandomUsername());
+            messenger.setAutoNickChange(true);
+
+            try {
+                if(port==-1)
+                    messenger.connect(hostname, Constants.PreferenceDefaults.PORT, password);
+                else
+                    messenger.connect(hostname,port,password);
+
+            } catch(Exception ex) {
+                // TODO
             }
 
-        } catch (NickAlreadyInUseException e) {
-            // TODO
+            // getting your name back
+            messenger.sendMessage("nickserv","id " + username + " " + password);
+            messenger.sendMessage("nickserv","regain " + username);
+
         } catch (IrcException e) {
-            // TODO
+            int x = 0;
         } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }

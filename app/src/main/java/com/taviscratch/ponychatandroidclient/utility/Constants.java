@@ -65,6 +65,7 @@ public class Constants {
     public static final class MessageType {
         public static final String PRIVMSG = "PRIVMSG";
         public static final String ACTION = "ACTION";
+        public static final String RAW_MESSAGE = "RAW_MESSAGE";
     }
 
 }

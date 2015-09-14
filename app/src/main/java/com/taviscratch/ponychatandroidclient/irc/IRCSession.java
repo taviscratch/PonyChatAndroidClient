@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.services.NotificationService;
 import com.taviscratch.ponychatandroidclient.ui.Chatroom;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
@@ -158,6 +159,19 @@ public class IRCSession extends Thread {
             messageAdapters.put(target, adapter);
         }
         messageAdapters.get(target).notifyDataSetChanged();
+
+        // Notify the user
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
+        if(preferences.getBoolean(Constants.PreferenceConstants.NOTIFICATIONS_ENABLED,true)) {
+            Intent notificationIntent = new Intent(Constants.NOTIFICATION);
+            notificationIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
+            notificationIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
+            notificationIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, target);
+            notificationIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE, messageType);
+            LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(notificationIntent);
+        }
+
+
     }
 
     private void handleOutgoingMessage(Bundle bundle) {

@@ -23,6 +23,7 @@ import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.services.NotificationService;
 import com.taviscratch.ponychatandroidclient.ui.settings.IRCSettingsActivity;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.SwipeControls;
@@ -142,8 +143,11 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
         boolean keepServiceRunning = preferences.getBoolean(Constants.PreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, false);
         if(!keepServiceRunning) {
-            Intent intent = new Intent(this,IRCBackgroundService.class);
-            stopService(intent);
+            Intent ircBackgroundServiceIntent = new Intent(this,IRCBackgroundService.class);
+            stopService(ircBackgroundServiceIntent);
+
+            Intent notificationServiceIntent = new Intent(this, NotificationService.class);
+            stopService(notificationServiceIntent);
         }
 
 

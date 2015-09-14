@@ -25,6 +25,11 @@
             android:exported="false"
             android:launchMode="singleTask">
         </service>
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="false">
+        </service>
 
         <activity
             android:name=".ui.FirstRunSetupActivity"
@@ -44,6 +49,7 @@
             android:label="@string/title_activity_ircsettings"
             android:launchMode="singleTask" >
         </activity>
+
 
     </application>
 

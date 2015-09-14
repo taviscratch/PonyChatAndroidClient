@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
+import com.taviscratch.ponychatandroidclient.services.NotificationService;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceConstants;
 import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceDefaults;
@@ -70,7 +71,8 @@ public class PonyChatApplication extends Application{
         Intent ircBackgroundServiceIntent = new Intent(this, IRCBackgroundService.class);
         startService(ircBackgroundServiceIntent);
 
-
+        Intent notificationServiceIntent = new Intent(this, NotificationService.class);
+        startService(notificationServiceIntent);
 
     }
 

@@ -3,7 +3,6 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -17,7 +16,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
-import com.taviscratch.ponychatandroidclient.ui.settings.IRCSettingsActivity;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
@@ -47,10 +45,13 @@ public class LeftDrawer extends Fragment {
 
     float drawerWidth, screenWidth;
     private static final int animationDuration = 300;
+    private static float DERPYS_CONSTANT = 1f;
+    private static float ANIMATION_TRANSLATION_SCALE = 0.95f;
 
     static IRCSession session;
 
     TextView currentConversationView;
+
 
 
     /**
@@ -131,7 +132,7 @@ public class LeftDrawer extends Fragment {
         });
 
 
-
+        if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) theview.setRotation(DERPYS_CONSTANT);
         return theview;
     }
 
@@ -253,12 +254,26 @@ public class LeftDrawer extends Fragment {
 
         if(hidden == false) {
             final View view = getView();
-            view.setX(-drawerWidth);
-
             updateLists(view);
 
             ViewPropertyAnimator animator = view.animate();
-            animator.translationXBy(drawerWidth);
+
+            // special derpy animation
+            if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) {
+                int xDist, yDist;
+                xDist = (int) (Math.cos(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+                yDist = (int) (Math.sin(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+
+                view.setX(-xDist/ANIMATION_TRANSLATION_SCALE);
+                view.setY(-yDist/ANIMATION_TRANSLATION_SCALE);
+
+                animator.translationXBy(xDist);
+                animator.translationYBy(yDist);
+            }
+            else {
+                view.setX(-drawerWidth);
+                animator.translationXBy(drawerWidth);
+            }
             animator.setDuration(animationDuration);
             animator.setListener(new Animator.AnimatorListener() {
                 @Override
@@ -279,23 +294,44 @@ public class LeftDrawer extends Fragment {
             final View view = getView();
             if(view != null) {
                 ViewPropertyAnimator animator = view.animate();
-                animator.translationXBy(-drawerWidth);
+
+                // special derpy animation
+                if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) {
+                    int xDist, yDist;
+                    xDist = (int) (Math.cos(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+                    yDist = (int) (Math.sin(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+
+                    animator.translationXBy(-xDist);
+                    animator.translationYBy(-yDist);
+                } else {
+                    animator.translationXBy(-drawerWidth);
+                }
+
+
                 animator.setDuration(animationDuration);
                 animator.setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
                         view.setVisibility(view.VISIBLE);
                     }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         view.setVisibility(View.INVISIBLE);
                     }
+
                     @Override
-                    public void onAnimationCancel(Animator animation) { }
+                    public void onAnimationCancel(Animator animation) {
+                    }
+
                     @Override
-                    public void onAnimationRepeat(Animator animation) { }
+                    public void onAnimationRepeat(Animator animation) {
+                    }
                 });
                 animator.start();
+
+
+
             }
         }
     }

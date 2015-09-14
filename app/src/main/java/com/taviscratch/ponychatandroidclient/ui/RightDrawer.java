@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Util;
@@ -41,9 +42,11 @@ public class RightDrawer extends Fragment {
     private OnFragmentInteractionListener mListener;
 
 
+
     float drawerWidth, screenWidth;
     private static final int animationDuration = 300;
-
+    private static float DERPYS_CONSTANT = 5.0f;
+    private static float ANIMATION_TRANSLATION_SCALE = 0.9f;
 
 
     /**
@@ -111,7 +114,7 @@ public class RightDrawer extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
                 IRCSession session = IRCSession.getInstance();
-                if(!session.doesConversationExist(username))
+                if (!session.doesConversationExist(username))
                     session.startNewPrivateConversation(username);
                 Chatroom.switchConversationInView(username);
 
@@ -128,6 +131,7 @@ public class RightDrawer extends Fragment {
         });
 
 
+        if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) theview.setRotation(-DERPYS_CONSTANT);
         return theview;
     }
 
@@ -150,7 +154,22 @@ public class RightDrawer extends Fragment {
             userList.setAdapter(adapter);
 
             ViewPropertyAnimator animator = view.animate();
-            animator.translationXBy(-drawerWidth);
+
+            // special derpy animation
+            if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) {
+                int xDist, yDist;
+                xDist = (int) (Math.cos(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+                yDist = (int) (Math.sin(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+
+                view.setY(-yDist);
+
+                animator.translationXBy(-xDist);
+                animator.translationYBy(yDist);
+            } else {
+                animator.translationXBy(-drawerWidth);
+            }
+
+
             animator.setDuration(animationDuration);
             animator.setListener(new Animator.AnimatorListener() {
                 @Override
@@ -171,7 +190,20 @@ public class RightDrawer extends Fragment {
             final View view = getView();
             if(view != null) {
                 ViewPropertyAnimator animator = view.animate();
-                animator.translationXBy(drawerWidth);
+
+                // special derpy animation
+                if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) {
+                    int xDist, yDist;
+                    xDist = (int) (Math.cos(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+                    yDist = (int) (Math.sin(Math.toRadians(DERPYS_CONSTANT))*drawerWidth*ANIMATION_TRANSLATION_SCALE);
+
+                    animator.translationXBy(xDist);
+                    animator.translationYBy(-yDist);
+                } else {
+                    animator.translationXBy(drawerWidth);
+                }
+
+
                 animator.setDuration(animationDuration);
                 animator.setListener(new Animator.AnimatorListener() {
                     @Override

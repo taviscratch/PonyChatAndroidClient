@@ -90,7 +90,12 @@ public class IRCMessenger extends PircBot {
             LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
         } else if(code == 437) {
             // 437 = "Nick/channel is temporarily unavailable"
-            // TODO
+            setName(getName()+"_");
+            try {
+                connect(getServer(),getPort(),getPassword());
+            } catch(Exception e) {
+
+            }
         }
     }
 
@@ -174,7 +179,16 @@ public class IRCMessenger extends PircBot {
                     command = "/msg";
                 }
 
-                handleOutgoingMessage(command, target, message);
+                // special case for /connect
+                if(command.equals("/connect")) {
+                    try{
+                        disconnect();
+                        connect(getServer(),getPort(),getPassword());
+                    } catch(Exception e) {
+
+                    }
+                } else
+                    handleOutgoingMessage(command, target, message);
             }
         };
         IntentFilter outgoingMessageFilter = new IntentFilter(Constants.MESSAGE_TO_SEND);

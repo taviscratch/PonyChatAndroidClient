@@ -3,6 +3,7 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.irc.IRCMessageAdapter;
@@ -36,6 +38,7 @@ public class Chatroom extends Fragment {
     Button sendMessageButton;
     static ListView listView;
     static TextView topicMarquee;
+    IRCMessageAdapter messageAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -77,10 +80,8 @@ public class Chatroom extends Fragment {
         listView = (ListView) theview.findViewById(R.id.chatroomListView);
         topicMarquee = (TextView) theview.findViewById(R.id.topicMarquee);
 
-        ContextThemeWrapper ctx = new ContextThemeWrapper(getActivity(), R.style.AppTheme);
-
         // Set up the listview array adapter
-        IRCMessageAdapter messageAdapter = session.getMessageAdapter(currentConversation);
+        messageAdapter = session.getMessageAdapter(currentConversation);
         listView.setAdapter(messageAdapter);
 
 
@@ -121,9 +122,37 @@ public class Chatroom extends Fragment {
         topicMarquee.setSelected(true);
         topicMarquee.setText(session.getTopic(currentConversation));
 
+        //setTheme();
 
         return theview;
 
+    }
+
+    private void setTheme() {
+
+    /*    ThemeColors.ThemeColorHolder themeHolderClass = (ThemeColors.Magic) PonyChatApplication.getCurrentTheme();
+
+        int backgroundPrimary, backgroundSecondary, accent,
+                menuTitle1, menuTitle2, menuItem,
+                chatName, chatMessage, chatAction, chatEvent;
+
+        // get the hex color codes
+        backgroundPrimary = ThemeColors.Magic.backgroundPrimary;
+        menuItem = themeHolderClass.menuItem;
+        chatName = ThemeColors.Magic.chatName;
+        chatMessage = ThemeColors.Magic.chatMessage;
+        chatAction = ThemeColors.Magic.chatAction;
+        chatEvent = ThemeColors.Magic.chatEvent;
+
+
+        // apply the colors
+        topicMarquee.setBackgroundColor(backgroundPrimary);
+        topicMarquee.setTextColor(menuItem);
+        messageAdapter.setChatNameColor(chatName);
+        messageAdapter.setChatMessageColor(chatMessage);
+        messageAdapter.setChatActionColor(chatAction);
+        messageAdapter.setChatEventColor(chatEvent);
+        inputBox.setTextColor(chatMessage);*/
     }
 
     public static String getCurrentConversation() {

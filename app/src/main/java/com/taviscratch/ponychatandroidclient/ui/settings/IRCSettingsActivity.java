@@ -4,26 +4,20 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
-import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
-import com.taviscratch.ponychatandroidclient.ui.Chatroom;
 import com.taviscratch.ponychatandroidclient.ui.MainActivity;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.SwipeControls;
-import com.taviscratch.ponychatandroidclient.utility.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,7 +182,7 @@ public class IRCSettingsActivity extends Activity {
     }
     public void applySettingsButtonOnClick(View v) {
 
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
         // get the views of all the fragments
@@ -236,15 +230,15 @@ public class IRCSettingsActivity extends Activity {
 
 
         // edit the shared preferences
-        editor.putString(Constants.PreferenceConstants.USERNAME, username);
-        editor.putString(Constants.PreferenceConstants.PASSWORD, password);
-        editor.putString(Constants.PreferenceConstants.HOSTNAME, hostname);
-        editor.putInt(Constants.PreferenceConstants.PORT, port);
-        editor.putString(Constants.PreferenceConstants.REALNAME, realname);
-        editor.putStringSet(Constants.PreferenceConstants.DEFAULT_CHANNELS, defaultChannels);
-        editor.putBoolean(Constants.PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, alwaysRandomizeUsername);
-        editor.putBoolean(Constants.PreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, keepIRCServiceRunning);
-        editor.putBoolean(Constants.PreferenceConstants.NOTIFICATIONS_ENABLED, notificationsEnabled);
+        editor.putString(Constants.AppPreferenceConstants.USERNAME, username);
+        editor.putString(Constants.AppPreferenceConstants.PASSWORD, password);
+        editor.putString(Constants.AppPreferenceConstants.HOSTNAME, hostname);
+        editor.putInt(Constants.AppPreferenceConstants.PORT, port);
+        editor.putString(Constants.AppPreferenceConstants.REALNAME, realname);
+        editor.putStringSet(Constants.AppPreferenceConstants.DEFAULT_CHANNELS, defaultChannels);
+        editor.putBoolean(Constants.AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, alwaysRandomizeUsername);
+        editor.putBoolean(Constants.AppPreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, keepIRCServiceRunning);
+        editor.putBoolean(Constants.AppPreferenceConstants.NOTIFICATIONS_ENABLED, notificationsEnabled);
 
         editor.commit();
 

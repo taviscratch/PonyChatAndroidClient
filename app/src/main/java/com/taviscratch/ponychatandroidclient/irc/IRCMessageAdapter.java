@@ -26,6 +26,8 @@ public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
 
     }
 
+    private int chatNameColor, chatMessageColor, chatEventColor, chatActionColor;
+
 
     public IRCMessageAdapter(Context context, int resource) {
         super(context, resource);
@@ -84,12 +86,35 @@ public class IRCMessageAdapter extends ArrayAdapter<IRCMessage> {
             viewHolder.timepostedTextView.setText(message.getFormattedTime());
             viewHolder.normalMessageTextView.setText(message.getMessage());
 
+            // set theme colors
+            viewHolder.sendernameTextView.setTextColor(chatNameColor);
+            viewHolder.timepostedTextView.setTextColor(chatNameColor);
+            viewHolder.timepostedTextView.setAlpha(.75f);
+            viewHolder.normalMessageTextView.setTextColor(chatMessageColor);
+
         } else if(message.getType() == IRCMessage.MessageType.ACTION) {
             ACTIONViewHolder viewHolder = (ACTIONViewHolder) rowView.getTag();
             viewHolder.actionMessageTextView.setText(message.getSender() + " " + message.getMessage());
-
+            viewHolder.actionMessageTextView.setTextColor(chatActionColor);
         }
 
         return rowView;
+    }
+
+
+    public void setChatNameColor(int chatNameColor) {
+        this.chatNameColor = chatNameColor;
+    }
+
+    public void setChatMessageColor(int chatMessageColor) {
+        this.chatMessageColor = chatMessageColor;
+    }
+
+    public void setChatEventColor(int chatEventColor) {
+        this.chatEventColor = chatEventColor;
+    }
+
+    public void setChatActionColor(int chatActionColor) {
+        this.chatActionColor = chatActionColor;
     }
 }

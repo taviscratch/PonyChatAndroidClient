@@ -37,11 +37,11 @@ public class SettingsFragment_Services extends Fragment {
         keepIRCServiceRunningCheckBox = (CheckBox) theview.findViewById(R.id.settings_keep_service_running_checkbox);
         notificationsEnabledCheckBox = (CheckBox) theview.findViewById(R.id.settings_enable_notifications_checkbox);
 
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
 
         boolean keepIRCServiceRunning, notificationsEnabled;
-        keepIRCServiceRunning = preferences.getBoolean(Constants.PreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND,false);
-        notificationsEnabled = preferences.getBoolean(Constants.PreferenceConstants.NOTIFICATIONS_ENABLED,false);
+        keepIRCServiceRunning = preferences.getBoolean(Constants.AppPreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND,false);
+        notificationsEnabled = preferences.getBoolean(Constants.AppPreferenceConstants.NOTIFICATIONS_ENABLED,false);
 
 
         // set the checkboxes to the correct state

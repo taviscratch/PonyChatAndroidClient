@@ -25,7 +25,7 @@ public class Constants {
     public static final String NETWORK_LOBBY = "Network Lobby";
 
     // Shared preferences stuff
-    public static final class PreferenceConstants {
+    public static final class AppPreferenceConstants {
         public static final String PREFS_NAME = "pone";
         public static final String USERNAME = "USERNAME";
         public static final String PASSWORD = "PASSWORD";
@@ -52,6 +52,20 @@ public class Constants {
         public static final boolean KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND = true;
     }
 
+
+    public static final class ThemeColorPreferenceConstants {
+        public static final String PREFS_NAME = "theme colors";
+        public static final String BACKGROUND_PRIMARY = "BACKGROUND_PRIMARY";
+        public static final String BACKGROUND_SECONDARY = "BACKGOURND_SECONDARY";
+        public static final String ACCENT = "ACCENT";
+        public static final String MENU_TITLE_1 = "MENU_TITLE_1";
+        public static final String MENU_TITLE_2 = "MENU_TITLE_2";
+        public static final String MENU_ITEM = "MENU_ITEM";
+        public static final String CHAT_NAME = "CHAT_NAME";
+        public static final String CHAT_MESSAGE = "CHAT_MESSAGE";
+        public static final String CHAT_ACTION = "CHAT_ACTION";
+        public static final String CHAT_EVENT = "CHAT_EVENT";
+    }
 
 
     // Bundle keys for the message passing intent's extras

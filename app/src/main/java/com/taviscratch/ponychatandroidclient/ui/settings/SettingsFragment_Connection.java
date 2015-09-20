@@ -18,9 +18,6 @@ import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -65,7 +62,7 @@ public class SettingsFragment_Connection extends Fragment {
 
 
         // get the shared preferences object
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
 
 
         // get the data stored in the shared preferences
@@ -74,13 +71,13 @@ public class SettingsFragment_Connection extends Fragment {
         Set<String> defaultChannels;
         boolean alwaysRandomizeUsername;
 
-        username = preferences.getString(Constants.PreferenceConstants.USERNAME, null);
-        password = preferences.getString(Constants.PreferenceConstants.PASSWORD, null);
-        hostname = preferences.getString(Constants.PreferenceConstants.HOSTNAME, null);
-        port = preferences.getInt(Constants.PreferenceConstants.PORT, -1);
-        realname = preferences.getString(Constants.PreferenceConstants.REALNAME, null);
-        defaultChannels = preferences.getStringSet(Constants.PreferenceConstants.DEFAULT_CHANNELS, null);
-        alwaysRandomizeUsername = preferences.getBoolean(Constants.PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true);
+        username = preferences.getString(Constants.AppPreferenceConstants.USERNAME, null);
+        password = preferences.getString(Constants.AppPreferenceConstants.PASSWORD, null);
+        hostname = preferences.getString(Constants.AppPreferenceConstants.HOSTNAME, null);
+        port = preferences.getInt(Constants.AppPreferenceConstants.PORT, -1);
+        realname = preferences.getString(Constants.AppPreferenceConstants.REALNAME, null);
+        defaultChannels = preferences.getStringSet(Constants.AppPreferenceConstants.DEFAULT_CHANNELS, null);
+        alwaysRandomizeUsername = preferences.getBoolean(Constants.AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true);
 
         // populate the widgets with the data
         usernameEdit.setText(username);

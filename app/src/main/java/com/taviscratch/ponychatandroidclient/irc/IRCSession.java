@@ -8,11 +8,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
-import com.taviscratch.ponychatandroidclient.services.NotificationService;
 import com.taviscratch.ponychatandroidclient.ui.Chatroom;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
@@ -47,10 +45,10 @@ public class IRCSession extends Thread {
 
 
     private IRCSession() {
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME, 0);
 
         // Get the max length for message logs
-        int maxMessageLogSize = preferences.getInt(Constants.PreferenceConstants.MAX_MESSAGE_LOG_SIZE, -1);
+        int maxMessageLogSize = preferences.getInt(Constants.AppPreferenceConstants.MAX_MESSAGE_LOG_SIZE, -1);
 
         // Initialize the data structures
         sessionData = new SessionData(maxMessageLogSize);
@@ -91,12 +89,12 @@ public class IRCSession extends Thread {
         SharedPreferences preferences = PonyChatApplication.getAppPreferences();
 
         // Get the preferences
-        username = preferences.getString(Constants.PreferenceConstants.USERNAME, null);
-        password = preferences.getString(Constants.PreferenceConstants.PASSWORD, null);
-        hostname = preferences.getString(Constants.PreferenceConstants.HOSTNAME, null);
-        defaultChannels = preferences.getStringSet(Constants.PreferenceConstants.DEFAULT_CHANNELS, null);
-        port = preferences.getInt(Constants.PreferenceConstants.PORT, -1);
-        realname = preferences.getString(Constants.PreferenceConstants.REALNAME, null);
+        username = preferences.getString(Constants.AppPreferenceConstants.USERNAME, null);
+        password = preferences.getString(Constants.AppPreferenceConstants.PASSWORD, null);
+        hostname = preferences.getString(Constants.AppPreferenceConstants.HOSTNAME, null);
+        defaultChannels = preferences.getStringSet(Constants.AppPreferenceConstants.DEFAULT_CHANNELS, null);
+        port = preferences.getInt(Constants.AppPreferenceConstants.PORT, -1);
+        realname = preferences.getString(Constants.AppPreferenceConstants.REALNAME, null);
 
         // Initialize the messenger
         messenger =  new IRCMessenger(username, realname);
@@ -171,8 +169,8 @@ public class IRCSession extends Thread {
         messageAdapters.get(target).notifyDataSetChanged();
 
         // Notify the user
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME,0);
-        if(preferences.getBoolean(Constants.PreferenceConstants.NOTIFICATIONS_ENABLED,true)) {
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
+        if(preferences.getBoolean(Constants.AppPreferenceConstants.NOTIFICATIONS_ENABLED,true)) {
             Intent notificationIntent = new Intent(Constants.NOTIFICATION);
             notificationIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
             notificationIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);

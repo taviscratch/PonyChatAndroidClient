@@ -14,15 +14,13 @@ import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
-import com.taviscratch.ponychatandroidclient.utility.Constants;
-import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceConstants;
+import com.taviscratch.ponychatandroidclient.utility.Constants.AppPreferenceConstants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 public class FirstRunSetupActivity extends Activity {
 
@@ -43,10 +41,10 @@ public class FirstRunSetupActivity extends Activity {
         passwordLabel = (TextView) findViewById(R.id.firstrun_password_label);
         usernameLabel = (TextView) findViewById(R.id.firstrun_username_label);
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences preferences = getSharedPreferences(AppPreferenceConstants.PREFS_NAME, 0);
 
         String defaultChannelsText = "";
-        Set<String> channelsData = preferences.getStringSet(PreferenceConstants.DEFAULT_CHANNELS,null);
+        Set<String> channelsData = preferences.getStringSet(AppPreferenceConstants.DEFAULT_CHANNELS,null);
         if(channelsData.size() >= 1) {
             String[] channels = new String[0];
             channels = channelsData.toArray(channels);
@@ -72,7 +70,7 @@ public class FirstRunSetupActivity extends Activity {
         }
 
 
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(AppPreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = preferences.edit();
 
         CheckBox randomUsernameCheckbox = (CheckBox) findViewById(R.id.firstrun_randomusername_checkbox);
@@ -80,18 +78,18 @@ public class FirstRunSetupActivity extends Activity {
         Set<String> defaultChannels;
         defaultChannels = parseDefaultChannels(defaultChannelsEdit.getText().toString());
 
-        editor.putStringSet(PreferenceConstants.DEFAULT_CHANNELS, defaultChannels);
-        editor.putString(PreferenceConstants.USERNAME, usernameEdit.getText().toString());
+        editor.putStringSet(AppPreferenceConstants.DEFAULT_CHANNELS, defaultChannels);
+        editor.putString(AppPreferenceConstants.USERNAME, usernameEdit.getText().toString());
 
         if(randomUsernameCheckbox.isChecked()) {
-            editor.putBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true);
-            editor.putString(PreferenceConstants.PASSWORD, null);
+            editor.putBoolean(AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, true);
+            editor.putString(AppPreferenceConstants.PASSWORD, null);
         } else {
-            editor.putBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false);
-            editor.putString(PreferenceConstants.PASSWORD, passwordEdit.getText().toString());
+            editor.putBoolean(AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false);
+            editor.putString(AppPreferenceConstants.PASSWORD, passwordEdit.getText().toString());
         }
 
-        editor.putBoolean(PreferenceConstants.IS_FIRST_RUN, false);
+        editor.putBoolean(AppPreferenceConstants.IS_FIRST_RUN, false);
 
         editor.commit();
 

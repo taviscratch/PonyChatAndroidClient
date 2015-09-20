@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
@@ -24,8 +21,8 @@ public class BootstrapActivity extends Activity {
 
 
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
-        boolean isFirstRun = preferences.getBoolean(Constants.PreferenceConstants.IS_FIRST_RUN, true);
+        SharedPreferences preferences = getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME, 0);
+        boolean isFirstRun = preferences.getBoolean(Constants.AppPreferenceConstants.IS_FIRST_RUN, true);
         if(isFirstRun) {
             Intent intent = new Intent(this,FirstRunSetupActivity.class);
             startActivity(intent);

@@ -4,25 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.MultiAutoCompleteTextView;
-import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
 import org.jibble.pircbot.PircBot;
-import com.taviscratch.ponychatandroidclient.utility.Constants.PreferenceConstants;
-import com.taviscratch.ponychatandroidclient.utility.Util;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class IRCMessenger extends PircBot {

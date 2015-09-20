@@ -55,6 +55,7 @@ public class Constants {
 
     public static final class ThemeColorPreferenceConstants {
         public static final String PREFS_NAME = "theme colors";
+        public static final String THEME_NAME = "THEME_NAME";
         public static final String BACKGROUND_PRIMARY = "BACKGROUND_PRIMARY";
         public static final String BACKGROUND_SECONDARY = "BACKGOURND_SECONDARY";
         public static final String ACCENT = "ACCENT";

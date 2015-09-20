@@ -3,6 +3,7 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,27 +123,33 @@ public class Chatroom extends Fragment {
         topicMarquee.setSelected(true);
         topicMarquee.setText(session.getTopic(currentConversation));
 
-        //setTheme();
+        applyTheme();
 
         return theview;
 
     }
 
-    private void setTheme() {
-
-    /*    ThemeColors.ThemeColorHolder themeHolderClass = (ThemeColors.Magic) PonyChatApplication.getCurrentTheme();
-
+    private void applyTheme() {
         int backgroundPrimary, backgroundSecondary, accent,
                 menuTitle1, menuTitle2, menuItem,
                 chatName, chatMessage, chatAction, chatEvent;
 
+
+        // get the theme preferences
+        SharedPreferences themePreferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.ThemeColorPreferenceConstants.PREFS_NAME,0);
+
+
         // get the hex color codes
-        backgroundPrimary = ThemeColors.Magic.backgroundPrimary;
-        menuItem = themeHolderClass.menuItem;
-        chatName = ThemeColors.Magic.chatName;
-        chatMessage = ThemeColors.Magic.chatMessage;
-        chatAction = ThemeColors.Magic.chatAction;
-        chatEvent = ThemeColors.Magic.chatEvent;
+        backgroundPrimary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, -1);
+        menuItem = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_ITEM, -1);
+        chatName = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_NAME, -1);
+        chatMessage = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_MESSAGE, -1);
+        chatAction = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, -1);
+        chatEvent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, -1);
+
+        // invalid values check
+        if(backgroundPrimary==-1 || menuItem==-1 || chatName==-1 || chatMessage==-1 || chatAction==-1 || chatEvent==-1)
+            throw new IllegalArgumentException("error in retrieving theme preferences");
 
 
         // apply the colors
@@ -152,7 +159,7 @@ public class Chatroom extends Fragment {
         messageAdapter.setChatMessageColor(chatMessage);
         messageAdapter.setChatActionColor(chatAction);
         messageAdapter.setChatEventColor(chatEvent);
-        inputBox.setTextColor(chatMessage);*/
+        inputBox.setTextColor(chatMessage);
     }
 
     public static String getCurrentConversation() {
@@ -217,6 +224,13 @@ public class Chatroom extends Fragment {
             formattedTopic = conversationKey + " |> TOPIC: " + topic;
 
         topicMarquee.setText(formattedTopic);
+    }
+
+    public void setMessageAdapter(IRCMessageAdapter adapter) {
+        messageAdapter = adapter;
+        listView.setAdapter(messageAdapter);
+        applyTheme();
+
     }
 
 

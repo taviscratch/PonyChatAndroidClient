@@ -37,33 +37,41 @@ public class PonyChatApplication extends Application{
     public void onCreate() {
         super.onCreate();
 
-        // set up themes
-
-
-
         context = getApplicationContext();
 
 
+
+
+
+
+
+        // set up app preferences
         SharedPreferences appPreferences = getSharedPreferences(AppPreferenceConstants.PREFS_NAME, 0);
         SharedPreferences.Editor editor = appPreferences.edit();
 
-        boolean firstRun = appPreferences.getBoolean(AppPreferenceConstants.IS_FIRST_RUN,true);
+        boolean firstRun = appPreferences.getBoolean(AppPreferenceConstants.IS_FIRST_RUN, true);
 
         if(firstRun) {
             editor.putBoolean(AppPreferenceConstants.IS_FIRST_RUN, true);
             editor.remove(AppPreferenceConstants.DEFAULT_CHANNELS);
             editor.commit();
             checkPreferences(appPreferences);
-        } else {
-            if(appPreferences.getBoolean(AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false)){
+        } else
+            if(appPreferences.getBoolean(AppPreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false))
                 editor.putString(AppPreferenceConstants.USERNAME, Util.getRandomUsername());
-
-            }
-        }
 
         editor.apply();
 
 
+
+        // set up theme preferences
+        SharedPreferences themePreferences = getSharedPreferences(Constants.ThemeColorPreferenceConstants.PREFS_NAME, 0);
+        String themeName = themePreferences.getString(Constants.ThemeColorPreferenceConstants.THEME_NAME, null);
+        if(themeName==null) loadTheme(ThemeColors.Default.themeName);
+
+
+
+        // start services
         Intent ircBackgroundServiceIntent = new Intent(this, IRCBackgroundService.class);
         startService(ircBackgroundServiceIntent);
 
@@ -126,10 +134,20 @@ public class PonyChatApplication extends Application{
         SharedPreferences.Editor editor = themeColorPreferences.edit();
 
         if(theme.equals(ThemeColors.Default.themeName)) {
-
-            // TODO
+            editor.putString(Constants.ThemeColorPreferenceConstants.THEME_NAME,ThemeColors.Default.themeName);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, ThemeColors.Default.backgroundPrimary);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_SECONDARY, ThemeColors.Default.backgroundSecondary);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.ACCENT, ThemeColors.Default.accent);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_1, ThemeColors.Default.menuTitle1);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_2, ThemeColors.Default.menuTitle2);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.MENU_ITEM, ThemeColors.Default.menuItem);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_NAME, ThemeColors.Default.chatName);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_MESSAGE, ThemeColors.Default.chatMessage);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, ThemeColors.Default.chatAction);
+            editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, ThemeColors.Default.chatEvent);
 
         } else if(theme.equals(ThemeColors.Magic.themeName)) {
+            editor.putString(Constants.ThemeColorPreferenceConstants.THEME_NAME,ThemeColors.Magic.themeName);
             editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, ThemeColors.Magic.backgroundPrimary);
             editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_SECONDARY, ThemeColors.Magic.backgroundSecondary);
             editor.putInt(Constants.ThemeColorPreferenceConstants.ACCENT, ThemeColors.Magic.accent);
@@ -154,6 +172,7 @@ public class PonyChatApplication extends Application{
             // TODO
 
         } else if(theme.equals(ThemeColors.Party.themeName)) {
+            editor.putString(Constants.ThemeColorPreferenceConstants.THEME_NAME,ThemeColors.Party.themeName);
             editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, ThemeColors.Party.backgroundPrimary);
             editor.putInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_SECONDARY, ThemeColors.Party.backgroundSecondary);
             editor.putInt(Constants.ThemeColorPreferenceConstants.ACCENT, ThemeColors.Party.accent);
@@ -165,6 +184,10 @@ public class PonyChatApplication extends Application{
             editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, ThemeColors.Party.chatAction);
             editor.putInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, ThemeColors.Party.chatEvent);
 
+
+        } else if(theme.equals(ThemeColors.FashionHorse.themeName)) {
+
+            // TODO
 
         } else if(theme.equals(ThemeColors.FashionHorse.themeName)) {
 

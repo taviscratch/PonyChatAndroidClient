@@ -86,7 +86,7 @@ public class IRCSession extends Thread {
         Set<String> defaultChannels;
         int port;
 
-        SharedPreferences preferences = PonyChatApplication.getAppPreferences();
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
 
         // Get the preferences
         username = preferences.getString(Constants.AppPreferenceConstants.USERNAME, null);

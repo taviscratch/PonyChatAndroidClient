@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="channel: #ponyville |  pony pony pony pony pony pony pony pony pony pony pony pony pony"
             android:id="@+id/topicMarquee"
             android:background="@color/background_floating_material_dark"
             android:textColor="@color/abc_secondary_text_material_dark"
@@ -42,7 +41,8 @@
             android:layout_marginRight="2dp"
             android:stackFromBottom="true"
             android:textFilterEnabled="false"
-            android:layout_weight="3" />
+            android:layout_weight="3"
+            android:divider="#00ffffff" />
 
         <View
             android:layout_width="match_parent"

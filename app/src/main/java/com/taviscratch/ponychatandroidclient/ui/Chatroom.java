@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -76,8 +77,7 @@ public class Chatroom extends Fragment {
         listView = (ListView) theview.findViewById(R.id.chatroomListView);
         topicMarquee = (TextView) theview.findViewById(R.id.topicMarquee);
 
-
-
+        ContextThemeWrapper ctx = new ContextThemeWrapper(getActivity(), R.style.AppTheme);
 
         // Set up the listview array adapter
         IRCMessageAdapter messageAdapter = session.getMessageAdapter(currentConversation);

@@ -25,6 +25,7 @@ public class PonyChatApplication extends Application{
 
 
     private static Context context;
+    private static SharedPreferences appPreferences;
     public static boolean I_JUST_DONT_KNOW_WHAT_WENT_WRONG = false;
 
     /**
@@ -42,31 +43,24 @@ public class PonyChatApplication extends Application{
 
         context = getApplicationContext();
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
-        SharedPreferences.Editor editor = preferences.edit();
+        appPreferences = getSharedPreferences(Constants.PreferenceConstants.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = appPreferences.edit();
 
-
-
-
-        boolean firstRun = preferences.getBoolean(PreferenceConstants.IS_FIRST_RUN,true);
-
+        boolean firstRun = appPreferences.getBoolean(PreferenceConstants.IS_FIRST_RUN,true);
 
         if(firstRun) {
             editor.putBoolean(PreferenceConstants.IS_FIRST_RUN, true);
             editor.remove(PreferenceConstants.DEFAULT_CHANNELS);
             editor.commit();
-            checkPreferences(preferences);
+            checkPreferences(appPreferences);
         } else {
-            if(preferences.getBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false)){
+            if(appPreferences.getBoolean(PreferenceConstants.ALWAYS_RANDOMIZE_USERNAME, false)){
                 editor.putString(PreferenceConstants.USERNAME, Util.getRandomUsername());
 
             }
         }
 
-
-
         editor.apply();
-
 
 
         Intent ircBackgroundServiceIntent = new Intent(this, IRCBackgroundService.class);
@@ -77,17 +71,13 @@ public class PonyChatApplication extends Application{
 
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-
-    }
-
 
     public static Context getAppContext() {
         return context;
     }
-
+    public static SharedPreferences getAppPreferences() {
+        return appPreferences;
+    }
 
 
     private void checkPreferences(SharedPreferences preferences) {

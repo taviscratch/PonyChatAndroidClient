@@ -221,7 +221,7 @@ public class IRCMessenger extends PircBot {
         return new String[] {command,target,messagePayload};
     }
 
-    private TypeOfMessage parseCommand(String command) throws Exception {
+    private TypeOfMessage parseCommand(String command) throws IllegalArgumentException {
 
         if(command.equals("/me")) {
             return TypeOfMessage.ACTION;
@@ -241,8 +241,10 @@ public class IRCMessenger extends PircBot {
 
         }*/
 
-        else throw new Exception("Command not supported");
+        else throw new IllegalArgumentException("Command not supported");
     }
+
+
     private String parseTarget(String target) {
         if(target.equals(Constants.NETWORK_LOBBY))
             return "";

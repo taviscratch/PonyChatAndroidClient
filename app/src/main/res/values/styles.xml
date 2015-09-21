@@ -16,4 +16,9 @@
         <item name="android:gravity">center</item>
     </style>-->
 
+
+
+    <color name="transparent">#00000000</color>
+    <color name="whiteHighlight">#20FFFFFF</color>
+
 </resources>

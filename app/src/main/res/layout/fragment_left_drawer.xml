@@ -9,101 +9,128 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true">
 
-            <TextView
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="PonyChat"
-                android:id="@+id/networkLobbyText"
-                android:textColor="@color/abc_primary_text_material_dark"
-                android:layout_weight="1"
-                style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
-                android:clickable="true"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
 
-            <Button
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="PonyChat"
+                    android:id="@+id/networkLobbyText"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:layout_weight="1"
+                    style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+                    android:clickable="true"
+                    android:textStyle="bold"
+                    android:background="@drawable/highlight_on_click" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/settings_button"
+                    android:layout_weight="3"
+                    android:singleLine="true"
+                    android:onClick="settingsButtonOnClick"
+                    android:textSize="30sp"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:background="@drawable/highlight_on_click"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="\u00A4"
+                    android:clickable="true"
+                    android:enabled="true"
+                    android:focusable="false" />
+
+            </LinearLayout>
+
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/settings_button"
-                android:layout_weight="3"
-                android:singleLine="true"
-                android:background="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
-                android:onClick="settingsButtonOnClick" />
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/leftDrawerTitleSeperator" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/conversationsScrollView" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Channels"
+                            android:textColor="@color/abc_primary_text_material_dark"
+                            android:textStyle="bold|italic"
+                            android:paddingLeft="10dp"
+                            android:id="@+id/ChannelsListTitle" />
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/channelsList" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:text="Private Messages"
+                            android:textColor="@color/abc_primary_text_material_dark"
+                            android:textStyle="bold|italic"
+                            android:paddingLeft="10dp"
+                            android:id="@+id/PrivateMessagesListTitle" />
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/privateMessagesList" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
 
         </LinearLayout>
 
-
         <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:background="@android:color/darker_gray"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
-
-        <ScrollView
-            android:layout_width="match_parent"
+            android:layout_width="4px"
             android:layout_height="match_parent"
-            android:id="@+id/conversationsScrollView" >
+            android:background="@android:color/darker_gray"
+            android:id="@+id/leftDrawerEdge"
+            android:layout_alignParentRight="true" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Channels"
-                        android:textColor="@color/abc_primary_text_material_dark"
-                        android:textStyle="bold|italic"
-                        android:paddingLeft="10dp" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/channelsList" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Private Messages"
-                        android:textColor="@color/abc_primary_text_material_dark"
-                        android:textStyle="bold|italic"
-                        android:paddingLeft="10dp" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/privateMessagesList" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>

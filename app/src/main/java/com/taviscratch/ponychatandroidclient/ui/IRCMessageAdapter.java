@@ -1,4 +1,4 @@
-package com.taviscratch.ponychatandroidclient.irc;
+package com.taviscratch.ponychatandroidclient.ui;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.irc.IRCMessage;
 
 import java.util.List;
 

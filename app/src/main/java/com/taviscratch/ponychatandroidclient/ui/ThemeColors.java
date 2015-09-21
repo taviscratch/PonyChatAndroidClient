@@ -70,5 +70,6 @@ public class ThemeColors {
     }
 
     public static final int ERROR = 0xffff0000;
-    public static final int whiteChatBackground = 0xfffffef7;
+    public static final int whiteChatBackground = 0xfff9f9f4;
+    public static final int transparentHighlight = 0x20ffffff;
 }

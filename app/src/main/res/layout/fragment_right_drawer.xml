@@ -9,28 +9,49 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Users"
-            android:id="@+id/textView"
-            android:textIsSelectable="false"
-            android:textColor="@color/abc_primary_text_material_dark"
-            style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Users"
+                android:id="@+id/userListTitle"
+                android:textIsSelectable="false"
+                android:textColor="@color/abc_primary_text_material_dark"
+                style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+                android:textStyle="bold" />
 
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/userList"
-            android:padding="5dp" />
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@android:color/darker_gray"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/rightDrawerTitleSeperator" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userList"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="4px"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/rightDrawerEdge"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentLeft="true" />
+    </RelativeLayout>
 
 </FrameLayout>

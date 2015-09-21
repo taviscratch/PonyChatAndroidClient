@@ -2,6 +2,7 @@ package com.taviscratch.ponychatandroidclient.ui;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -12,12 +13,15 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
+import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
 
@@ -113,12 +117,13 @@ public class RightDrawer extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
-                IRCSession session = IRCSession.getInstance();
+                ((MainActivity) getActivity()).switchToConversation(username);
+                /*IRCSession session = IRCSession.getInstance();
                 if (!session.doesConversationExist(username))
                     session.startNewPrivateConversation(username);
                 Chatroom.switchConversationInView(username);
 
-                hideSelf();
+                hideSelf();*/
             }
         });
 
@@ -150,8 +155,9 @@ public class RightDrawer extends Fragment {
 
             ListView userList = (ListView) view.findViewById(R.id.userList);
             String[] userlist = IRCSession.getInstance().getUserList(Chatroom.getCurrentConversation());
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view, userlist);
+            SimpleThemedArrayAdapter adapter = new SimpleThemedArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, userlist);
             userList.setAdapter(adapter);
+            applyTheme();
 
             ViewPropertyAnimator animator = view.animate();
 
@@ -251,7 +257,52 @@ public class RightDrawer extends Fragment {
         mListener = null;
     }
 
+    private void applyTheme() {
+        int backgroundPrimary, backgroundSecondary, accent,
+                menuTitle1, menuTitle2, menuItem,
+                chatName, chatMessage, chatAction, chatEvent;
 
+        // get the theme preferences
+        SharedPreferences themePreferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.ThemeColorPreferenceConstants.PREFS_NAME,0);
+
+        // get the hex color codes
+        backgroundPrimary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, -1);
+        backgroundSecondary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_SECONDARY, -1);
+        accent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.ACCENT, -1);
+        menuTitle1 = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_1, -1);
+        menuTitle2 = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_2, -1);
+        menuItem = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_ITEM, -1);
+        chatName = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_NAME, -1);
+        chatMessage = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_MESSAGE, -1);
+        chatAction = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, -1);
+        chatEvent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, -1);
+
+
+        // check for invalid values
+        if(backgroundPrimary==-1 || menuItem==-1 || backgroundSecondary==-1 || accent==-1 || menuTitle1==-1 || menuTitle2==-1)
+            throw new IllegalArgumentException("error in retrieving theme preferences");
+
+        // get the views that we will be working with
+        View view = getView();
+        ListView userlist = (ListView) view.findViewById(R.id.userList);
+        View titleSeparator = view.findViewById(R.id.rightDrawerTitleSeperator);
+        View edge = view.findViewById(R.id.rightDrawerEdge);
+        TextView title = (TextView) view.findViewById(R.id.userListTitle);
+
+
+        // apply the colors
+        view.setBackgroundColor(backgroundPrimary);
+        titleSeparator.setBackgroundColor(backgroundSecondary);
+        edge.setBackgroundColor(backgroundSecondary);
+        title.setTextColor(chatEvent);
+        SimpleThemedArrayAdapter adapter = (SimpleThemedArrayAdapter) userlist.getAdapter();
+        adapter.setTextColor(menuItem);
+
+
+
+
+
+    }
 
     /**
      * This interface must be implemented by activities that contain this

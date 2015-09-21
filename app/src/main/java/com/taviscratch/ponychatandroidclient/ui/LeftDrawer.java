@@ -3,6 +3,7 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -20,6 +22,10 @@ import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Util;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -101,6 +107,9 @@ public class LeftDrawer extends Fragment {
         TextView networkLobbyText = (TextView) theview.findViewById(R.id.networkLobbyText);
         LinearLayout channelsList = (LinearLayout) theview.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
+        Button settingsButton = (Button) theview.findViewById(R.id.settings_button);
+
+        settingsButton.setText("\u00A4");
 
         conversationsScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -113,8 +122,8 @@ public class LeftDrawer extends Fragment {
         networkLobbyText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Chatroom.switchConversationInView(Constants.NETWORK_LOBBY);
-                hideSelf();
+                ((MainActivity) getActivity()).switchToConversation(Constants.NETWORK_LOBBY);
+                currentConversationView = null;
             }
         });
 
@@ -136,11 +145,6 @@ public class LeftDrawer extends Fragment {
         return theview;
     }
 
-    private final void hideSelf() {
-        ((MainActivity)getActivity()).hideFragment(this);
-    }
-
-
     public void updateLists(View view) {
         LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
@@ -148,35 +152,45 @@ public class LeftDrawer extends Fragment {
         String[] channelNames = session.getChannelNames();
         String[] privateMessageNames = session.getPrivateMessageNames();
 
+        // Sorting the lists
+        List chNames = Arrays.asList(channelNames);
+        List pmNames = Arrays.asList(privateMessageNames);
+        Collections.sort(chNames, String.CASE_INSENSITIVE_ORDER);
+        Collections.sort(pmNames, String.CASE_INSENSITIVE_ORDER);
+        channelNames = (String[]) chNames.toArray();
+        privateMessageNames = (String[]) pmNames.toArray();
+
+
         String currentConversation = Chatroom.getCurrentConversation();
+
+
+        // clears the channel and private message lists
+        channelsList.removeAllViewsInLayout();
+        privateMessagesList.removeAllViewsInLayout();
+
 
         // Check the current textviews for channels, and add new ones if necessary
         for(int i = 0; i < channelNames.length; i++) {
-            TextView textView = (TextView) channelsList.getChildAt(i);
-            if(textView==null || !channelNames[i].equals(textView.getText().toString())){
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
 
-                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+            textView.setText(channelNames[i]);
+            textView.setClickable(true);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String conversationName = ((TextView) v).getText().toString();
+                    unhighlightTextView(currentConversationView);
+                    currentConversationView = (TextView) v;
+                    highlightTextView(currentConversationView);
+                    ((MainActivity) getActivity()).switchToConversation(conversationName);
+                }
+            });
 
-                textView.setText(channelNames[i]);
-                textView.setClickable(true);
+            channelsList.addView(textView,i);
 
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = ((TextView) v).getText().toString();
-                        Chatroom.switchConversationInView(text);
-                        if(currentConversationView != null)
-                            unhighlightTextView(currentConversationView);
-                        currentConversationView = (TextView) v;
-                        highlightTextView(currentConversationView);
-                        hideSelf();
-                    }
-                });
 
-                channelsList.addView(textView,i);
 
-            }
             if(textView.getText().toString().equals(currentConversation)) {
                 currentConversationView = textView;
                 highlightTextView(textView);
@@ -186,30 +200,25 @@ public class LeftDrawer extends Fragment {
 
         // Check the current textviews for private messages, and add new ones if necessary
         for(int i = 0; i < privateMessageNames.length; i++) {
-            TextView textView = (TextView) privateMessagesList.getChildAt(i);
-            if(textView==null || !privateMessageNames[i].equals(textView.getText().toString())){
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
 
-                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+            textView.setText(privateMessageNames[i]);
+            textView.setClickable(true);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String conversationName = ((TextView) v).getText().toString();
+                    unhighlightTextView(currentConversationView);
+                    currentConversationView = (TextView) v;
+                    highlightTextView(currentConversationView);
+                    ((MainActivity) getActivity()).switchToConversation(conversationName);
+                }
+            });
 
-                textView.setText(privateMessageNames[i]);
+            privateMessagesList.addView(textView,i);
 
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = ((TextView) v).getText().toString();
-                        Chatroom.switchConversationInView(text);
-                        if(currentConversationView != null)
-                            unhighlightTextView(currentConversationView);
-                        currentConversationView = (TextView) v;
-                        highlightTextView(currentConversationView);
-                        hideSelf();
-                    }
-                });
 
-                privateMessagesList.addView(textView,i);
-
-            }
             if(textView.getText().toString().equals(currentConversation)) {
                 currentConversationView = textView;
                 highlightTextView(textView);
@@ -218,16 +227,83 @@ public class LeftDrawer extends Fragment {
         }
     }
 
-
-
-
-
     public void highlightTextView(TextView textView) {
-        textView.setBackgroundColor(getResources().getColor(R.color.background_floating_material_dark));
+        textView.setBackgroundColor(ThemeColors.transparentHighlight);
     }
     public void unhighlightTextView(TextView textView) {
-        textView.setBackgroundColor(0);
+        if(textView != null)
+            textView.setBackgroundColor(0x00ffffff);
     }
+
+
+
+
+
+
+    private void applyTheme() {
+        int backgroundPrimary, backgroundSecondary, accent,
+                menuTitle1, menuTitle2, menuItem,
+                chatName, chatMessage, chatAction, chatEvent;
+
+        // get the theme preferences
+        SharedPreferences themePreferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.ThemeColorPreferenceConstants.PREFS_NAME,0);
+
+        // get the hex color codes
+        backgroundPrimary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, -1);
+        backgroundSecondary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_SECONDARY, -1);
+        accent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.ACCENT, -1);
+        menuTitle1 = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_1, -1);
+        menuTitle2 = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_TITLE_2, -1);
+        menuItem = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.MENU_ITEM, -1);
+        chatName = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_NAME, -1);
+        chatMessage = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_MESSAGE, -1);
+        chatAction = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, -1);
+        chatEvent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, -1);
+
+
+        // check for invalid values
+        if(backgroundPrimary==-1 || menuItem==-1 || backgroundSecondary==-1 || accent==-1 || menuTitle1==-1 || menuTitle2==-1)
+            throw new IllegalArgumentException("error in retrieving theme preferences");
+
+        // get the views that we will be working with
+        View view = getView();
+        LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
+        LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
+        View titleSeparator = view.findViewById(R.id.leftDrawerTitleSeperator);
+        View edge = view.findViewById(R.id.leftDrawerEdge);
+        TextView lobbyTitle = (TextView) view.findViewById(R.id.networkLobbyText);
+        TextView channelsListTitle = (TextView) view.findViewById(R.id.ChannelsListTitle);
+        TextView privateMessagesListTitle = (TextView) view.findViewById(R.id.PrivateMessagesListTitle);
+        Button settingsButton = (Button) view.findViewById(R.id.settings_button);
+        TextView listItem;
+
+
+        // apply the colors
+        view.setBackgroundColor(backgroundPrimary);
+        titleSeparator.setBackgroundColor(backgroundSecondary);
+        edge.setBackgroundColor(backgroundSecondary);
+        lobbyTitle.setTextColor(chatEvent);
+        channelsListTitle.setTextColor(chatEvent);
+        privateMessagesListTitle.setTextColor(chatEvent);
+        settingsButton.setTextColor(chatAction);
+
+        int childcount = channelsList.getChildCount();
+        for(int i=0; i < childcount; i++) {
+            listItem = (TextView) channelsList.getChildAt(i);
+            listItem.setTextColor(menuItem);
+        }
+        childcount = privateMessagesList.getChildCount();
+        for(int i=0; i < childcount; i++) {
+            listItem = (TextView) privateMessagesList.getChildAt(i);
+            listItem.setTextColor(menuItem);
+        }
+    }
+
+
+
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -235,6 +311,7 @@ public class LeftDrawer extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -255,6 +332,7 @@ public class LeftDrawer extends Fragment {
         if(hidden == false) {
             final View view = getView();
             updateLists(view);
+            applyTheme();
 
             ViewPropertyAnimator animator = view.animate();
 
@@ -356,5 +434,10 @@ public class LeftDrawer extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
+
+
+
+
+
 
 }

@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,9 +20,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.irc.Conversation;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
-import com.taviscratch.ponychatandroidclient.irc.IRCMessageAdapter;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Util;
@@ -119,7 +117,6 @@ public class Chatroom extends Fragment {
             }
         });
 
-        switchConversationInView(Constants.NETWORK_LOBBY);
         topicMarquee.setSelected(true);
         topicMarquee.setText(session.getTopic(currentConversation));
 
@@ -134,10 +131,8 @@ public class Chatroom extends Fragment {
                 menuTitle1, menuTitle2, menuItem,
                 chatName, chatMessage, chatAction, chatEvent;
 
-
         // get the theme preferences
         SharedPreferences themePreferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.ThemeColorPreferenceConstants.PREFS_NAME,0);
-
 
         // get the hex color codes
         backgroundPrimary = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.BACKGROUND_PRIMARY, -1);
@@ -147,10 +142,9 @@ public class Chatroom extends Fragment {
         chatAction = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_ACTION, -1);
         chatEvent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, -1);
 
-        // invalid values check
+        // check for invalid values
         if(backgroundPrimary==-1 || menuItem==-1 || chatName==-1 || chatMessage==-1 || chatAction==-1 || chatEvent==-1)
             throw new IllegalArgumentException("error in retrieving theme preferences");
-
 
         // apply the colors
         topicMarquee.setBackgroundColor(backgroundPrimary);
@@ -160,6 +154,9 @@ public class Chatroom extends Fragment {
         messageAdapter.setChatActionColor(chatAction);
         messageAdapter.setChatEventColor(chatEvent);
         inputBox.setTextColor(chatMessage);
+        listView.setBackgroundColor(getResources().getColor(R.color.background_material_light));
+
+
     }
 
     public static String getCurrentConversation() {
@@ -209,28 +206,28 @@ public class Chatroom extends Fragment {
     }
 
 
-    public static void switchConversationInView(String conversationKey) {
-        IRCSession session = IRCSession.getInstance();
-        IRCMessageAdapter adapter = session.getMessageAdapter(conversationKey);
-        listView.setAdapter(adapter);
-        currentConversation = conversationKey;
 
-        String topic = session.getTopic(conversationKey);
-        String formattedTopic= conversationKey;
-        if(topic.equals(conversationKey) || topic.equals("")){
-            if(!Util.isChannel(conversationKey) && !conversationKey.equals(Constants.NETWORK_LOBBY))
-                formattedTopic = "[Private Message] " + conversationKey;
+    public void setConversation(Conversation conversation, IRCMessageAdapter adapter) {
+
+
+
+        // Topic formatting
+        String conversationName = conversation.getName();
+        String topic = conversation.getTopic();
+
+        String formattedTopic= conversationName;
+        if(topic.equals(conversationName) || topic.equals("")){
+            if(!Util.isChannel(conversationName) && !conversationName.equals(Constants.NETWORK_LOBBY))
+                formattedTopic = "[Private Message] " + conversationName;
         } else
-            formattedTopic = conversationKey + " |> TOPIC: " + topic;
+            formattedTopic = conversationName + " |>> " + topic;
 
         topicMarquee.setText(formattedTopic);
-    }
-
-    public void setMessageAdapter(IRCMessageAdapter adapter) {
+        currentConversation = conversationName;
         messageAdapter = adapter;
         listView.setAdapter(messageAdapter);
-        applyTheme();
 
+        applyTheme();
     }
 
 

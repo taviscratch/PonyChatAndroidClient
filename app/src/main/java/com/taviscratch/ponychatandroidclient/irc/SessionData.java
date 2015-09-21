@@ -1,5 +1,9 @@
 package com.taviscratch.ponychatandroidclient.irc;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
+import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 
 import java.util.Enumeration;
@@ -11,34 +15,34 @@ public class SessionData {
 
     private int maxMessageLogSize;
 
-    private Hashtable<String, MessageLog> conversations;
+    private Hashtable<String, Conversation> conversations;
 
     public SessionData(int maxChannelSize) {
         this.maxMessageLogSize = maxChannelSize;
-        conversations = new Hashtable<String, MessageLog>();
-        conversations.put(Constants.NETWORK_LOBBY, new MessageLog(maxChannelSize));
+        conversations = new Hashtable<String, Conversation>();
+        conversations.put(Constants.NETWORK_LOBBY, new Conversation(Constants.NETWORK_LOBBY, maxChannelSize));
     }
 
     // Standard data operations
-    public MessageLog addConversation(String key) {
-        return addConversation(key, new MessageLog(maxMessageLogSize));
+    public Conversation addConversation(String key) {
+        return addConversation(key, new Conversation(key, maxMessageLogSize));
     }
-    public MessageLog addConversation(String key, MessageLog value) {
+    public Conversation addConversation(String key, Conversation value) {
         return conversations.put(key, value);
     }
-    public MessageLog removeConversation(String key) {
+    public Conversation removeConversation(String key) {
         return conversations.remove(key);
     }
-    public MessageLog getConversation(String key){
+    public Conversation getConversation(String key){
         return conversations.get(key);
     }
 
-    // Adding a message to a converstation
+    // Adding a message to a conversation
     public void postToConversation(String key, IRCMessage message) {
         if(conversations.containsKey(key)) // add the message to the existing conversation
             conversations.get(key).addMessage(message);
         else // Create a new conversation with the message added to it
-            conversations.put(key, new MessageLog(maxMessageLogSize,message));
+            conversations.put(key, new Conversation(key, maxMessageLogSize, message));
 
     }
 
@@ -46,10 +50,10 @@ public class SessionData {
     public void changeMaxMessageLogSize(int newMax) {
         if(newMax < 1) throw new IllegalArgumentException("Max size must be at least 1");
 
-        MessageLog[] messageLogs = new MessageLog[0];
-        conversations.values().toArray(messageLogs);
-        for (int i = 0; i < messageLogs.length; i++) {
-            messageLogs[i].setSizeLimit(newMax);
+        Conversation[] conversations = new Conversation[0];
+        this.conversations.values().toArray(conversations);
+        for (int i = 0; i < conversations.length; i++) {
+            conversations[i].setSizeLimit(newMax);
         }
     }
 

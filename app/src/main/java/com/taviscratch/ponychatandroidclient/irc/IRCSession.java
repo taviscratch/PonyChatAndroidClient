@@ -11,7 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.R;
-import com.taviscratch.ponychatandroidclient.ui.Chatroom;
+import com.taviscratch.ponychatandroidclient.ui.IRCMessageAdapter;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
@@ -56,7 +56,7 @@ public class IRCSession extends Thread {
         // Initialize the adapter hashtable
         messageAdapters = new Hashtable<String, IRCMessageAdapter>();
 
-        MessageLog networkLobby = sessionData.getConversation(Constants.NETWORK_LOBBY);
+        Conversation networkLobby = sessionData.getConversation(Constants.NETWORK_LOBBY);
         networkLobby.setTopic(Constants.NETWORK_LOBBY);
 
         IRCMessageAdapter lobbyAdapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, networkLobby);
@@ -162,14 +162,14 @@ public class IRCSession extends Thread {
         sessionData.postToConversation(target, msg);
 
         if(!messageAdapters.containsKey(target)) {
-            MessageLog log = sessionData.getConversation(target);
+            Conversation log = sessionData.getConversation(target);
             IRCMessageAdapter adapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, log);
             messageAdapters.put(target, adapter);
         }
         messageAdapters.get(target).notifyDataSetChanged();
 
         // Notify the user
-        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
+        SharedPreferences preferences = PonyChatApplication.getAppContext().getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME, 0);
         if(preferences.getBoolean(Constants.AppPreferenceConstants.NOTIFICATIONS_ENABLED,true)) {
             Intent notificationIntent = new Intent(Constants.NOTIFICATION);
             notificationIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
@@ -217,16 +217,16 @@ public class IRCSession extends Thread {
 
 
 
-    public MessageLog getChannelData(String channelName) {
-        return getMessageLog(channelName);
+    public Conversation getConversationData(String conversationName) {
+        return getConversation(conversationName);
     }
-    public MessageLog getPrivateMessageData(String sender) {
-        return getMessageLog(sender);
+    public Conversation getPrivateMessageData(String sender) {
+        return getConversation(sender);
     }
-    public MessageLog getNetworkLobbyData() {
-        return getMessageLog(Constants.NETWORK_LOBBY);
+    public Conversation getNetworkLobbyData() {
+        return getConversation(Constants.NETWORK_LOBBY);
     }
-    private MessageLog getMessageLog(String key) {
+    private Conversation getConversation(String key) {
         return sessionData.getConversation(key);
     }
 
@@ -237,11 +237,9 @@ public class IRCSession extends Thread {
         if(messageAdapters.containsKey(key))
             return messageAdapters.get(key);
         else if(sessionData.conversationExists(key)) {
-            MessageLog log = sessionData.getConversation(key);
+            Conversation log = sessionData.getConversation(key);
             return messageAdapters.put(key ,new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, log));
-        }
-
-        else
+        } else
             throw new IllegalArgumentException("key does not exist");
     }
 
@@ -270,19 +268,36 @@ public class IRCSession extends Thread {
     public void leftChannel(String channelName) {
         sessionData.removeConversation(channelName);
         messageAdapters.remove(channelName);
-        if(channelName.equals(Chatroom.getCurrentConversation()))
-            Chatroom.switchConversationInView(Constants.NETWORK_LOBBY);
+        /*if(channelName.equals(Chatroom.getCurrentConversation()))
+            emitJoinedConversationIntent(Constants.NETWORK_LOBBY);*/
+
     }
 
 
 
     private void addConversation(String target) {
+        // throw an exception if the conversation already exists
+        if(doesConversationExist(target)) throw new IllegalArgumentException("conversation already exists");
+
+        // add the conversation
         sessionData.addConversation(target);
-        MessageLog log = sessionData.getConversation(target);
-        IRCMessageAdapter adapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, log);
+        Conversation conversation = sessionData.getConversation(target);
+        IRCMessageAdapter adapter = new IRCMessageAdapter(PonyChatApplication.getAppContext(), R.layout.irc_message_action, conversation);
         messageAdapters.put(target, adapter);
+
+
     }
 
+    public void emitJoinedConversationIntent(String target) {
+        Intent msgIntent = new Intent(Constants.JOINED_NEW_CONVERSATION);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.CONVERSATION_NAME, target);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+    }
+/*    public void emitLeftConversationIntent(String target) {
+        Intent msgIntent = new Intent(Constants.JOINED_NEW_CONVERSATION);
+        msgIntent.putExtra(Constants.IntentExtrasConstants.CONVERSATION_NAME, target);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+    }*/
 
 
 
@@ -316,9 +331,9 @@ public class IRCSession extends Thread {
 
     public void setChannelTopic(String channelName, String topic) {
         sessionData.getConversation(channelName).setTopic(topic);
+        // emit an intent letting the application know that a new conversation has been joined;
+        emitJoinedConversationIntent(channelName);
     }
-
-
 
 
 

@@ -3,10 +3,18 @@ package com.taviscratch.ponychatandroidclient.irc;
 
 import java.util.LinkedList;
 
-public class MessageLog extends LinkedList<IRCMessage> {
+public class Conversation extends LinkedList<IRCMessage> {
 
 
     private int maxSize;
+
+
+
+
+    private String name;
+    public String getName() {
+        return name;
+    }
 
     private String topic = "";
     public String getTopic() {
@@ -16,13 +24,16 @@ public class MessageLog extends LinkedList<IRCMessage> {
         this.topic = topic;
     }
 
+
+
     // Creates a new empty message log
-    public MessageLog(int maxSize) {
-        this(maxSize, null);
+    public Conversation(String name, int maxSize) {
+        this(name, maxSize, null);
     }
 
     // Creates a new message log with a single message in it
-    public MessageLog(int maxSize, IRCMessage message) {
+    public Conversation(String name, int maxSize, IRCMessage message) {
+        this.name = name;
         this.maxSize = maxSize;
         if(message != null) addMessage(message);
     }
@@ -48,9 +59,4 @@ public class MessageLog extends LinkedList<IRCMessage> {
         maxSize = newMaxSize;
     }
 
-
-/*    @Override
-    public int size() {
-        return super.size()-1;
-    }*/
 }

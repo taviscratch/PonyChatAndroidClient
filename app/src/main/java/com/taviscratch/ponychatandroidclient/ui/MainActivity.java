@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -20,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.irc.Conversation;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.services.NotificationService;
@@ -74,7 +78,9 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         setContentView(R.layout.activity_main);
         dpi = getResources().getDisplayMetrics().densityDpi;
 
+        registerReceivers();
         bindToService();
+
 
         // animation stuff
         ANIMATION_DURATION = getResources().getInteger(R.integer.animation_duration);
@@ -133,13 +139,35 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     }
 
 
+    public void switchToConversation(String conversationName) {
+        hideFragment(leftDrawer);
+        hideFragment(rightDrawer);
+
+        // if the conversation doesn't exist
+        if(!ircService.doesConversationExist(conversationName)) {
+            if(Util.isPrivateConversation(conversationName))
+                ircService.addPrivateConversation(conversationName);
+            else
+                throw new IllegalArgumentException("invalid conversation name submitted");
+        }
+
+        Conversation conversation = ircService.getConversation(conversationName);
+        IRCMessageAdapter messageAdapter = ircService.getIRCMessageAdapter(conversationName);
+
+        chatroom.setConversation(conversation, messageAdapter);
+
+    }
+
+
+
+
 
 
     @Override
     protected void onDestroy() {
 
         unbindService(ircServiceConnection);
-        SharedPreferences preferences = getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME,0);
+        SharedPreferences preferences = getSharedPreferences(Constants.AppPreferenceConstants.PREFS_NAME, 0);
         boolean keepServiceRunning = preferences.getBoolean(Constants.AppPreferenceConstants.KEEP_IRC_SERVICE_RUNNING_IN_BACKGROUND, false);
         if(!keepServiceRunning) {
             Intent ircBackgroundServiceIntent = new Intent(this,IRCBackgroundService.class);
@@ -148,8 +176,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
             Intent notificationServiceIntent = new Intent(this, NotificationService.class);
             stopService(notificationServiceIntent);
         }
-
-
 
         super.onDestroy();
 
@@ -264,5 +290,19 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         Intent intent = new Intent(PonyChatApplication.getAppContext(), IRCSettingsActivity.class);
         startActivity(intent);
         hideFragment(getFragmentManager().findFragmentByTag("LEFT DRAWER"));
+    }
+
+    public void registerReceivers() {
+        // A receiver for messages sent from the server
+        BroadcastReceiver joinedNewConversationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                String conversationName = extras.getString(Constants.IntentExtrasConstants.CONVERSATION_NAME);
+                switchToConversation(conversationName);
+            }
+        };
+        IntentFilter joinedNewConversationFilter = new IntentFilter(Constants.JOINED_NEW_CONVERSATION);
+        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(joinedNewConversationReceiver, joinedNewConversationFilter);
     }
 }

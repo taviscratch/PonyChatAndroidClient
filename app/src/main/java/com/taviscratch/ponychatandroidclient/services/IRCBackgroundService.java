@@ -6,13 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.irc.Conversation;
+import com.taviscratch.ponychatandroidclient.ui.IRCMessageAdapter;
 import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 
@@ -83,6 +84,22 @@ public class IRCBackgroundService extends Service {
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(disconnectReceiver, disconnectFilter);
     }
 
+
+    public IRCMessageAdapter getIRCMessageAdapter(String conversationName) {
+        return IRCSession.getInstance().getMessageAdapter(conversationName);
+    }
+
+    public Conversation getConversation(String conversationName) {
+        return IRCSession.getInstance().getConversationData(conversationName);
+    }
+
+    public boolean doesConversationExist(String conversationName) {
+        return IRCSession.getInstance().doesConversationExist(conversationName);
+    }
+
+    public void addPrivateConversation(String conversationName){
+        IRCSession.getInstance().startNewPrivateConversation(conversationName);
+    }
 
 
 }

@@ -19,6 +19,7 @@ public class Constants {
     public static final String DISCONNECT_FROM_IRC_NETWORK = "com.taviscratch.ponychatandroidclient.DISCONNECT_FROM_IRC_NETWORK";
     public static final String IRC_CONNECTION_SUCCESS = "com.taviscratch.ponychatandroidclient.IRC_CONNECTION_SUCCESS";
     public static final String IRC_CONNECTION_FAILURE = "com.taviscratch.ponychatandroidclient.IRC_CONNECTION_FAILURE";
+    public static final String JOINED_NEW_CONVERSATION = "com.taviscratch.ponychatandroidclient.JOINED_NEW_CONVERSATION";
 
 
     // The channel name fot the network lobby
@@ -75,6 +76,7 @@ public class Constants {
         public static final String SENDER = "SENDER";
         public static final String MESSAGE_TYPE = "MESSAGE_TYPE";
         public static final String MESSAGE_TARGET = "MESSAGE_TARGET";
+        public static final String CONVERSATION_NAME = "CONVERSATION_NAME";
     }
 
     public static final class MessageType {

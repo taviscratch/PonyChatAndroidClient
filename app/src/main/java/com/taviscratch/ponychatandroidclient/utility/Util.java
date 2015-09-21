@@ -40,8 +40,13 @@ public class Util {
 
 
 
-    public static boolean isChannel(String target) {
-        if(target.startsWith("#"))
+    public static boolean isChannel(String conversationName) {
+        if(conversationName.startsWith("#"))
+            return true;
+        return false;
+    }
+    public static boolean isPrivateConversation(String conversationName) {
+        if(!isChannel(conversationName) && !conversationName.equals(Constants.NETWORK_LOBBY))
             return true;
         return false;
     }

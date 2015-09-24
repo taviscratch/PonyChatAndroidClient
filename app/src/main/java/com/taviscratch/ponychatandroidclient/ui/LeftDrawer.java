@@ -216,13 +216,13 @@ public class LeftDrawer extends Fragment {
                 }
             });
 
-            privateMessagesList.addView(textView,i);
+            privateMessagesList.addView(textView, i);
 
 
-            if(textView.getText().toString().equals(currentConversation)) {
+            if (textView.getText().toString().equals(currentConversation)) {
                 currentConversationView = textView;
                 highlightTextView(textView);
-            } else
+            } else if (textView != null)
                 unhighlightTextView(textView);
         }
     }
@@ -231,8 +231,7 @@ public class LeftDrawer extends Fragment {
         textView.setBackgroundColor(ThemeColors.transparentHighlight);
     }
     public void unhighlightTextView(TextView textView) {
-        if(textView != null)
-            textView.setBackgroundColor(0x00ffffff);
+        textView.setBackgroundColor(0x00ffffff);
     }
 
 

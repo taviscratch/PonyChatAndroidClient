@@ -118,12 +118,6 @@ public class RightDrawer extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
                 ((MainActivity) getActivity()).switchToConversation(username);
-                /*IRCSession session = IRCSession.getInstance();
-                if (!session.doesConversationExist(username))
-                    session.startNewPrivateConversation(username);
-                Chatroom.switchConversationInView(username);
-
-                hideSelf();*/
             }
         });
 

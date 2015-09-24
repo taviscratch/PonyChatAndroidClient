@@ -261,10 +261,6 @@ public class LeftDrawer extends Fragment {
         chatEvent = themePreferences.getInt(Constants.ThemeColorPreferenceConstants.CHAT_EVENT, -1);
 
 
-        // check for invalid values
-        if(backgroundPrimary==-1 || menuItem==-1 || backgroundSecondary==-1 || accent==-1 || menuTitle1==-1 || menuTitle2==-1)
-            throw new IllegalArgumentException("error in retrieving theme preferences");
-
         // get the views that we will be working with
         View view = getView();
         LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);

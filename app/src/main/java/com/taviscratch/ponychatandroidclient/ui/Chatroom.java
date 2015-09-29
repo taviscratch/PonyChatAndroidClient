@@ -126,6 +126,10 @@ public class Chatroom extends Fragment {
 
     }
 
+    public void invalidateTheme() {
+        applyTheme();
+    }
+
     private void applyTheme() {
         int backgroundPrimary, backgroundSecondary, accent,
                 menuTitle1, menuTitle2, menuItem,
@@ -179,23 +183,16 @@ public class Chatroom extends Fragment {
 
 
 
-        // Topic formatting
-        String conversationName = conversation.getName();
-        String topic = conversation.getTopic();
 
-        String formattedTopic= conversationName;
-        if(topic.equals(conversationName) || topic.equals("")){
-            if(!Util.isChannel(conversationName) && !conversationName.equals(Constants.NETWORK_LOBBY))
-                formattedTopic = "[Private Message] " + conversationName;
-        } else
-            formattedTopic = conversationName + " |>> " + topic;
+    }
 
-        topicMarquee.setText(formattedTopic);
-        currentConversation = conversationName;
+    public void setConversationAdapter(IRCMessageAdapter adapter) {
         messageAdapter = adapter;
         listView.setAdapter(messageAdapter);
+    }
 
-        applyTheme();
+    public void setTopicMarqueeText(String topic) {
+        topicMarquee.setText(topic);
     }
 
 
@@ -219,13 +216,11 @@ public class Chatroom extends Fragment {
         }
     }
 
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
-
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

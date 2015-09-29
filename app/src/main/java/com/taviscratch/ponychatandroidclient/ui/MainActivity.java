@@ -155,11 +155,30 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         Conversation conversation = ircService.getConversation(conversationName);
         IRCMessageAdapter messageAdapter = ircService.getIRCMessageAdapter(conversationName);
 
-        chatroom.setConversation(conversation, messageAdapter);
 
+        // set adapter
+        chatroom.setConversationAdapter(messageAdapter);
+
+        // set topic
+        String topicText = formatTopicText(conversationName, conversation.getTopic());
+        chatroom.setTopicMarqueeText(topicText);
+
+        // ensure that theme is properly loaded
+        chatroom.invalidateTheme();
     }
 
+    private String formatTopicText(String conversationName, String topic) {
 
+        // Topic formatting
+        String formattedTopic= conversationName;
+        if(topic.equals(conversationName) || topic.equals("")){
+            if(!Util.isChannel(conversationName) && !conversationName.equals(Constants.NETWORK_LOBBY))
+                formattedTopic = "[Private Message] " + conversationName;
+        } else
+            formattedTopic = conversationName + " |>> " + topic;
+
+        return formattedTopic;
+    }
 
 
 
@@ -179,7 +198,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         }
 
         super.onDestroy();
-
     }
 
 

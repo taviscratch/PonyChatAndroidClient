@@ -23,48 +23,57 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
-                <TextView
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="PonyChat"
-                    android:id="@+id/networkLobbyText"
-                    android:textColor="@color/abc_primary_text_material_dark"
                     android:layout_weight="1"
-                    style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
-                    android:clickable="true"
-                    android:textStyle="bold"
-                    android:background="@drawable/highlight_on_click" />
+                    android:layout_marginRight="1dp"
+                    android:background="@color/lighten1">
 
-                <Button
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="PonyChat"
+                        android:id="@+id/networkLobbyText"
+                        android:textColor="@color/abc_primary_text_material_dark"
+                        android:layout_weight="1"
+                        style="@style/Widget.AppCompat.Light.ActionButton.Overflow"
+                        android:clickable="true"
+                        android:textStyle="bold"
+                        android:background="@drawable/highlight_on_click" />
+                </FrameLayout>
+
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/settings_button"
                     android:layout_weight="3"
-                    android:singleLine="true"
-                    android:onClick="settingsButtonOnClick"
-                    android:textSize="30sp"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:background="@drawable/highlight_on_click"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:text="\u00A4"
-                    android:clickable="true"
-                    android:enabled="true"
-                    android:focusable="false" />
+                    android:layout_marginLeft="1dp"
+                    android:background="@color/lighten1">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/settings_button"
+                        android:layout_weight="3"
+                        android:singleLine="true"
+                        android:onClick="settingsButtonOnClick"
+                        android:textSize="30sp"
+                        android:textColor="@color/abc_primary_text_material_dark"
+                        android:background="@drawable/highlight_on_click"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:text="\u00A4"
+                        android:clickable="true"
+                        android:enabled="true"
+                        android:focusable="false" />
+                </FrameLayout>
 
             </LinearLayout>
 
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@android:color/darker_gray"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:id="@+id/leftDrawerTitleSeperator" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -127,7 +136,7 @@
         <View
             android:layout_width="4px"
             android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"
+            android:background="@color/darken1"
             android:id="@+id/leftDrawerEdge"
             android:layout_alignParentRight="true" />
 

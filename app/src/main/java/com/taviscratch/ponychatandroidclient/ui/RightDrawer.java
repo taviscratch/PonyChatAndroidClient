@@ -117,6 +117,9 @@ public class RightDrawer extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
+                /*if (mListener != null) {
+                    mListener.onUserNameSelected(username);
+                }*/
                 ((MainActivity) getActivity()).switchToConversation(username);
             }
         });
@@ -224,33 +227,6 @@ public class RightDrawer extends Fragment {
         }
     }
 
-
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     private void applyTheme() {
         int backgroundPrimary, backgroundSecondary, accent,
                 menuTitle1, menuTitle2, menuItem,
@@ -298,6 +274,25 @@ public class RightDrawer extends Fragment {
 
     }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -309,8 +304,7 @@ public class RightDrawer extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onUserNameSelected(String username);
     }
 
 

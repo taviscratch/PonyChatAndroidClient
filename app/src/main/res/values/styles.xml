@@ -19,6 +19,11 @@
 
 
     <color name="transparent">#00000000</color>
-    <color name="whiteHighlight">#20FFFFFF</color>
+    <color name="lighten1">#20FFFFFF</color>
+    <color name="lighten2">#40FFFFFF</color>
+    <color name="lighten3">#60FFFFFF</color>
+    <color name="darken1">#20000000</color>
+    <color name="darken2">#40000000</color>
+    <color name="darken3">#60000000</color>
 
 </resources>

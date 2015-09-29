@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         public void onServiceDisconnected(ComponentName name) {
             if(Constants.DEBUG) Toast.makeText(MainActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
         }
+
     };
 
 
@@ -191,14 +192,6 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         Intent intent = new Intent(this, IRCBackgroundService.class);
         bindService(intent, ircServiceConnection, Context.BIND_AUTO_CREATE);
     }
-    @Override
-    // TODO
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
-
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -304,5 +297,20 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         };
         IntentFilter joinedNewConversationFilter = new IntentFilter(Constants.JOINED_NEW_CONVERSATION);
         LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).registerReceiver(joinedNewConversationReceiver, joinedNewConversationFilter);
+    }
+
+    @Override
+    public void onConversationSelected(String conversationName) {
+
+    }
+
+    @Override
+    public void onUserNameSelected(String username) {
+
+    }
+
+    @Override
+    public void onProcessUserInput(String rawMessage) {
+
     }
 }

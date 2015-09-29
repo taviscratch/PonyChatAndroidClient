@@ -109,6 +109,7 @@ public class LeftDrawer extends Fragment {
         LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
         Button settingsButton = (Button) theview.findViewById(R.id.settings_button);
 
+        // set the text for the settings button to the Currency unicode symbol
         settingsButton.setText("\u00A4");
 
         conversationsScrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -180,7 +181,7 @@ public class LeftDrawer extends Fragment {
                 @Override
                 public void onClick(View v) {
                     String conversationName = ((TextView) v).getText().toString();
-                    unhighlightTextView(currentConversationView);
+                    if (currentConversationView != null) unhighlightTextView(currentConversationView);
                     currentConversationView = (TextView) v;
                     highlightTextView(currentConversationView);
                     ((MainActivity) getActivity()).switchToConversation(conversationName);
@@ -194,7 +195,7 @@ public class LeftDrawer extends Fragment {
             if(textView.getText().toString().equals(currentConversation)) {
                 currentConversationView = textView;
                 highlightTextView(textView);
-            } else
+            } else if (textView != null)
                 unhighlightTextView(textView);
         }
 
@@ -264,7 +265,7 @@ public class LeftDrawer extends Fragment {
         View view = getView();
         LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
         LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
-        View titleSeparator = view.findViewById(R.id.leftDrawerTitleSeperator);
+        //View titleSeparator = view.findViewById(R.id.leftDrawerTitleSeperator);
         View edge = view.findViewById(R.id.leftDrawerEdge);
         TextView lobbyTitle = (TextView) view.findViewById(R.id.networkLobbyText);
         TextView channelsListTitle = (TextView) view.findViewById(R.id.ChannelsListTitle);
@@ -275,7 +276,7 @@ public class LeftDrawer extends Fragment {
 
         // apply the colors
         view.setBackgroundColor(backgroundPrimary);
-        titleSeparator.setBackgroundColor(backgroundSecondary);
+        //titleSeparator.setBackgroundColor(backgroundSecondary);
         edge.setBackgroundColor(backgroundSecondary);
         lobbyTitle.setTextColor(chatEvent);
         channelsListTitle.setTextColor(chatEvent);
@@ -293,32 +294,6 @@ public class LeftDrawer extends Fragment {
             listItem.setTextColor(menuItem);
         }
     }
-
-
-
-
-
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -409,6 +384,18 @@ public class LeftDrawer extends Fragment {
         }
     }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -426,8 +413,7 @@ public class LeftDrawer extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onConversationSelected(String conversationName);
     }
 
 

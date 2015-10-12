@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
+import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 
 import org.jibble.pircbot.PircBot;
@@ -17,92 +18,120 @@ import java.util.StringTokenizer;
 public class IRCMessenger extends PircBot {
 
     BroadcastReceiver outgoingMessageReceiver, connectReceiver, disconnectReceiver;
+    private SessionData sessionData;
 
-    public IRCMessenger(String username) {
-        this(username, Constants.PreferenceDefaults.REALNAME);
+
+
+
+    public IRCMessenger(String username, SessionData sessionData) {
+        this(username, Constants.PreferenceDefaults.REALNAME, sessionData);
     }
-
-    public IRCMessenger(String username, String realname) {
+    public IRCMessenger(String username, String realname, SessionData sessionData) {
         this.setName(username);
         this.setVersion(realname);
+
+        this.sessionData = sessionData;
 
         registerReceivers();
     }
 
 
-    @Override
-    public void onMessage(String channel, String sender,
-                          String login, String hostname, String message) {
-        Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, channel);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE, Constants.MessageType.PRIVMSG);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
-    }
 
+
+    @Override
+    public void onMessage(String channel, String sender, String login, String hostname, String message) {
+        IRCMessage msg = new IRCMessage(sender, message, System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+        sessionData.putMessage(channel, msg);
+    }
 
 
     @Override
     protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
-        IRCSession.getInstance().setUsername(newNick);
+        String message = null;
+
+        if(oldNick.equals(IRCBackgroundService.currentUsername))
+            IRCBackgroundService.currentUsername = newNick;
+        message = oldNick + " is now known as " + newNick;
+
+
+        IRCMessage msg = new IRCMessage(oldNick, message, System.currentTimeMillis(), IRCMessage.MessageType.EVENT);
+
+        // get the names for every conversation
+        String[] names = sessionData.getAllConversationNames();
+
+        // check each conversation for the username and update appropriately
+        for(int i=0;i<names.length;i++) {
+            String conversationName = names[i];
+            if(sessionData.isUserIn(conversationName, oldNick)) {
+                sessionData.removeUserFrom(conversationName, oldNick);
+                sessionData.addUserTo(conversationName,newNick);
+                sessionData.putMessage(conversationName, msg);
+            }
+        }
+
+        // check for existing conversations that are with the user who's nick is being changed
+        if(sessionData.conversationExists(oldNick)) {
+            // create a new conversation with the new nick, but based on the old nick's conversation
+            Conversation privConv = new Conversation(newNick,sessionData.getConversation(oldNick));
+            sessionData.removeConversation(oldNick);
+            sessionData.addConversation(newNick, privConv);
+        }
+
     }
 
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE, Constants.MessageType.PRIVMSG);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+        IRCMessage msg = new IRCMessage(sender, message, System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+        sessionData.putMessage(sender, msg);
     }
+
 
     @Override
     protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
-        Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, notice);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sourceNick);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, Constants.NETWORK_LOBBY);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE, Constants.MessageType.PRIVMSG);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+        IRCMessage msg = new IRCMessage(sourceNick, notice, System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+        sessionData.putMessage(Constants.NETWORK_LOBBY, msg);
+        // TODO add support for properly dealing with notices from users and channels
     }
+
 
     @Override
     protected void onServerResponse(int code, String response) {
         if(code == 372 || code == 375 || code == 376) {
-            Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
-            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, response);
-            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, Constants.NETWORK_LOBBY);
-            msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.PRIVMSG);
-            LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+            IRCMessage msg = new IRCMessage(Constants.NETWORK_LOBBY, response, System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+            sessionData.putMessage(Constants.NETWORK_LOBBY, msg);
+
         } else if(code == 437) {
             // 437 = "Nick/channel is temporarily unavailable"
             setName(getName()+"_");
             try {
                 connect(getServer(),getPort(),getPassword());
             } catch(Exception e) {
-
+                // TODO
             }
         }
     }
 
+
     @Override
     protected void onAction(String sender, String login, String hostname, String target, String action) {
-        Intent msgIntent = new Intent(Constants.MESSAGE_RECEIVED);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, action);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.SENDER, sender);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, target);
-        msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TYPE,Constants.MessageType.ACTION);
-        LocalBroadcastManager.getInstance(PonyChatApplication.getAppContext()).sendBroadcast(msgIntent);
+        IRCMessage msg = new IRCMessage(sender, action, System.currentTimeMillis(), IRCMessage.MessageType.ACTION);
+        sessionData.putMessage(target, msg);
     }
 
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
-        IRCSession session = IRCSession.getInstance();
-        if(sender.equals(session.getUsername()))
-            session.joinedChannel(channel);
+        String message = null;
+
+        // set the message
+        if(sender.equals(IRCBackgroundService.currentUsername))
+            message = "You have joined the channel";
+        else
+            message = sender + " has joined the channel";
+
+        // add the IRCMessage to the correct conversation
+        IRCMessage msg = new IRCMessage(sender, message, System.currentTimeMillis(), IRCMessage.MessageType.EVENT);
+        sessionData.putMessage(channel, msg);
     }
 
     /**
@@ -120,7 +149,7 @@ public class IRCMessenger extends PircBot {
      */
     @Override
     protected void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
-        IRCSession.getInstance().setChannelTopic(channel, topic);
+        sessionData.setConversationTopic(channel, topic);
     }
 
     /**
@@ -137,12 +166,62 @@ public class IRCMessenger extends PircBot {
      */
     @Override
     protected void onPart(String channel, String sender, String login, String hostname) {
-        IRCSession session = IRCSession.getInstance();
-        if(sender.equals(session.getUsername()))
-            session.leftChannel(channel);
+        String message = null;
+
+        // set the message
+        if(sender.equals(IRCBackgroundService.currentUsername))
+            message = "You have left the channel";
+        else
+            message = sender + " has left the channel";
+
+
+        // add the IRCMessage to the correct conversation
+        IRCMessage msg = new IRCMessage(sender, message, System.currentTimeMillis(), IRCMessage.MessageType.EVENT);
+        sessionData.putMessage(channel, msg);
+
+        // if the person leaving the channel is the user
+        if(sender.equals(IRCBackgroundService.currentUsername)) {
+            // then remove that conversation
+            /*sessionData.removeConversation(channel);*/
+        }
+
+
     }
 
+    /**
+     * This method is called whenever someone (possibly us) is kicked from
+     * any of the channels that we are in.
+     * <p/>
+     * The implementation of this method in the PircBot abstract class
+     * performs no actions and may be overridden as required.
+     *
+     * @param channel        The channel from which the recipient was kicked.
+     * @param kickerNick     The nick of the user who performed the kick.
+     * @param kickerLogin    The login of the user who performed the kick.
+     * @param kickerHostname The hostname of the user who performed the kick.
+     * @param recipientNick  The unfortunate recipient of the kick.
+     * @param reason         The reason given by the user who performed the kick.
+     */
+    @Override
+    protected void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+        String message = null;
 
+        // set the message
+        if(recipientNick.equals(IRCBackgroundService.currentUsername))
+            message = "You have been kicked from the channel";
+        else
+            message = recipientNick + " has been kicked from the channel";
+
+        // if the person that is getting kicked is the user
+        if(recipientNick.equals(IRCBackgroundService.currentUsername)) {
+            // then remove that conversation
+            /*sessionData.removeConversation(channel);*/
+        }
+        else { // add the IRCMessage to the correct conversation
+            IRCMessage msg = new IRCMessage(recipientNick, message, System.currentTimeMillis(), IRCMessage.MessageType.EVENT);
+            sessionData.putMessage(channel, msg);
+        }
+    }
 
     // Setup and register the broadcast receiver
     private void registerReceivers() {
@@ -249,10 +328,10 @@ public class IRCMessenger extends PircBot {
     }
 
     private void handleOutgoingMessage(String command, String target, String message) {
-        IRCSession session = IRCSession.getInstance();
         IRCMessage msg;
 
         TypeOfMessage type = null;
+        String currentUsername = IRCBackgroundService.currentUsername;
 
         try {
             type = parseCommand(command);
@@ -266,13 +345,13 @@ public class IRCMessenger extends PircBot {
             case PRIVMSG:
                 sendMessage(target, message);
                 if(target.toLowerCase().equals("nickserv")) target = Constants.NETWORK_LOBBY;
-                msg = new IRCMessage(session.getUsername(),message,System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
-                session.postOutgoingMessage(target,msg);
+                msg = new IRCMessage(currentUsername,message,System.currentTimeMillis(), IRCMessage.MessageType.PRIVMSG);
+                sessionData.putMessage(target, msg);
                 break;
             case ACTION:
                 sendAction(target, message);
-                msg = new IRCMessage(session.getUsername(),message,System.currentTimeMillis(), IRCMessage.MessageType.ACTION);
-                session.postOutgoingMessage(target,msg);
+                msg = new IRCMessage(currentUsername,message,System.currentTimeMillis(), IRCMessage.MessageType.ACTION);
+                sessionData.putMessage(target, msg);
                 break;
             case JOIN:
                 joinChannel(message);

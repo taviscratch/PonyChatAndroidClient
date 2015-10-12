@@ -51,6 +51,9 @@ public class IRCMessage {
 
     public enum MessageType {
         PRIVMSG,
-        ACTION
+        ACTION,
+        EVENT,
+        ERROR,
+        RAW
     }
 }

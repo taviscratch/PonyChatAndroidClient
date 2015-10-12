@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,13 +18,13 @@ import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
-import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Util;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 
 
 /**
@@ -48,15 +47,19 @@ public class LeftDrawer extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private PriorityQueue<String> channelNames, privateConversationNames;
+
 
     float drawerWidth, screenWidth;
     private static final int animationDuration = 300;
     private static float DERPYS_CONSTANT = 1f;
     private static float ANIMATION_TRANSLATION_SCALE = 0.95f;
 
-    static IRCSession session;
+    /*static IRCSession session;*/
 
     TextView currentConversationView;
+
+    private int mListItemTextColor;
 
 
 
@@ -85,6 +88,10 @@ public class LeftDrawer extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        channelNames = new PriorityQueue<String>();
+        privateConversationNames = new PriorityQueue<String>();
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -96,7 +103,6 @@ public class LeftDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View theview = inflater.inflate(R.layout.fragment_left_drawer, container, false);
-        session = IRCSession.getInstance();
         
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         theview.setX(screenWidth);
@@ -105,8 +111,6 @@ public class LeftDrawer extends Fragment {
 
         ScrollView conversationsScrollView = (ScrollView) theview.findViewById(R.id.conversationsScrollView);
         TextView networkLobbyText = (TextView) theview.findViewById(R.id.networkLobbyText);
-        LinearLayout channelsList = (LinearLayout) theview.findViewById(R.id.channelsList);
-        LinearLayout privateMessagesList = (LinearLayout) theview.findViewById(R.id.privateMessagesList);
         Button settingsButton = (Button) theview.findViewById(R.id.settings_button);
 
         // set the text for the settings button to the Currency unicode symbol
@@ -123,15 +127,11 @@ public class LeftDrawer extends Fragment {
         networkLobbyText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).switchToConversation(Constants.NETWORK_LOBBY);
+                mListener.onConversationSelected(Constants.NETWORK_LOBBY);
                 currentConversationView = null;
             }
         });
 
-        String[] channelNames = session.getChannelNames();
-        String[] privateMessageNames = session.getPrivateMessageNames();
-
-        updateLists(theview);
 
         theview.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -141,106 +141,20 @@ public class LeftDrawer extends Fragment {
             }
         });
 
-
+        // Now, careful Derpy...
         if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) theview.setRotation(DERPYS_CONSTANT);
+
         return theview;
-    }
-
-    public void updateLists(View view) {
-        LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
-        LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
-
-        String[] channelNames = session.getChannelNames();
-        String[] privateMessageNames = session.getPrivateMessageNames();
-
-        // Sorting the lists
-        List chNames = Arrays.asList(channelNames);
-        List pmNames = Arrays.asList(privateMessageNames);
-        Collections.sort(chNames, String.CASE_INSENSITIVE_ORDER);
-        Collections.sort(pmNames, String.CASE_INSENSITIVE_ORDER);
-        channelNames = (String[]) chNames.toArray();
-        privateMessageNames = (String[]) pmNames.toArray();
-
-
-        String currentConversation = Chatroom.getCurrentConversation();
-
-
-        // clears the channel and private message lists
-        channelsList.removeAllViewsInLayout();
-        privateMessagesList.removeAllViewsInLayout();
-
-
-        // Check the current textviews for channels, and add new ones if necessary
-        for(int i = 0; i < channelNames.length; i++) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
-
-            textView.setText(channelNames[i]);
-            textView.setClickable(true);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String conversationName = ((TextView) v).getText().toString();
-                    if (currentConversationView != null) unhighlightTextView(currentConversationView);
-                    currentConversationView = (TextView) v;
-                    highlightTextView(currentConversationView);
-                    ((MainActivity) getActivity()).switchToConversation(conversationName);
-                }
-            });
-
-            channelsList.addView(textView,i);
-
-
-
-            if(textView.getText().toString().equals(currentConversation)) {
-                currentConversationView = textView;
-                highlightTextView(textView);
-            } else if (textView != null)
-                unhighlightTextView(textView);
-        }
-
-        // Check the current textviews for private messages, and add new ones if necessary
-        for(int i = 0; i < privateMessageNames.length; i++) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            TextView textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
-
-            textView.setText(privateMessageNames[i]);
-            textView.setClickable(true);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String conversationName = ((TextView) v).getText().toString();
-                    unhighlightTextView(currentConversationView);
-                    currentConversationView = (TextView) v;
-                    highlightTextView(currentConversationView);
-                    ((MainActivity) getActivity()).switchToConversation(conversationName);
-                }
-            });
-
-            privateMessagesList.addView(textView, i);
-
-
-            if (textView.getText().toString().equals(currentConversation)) {
-                currentConversationView = textView;
-                highlightTextView(textView);
-            } else if (textView != null)
-                unhighlightTextView(textView);
-        }
     }
 
     public void highlightTextView(TextView textView) {
         textView.setBackgroundColor(ThemeColors.transparentHighlight);
     }
     public void unhighlightTextView(TextView textView) {
-        textView.setBackgroundColor(0x00ffffff);
+        textView.setBackgroundColor(0x00ffffff); // transparent
     }
 
-
-
-
-
-
-    private void applyTheme() {
+    public void updateTheme() {
         int backgroundPrimary, backgroundSecondary, accent,
                 menuTitle1, menuTitle2, menuItem,
                 chatName, chatMessage, chatAction, chatEvent;
@@ -273,6 +187,7 @@ public class LeftDrawer extends Fragment {
         Button settingsButton = (Button) view.findViewById(R.id.settings_button);
         TextView listItem;
 
+        mListItemTextColor = menuItem;
 
         // apply the colors
         view.setBackgroundColor(backgroundPrimary);
@@ -301,8 +216,8 @@ public class LeftDrawer extends Fragment {
 
         if(hidden == false) {
             final View view = getView();
-            updateLists(view);
-            applyTheme();
+            //updateLists(view);
+            updateTheme();
 
             ViewPropertyAnimator animator = view.animate();
 
@@ -382,6 +297,123 @@ public class LeftDrawer extends Fragment {
 
             }
         }
+    }
+
+    // adds a textview containing the channelName to the LinearLayout for the channels
+    public void addChannelName(String channelName) {
+        if(!channelNames.contains(channelName)) {
+            channelNames.add(channelName);
+
+            View view = getView();
+            LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
+            TextView textView = createTextViewFromName(channelName);
+            textView.setText(channelName);
+
+            // for loop setup
+            int size = channelNames.size();
+            String[] names = new String[size];
+            names = channelNames.toArray(names);
+
+            // find the index of the privateConversationName
+            for(int i=0; i<size;i++)
+                if(names[i].equals(channelName))
+                    // add the text view at the specified index
+                    channelsList.addView(textView,i);
+
+        } else
+            return; // do nothing
+    }
+
+    public void removeChannelName(String channelName) {
+        if(channelNames.contains(channelName)) {
+            View view = getView();
+            LinearLayout channelsList = (LinearLayout) view.findViewById(R.id.channelsList);
+            channelsList.removeView(view.findViewWithTag(channelName));
+            channelNames.remove(channelName);
+
+        } else
+            throw new IllegalArgumentException("conversation doesn't exist");
+    }
+
+    // adds a textview containing the privateConversationName to the LinearLayout for the private conversations
+    public void addPrivateConversationName(String privateConversationName) {
+        if(!privateConversationNames.contains(privateConversationName)) {
+            privateConversationNames.add(privateConversationName);
+
+            View view = getView();
+            LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
+            TextView textView = createTextViewFromName(privateConversationName);
+            textView.setText(privateConversationName);
+
+            // for loop setup
+            int size = privateConversationNames.size();
+            String[] names = new String[size];
+            names = privateConversationNames.toArray(names);
+
+            // find the index of the privateConversationName
+            for(int i=0; i<size;i++)
+                if(names[i].equals(privateConversationName))
+                    // add the text view at the specified index
+                    privateMessagesList.addView(textView,i);
+
+        } else
+            return; // do nothing
+    }
+
+    // removes the textview
+    public void removePrivateConversationName(String privateConversationName) {
+        if(privateConversationNames.contains(privateConversationName)) {
+            View view = getView();
+            LinearLayout privateMessagesList = (LinearLayout) view.findViewById(R.id.privateMessagesList);
+            privateMessagesList.removeView(view.findViewWithTag(privateConversationName));
+            privateConversationNames.remove(privateConversationName);
+
+        } else
+            throw new IllegalArgumentException("conversation doesn't exist");
+    }
+
+
+    public void addPrivateConversationNames(String[] names) {
+        int length = names.length;
+        for(int i=0;i<length;i++) {
+            addChannelName(names[i]);
+        }
+    }
+    public void addChannelNames(String[] names) {
+        int length = names.length;
+        for(int i=0;i<length;i++) {
+            addChannelName(names[i]);
+        }
+    }
+
+
+
+    public TextView createTextViewFromName(String conversationName) {
+        TextView textView = null;
+        View view = getView();
+
+        if(Util.isChannel(conversationName) || Util.isPrivateConversation(conversationName)) {
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            textView = (TextView) inflater.inflate(R.layout.left_drawer_list_item, (ViewGroup) view.getRootView(), false);
+            textView.setTag(conversationName);
+            textView.setClickable(true);
+            textView.setTextColor(mListItemTextColor);
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String conversationName = ((TextView) v).getText().toString();
+                    if (currentConversationView != null)
+                        unhighlightTextView(currentConversationView);
+                    currentConversationView = (TextView) v;
+                    highlightTextView(currentConversationView);
+                    mListener.onConversationSelected(conversationName);
+                }
+            });
+
+        } else
+            throw new IllegalArgumentException("invalid conversation name");
+
+        return textView;
     }
 
 

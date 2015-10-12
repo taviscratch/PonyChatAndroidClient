@@ -2,13 +2,10 @@ package com.taviscratch.ponychatandroidclient.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,15 +19,12 @@ import android.widget.TextView;
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.irc.Conversation;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
-import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
-import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
-import com.taviscratch.ponychatandroidclient.utility.Util;
 
 
 public class Chatroom extends Fragment {
 
-    IRCBackgroundService ircService;
+    /*IRCBackgroundService ircService;*/
 
 
     EditText inputBox;
@@ -71,17 +65,11 @@ public class Chatroom extends Fragment {
         // Inflate the layout for this fragment
         View theview = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
-        IRCSession session = IRCSession.getInstance();
-
         // Create widgets
         inputBox = (EditText) theview.findViewById(R.id.chatInput);
         sendMessageButton = (Button) theview.findViewById(R.id.sendMessage_button);
         listView = (ListView) theview.findViewById(R.id.chatroomListView);
         topicMarquee = (TextView) theview.findViewById(R.id.topicMarquee);
-
-        // Set up the listview array adapter
-        messageAdapter = session.getMessageAdapter(currentConversation);
-        listView.setAdapter(messageAdapter);
 
 
         // Set button's onClick
@@ -91,10 +79,7 @@ public class Chatroom extends Fragment {
                 String message = inputBox.getText().toString();
                 if (!message.isEmpty()) {
                     inputBox.setText("");
-                    Intent msgIntent = new Intent(Constants.MESSAGE_TO_SEND);
-                    msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE, message);
-                    msgIntent.putExtra(Constants.IntentExtrasConstants.MESSAGE_TARGET, currentConversation);
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(msgIntent);
+                    onMessageInput(message);
                 }
             }
         });
@@ -118,9 +103,6 @@ public class Chatroom extends Fragment {
         });
 
         topicMarquee.setSelected(true);
-        topicMarquee.setText(session.getTopic(currentConversation));
-
-        applyTheme();
 
         return theview;
 
@@ -153,20 +135,12 @@ public class Chatroom extends Fragment {
         // apply the colors
         topicMarquee.setBackgroundColor(backgroundPrimary);
         topicMarquee.setTextColor(menuItem);
-        messageAdapter.setChatNameColor(chatName);
-        messageAdapter.setChatMessageColor(chatMessage);
-        messageAdapter.setChatActionColor(chatAction);
-        messageAdapter.setChatEventColor(chatEvent);
+        messageAdapter.updateThemeData(); // TODO change message adapter to listen for preference changes so that this call isn't needed
         inputBox.setTextColor(chatMessage);
         listView.setBackgroundColor(getResources().getColor(R.color.background_material_light));
 
 
     }
-
-    public static String getCurrentConversation() {
-        return currentConversation;
-    }
-
 
     // Hides the soft keyboard and clears the focus from the EditText widget
     private void hideKeyboardAndClearFocus(View v, EditText inputbox) {
@@ -176,15 +150,6 @@ public class Chatroom extends Fragment {
     }
 
 
-
-
-
-    public void setConversation(Conversation conversation, IRCMessageAdapter adapter) {
-
-
-
-
-    }
 
     public void setConversationAdapter(IRCMessageAdapter adapter) {
         messageAdapter = adapter;

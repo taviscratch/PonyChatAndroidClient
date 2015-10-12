@@ -1,6 +1,8 @@
 package com.taviscratch.ponychatandroidclient.irc;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class Conversation extends LinkedList<IRCMessage> {
@@ -8,6 +10,11 @@ public class Conversation extends LinkedList<IRCMessage> {
 
     private int maxSize;
 
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    private ArrayList<String> users;
 
 
 
@@ -35,7 +42,15 @@ public class Conversation extends LinkedList<IRCMessage> {
     public Conversation(String name, int maxSize, IRCMessage message) {
         this.name = name;
         this.maxSize = maxSize;
+        this.users = new ArrayList<String>();
         if(message != null) addMessage(message);
+    }
+
+    public Conversation(String name, Conversation oldConversation) {
+        this.name = name;
+        this.maxSize = oldConversation.getMaxSize();
+        this.users = oldConversation.getUsers();
+        this.addAll(oldConversation);
     }
 
 
@@ -57,6 +72,40 @@ public class Conversation extends LinkedList<IRCMessage> {
                 removeLast();
         }
         maxSize = newMaxSize;
+    }
+
+    public void addUser(String username) {
+        if(!userExists(username))
+            users.add(username);
+        else
+            throw new IllegalArgumentException("user already exists");
+    }
+
+    public void addUsers(String[] usernames) {
+        for(int i=0;i<usernames.length;i++) {
+            addUser(usernames[i]);
+        }
+    }
+
+    public void removeUser(String username) {
+        if(userExists(username))
+            remove(username);
+        else
+            throw new IllegalArgumentException(("user does not exist"));
+    }
+
+    public ArrayList<String> getUsers() {
+        /*String[] userlist = new String[users.size()];
+        userlist = users.toArray(userlist);
+        return userlist;*/
+        return users;
+    }
+
+    public boolean userExists(String username) {
+        if(users.contains(username))
+            return true;
+        else
+            return false;
     }
 
 }

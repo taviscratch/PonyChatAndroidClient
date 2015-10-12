@@ -3,7 +3,6 @@ package com.taviscratch.ponychatandroidclient.ui;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,13 +12,10 @@ import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
-import com.taviscratch.ponychatandroidclient.irc.IRCSession;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.utility.Constants;
 import com.taviscratch.ponychatandroidclient.utility.Util;
@@ -45,7 +41,7 @@ public class RightDrawer extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-
+    ListView userListView;
 
     float drawerWidth, screenWidth;
     private static final int animationDuration = 300;
@@ -101,30 +97,28 @@ public class RightDrawer extends Fragment {
 
         drawerWidth = Util.convertDpToPixel(240f, this.getActivity());
 
-        ListView userList = (ListView) theview.findViewById(R.id.userList);
+        userListView = (ListView) theview.findViewById(R.id.userList);
 
 
-        String currentConversation = Chatroom.getCurrentConversation();
+        /*String currentConversation = IRCBackgroundService.currentUsername;
         if(Util.isChannel(currentConversation)) {
             String[] userlist = IRCSession.getInstance().getUserList(currentConversation);
             adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view, userlist);
         } else
             adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_dark_text_view);
-        userList.setAdapter(adapter);
+        userListView.setAdapter(adapter);*/
 
 
-        userList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String username = ((TextView) view).getText().toString();
-                /*if (mListener != null) {
+                if (mListener != null)
                     mListener.onUserNameSelected(username);
-                }*/
-                ((MainActivity) getActivity()).switchToConversation(username);
             }
         });
 
-        userList.setOnTouchListener(new View.OnTouchListener() {
+        userListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 getActivity().onTouchEvent(event);
@@ -132,14 +126,18 @@ public class RightDrawer extends Fragment {
             }
         });
 
-
+        // Now, careful Derpy...
         if(PonyChatApplication.I_JUST_DONT_KNOW_WHAT_WENT_WRONG) theview.setRotation(-DERPYS_CONSTANT);
+
         return theview;
     }
 
-    private final void hideSelf() {
-        ((MainActivity)getActivity()).hideFragment(this);
+
+    public void setUserlist(String[] userlist) {
+        SimpleThemedArrayAdapter adapter = new SimpleThemedArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, userlist);
+        userListView.setAdapter(adapter);
     }
+
 
 
     @Override
@@ -150,10 +148,6 @@ public class RightDrawer extends Fragment {
             final View view = getView();
             view.setX(screenWidth);
 
-            ListView userList = (ListView) view.findViewById(R.id.userList);
-            String[] userlist = IRCSession.getInstance().getUserList(Chatroom.getCurrentConversation());
-            SimpleThemedArrayAdapter adapter = new SimpleThemedArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, userlist);
-            userList.setAdapter(adapter);
             applyTheme();
 
             ViewPropertyAnimator animator = view.animate();

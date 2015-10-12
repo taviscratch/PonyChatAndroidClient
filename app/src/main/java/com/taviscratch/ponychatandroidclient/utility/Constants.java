@@ -67,6 +67,8 @@ public class Constants {
         public static final String CHAT_MESSAGE = "CHAT_MESSAGE";
         public static final String CHAT_ACTION = "CHAT_ACTION";
         public static final String CHAT_EVENT = "CHAT_EVENT";
+        public static final String CHAT_ERROR = "CHAT_ERROR";
+        public static final String CHAT_RAW = "CHAT_RAW";
     }
 
 
@@ -82,7 +84,6 @@ public class Constants {
     public static final class MessageType {
         public static final String PRIVMSG = "PRIVMSG";
         public static final String ACTION = "ACTION";
-        public static final String RAW_MESSAGE = "RAW_MESSAGE";
     }
 
 }

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.taviscratch.ponychatandroidclient.PonyChatApplication;
 import com.taviscratch.ponychatandroidclient.irc.Conversation;
+import com.taviscratch.ponychatandroidclient.irc.IRCMessage;
 import com.taviscratch.ponychatandroidclient.services.IRCBackgroundService;
 import com.taviscratch.ponychatandroidclient.R;
 import com.taviscratch.ponychatandroidclient.services.NotificationService;
@@ -43,6 +44,8 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     RightDrawer rightDrawer;
 
 
+    private String mConversationCurrentlyInView;
+
     // animation stuff
     int ANIMATION_DURATION;
     float xStart, yStart, xEnd, yEnd = -1.0f;
@@ -56,11 +59,13 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         public void onServiceConnected(ComponentName name, IBinder service) {
             IRCBackgroundService.IRCServiceBinder ircServiceBinder = (IRCBackgroundService.IRCServiceBinder) service;
             ircService = ircServiceBinder.getService();
+            switchToConversation(Constants.NETWORK_LOBBY);
             if(Constants.DEBUG) Toast.makeText(MainActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            ircService = null;
             if(Constants.DEBUG) Toast.makeText(MainActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
         }
 
@@ -122,6 +127,7 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
     @Override
     protected void onResume() {
         super.onResume();
+        bindToService();
     }
 
     @Override
@@ -165,6 +171,16 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
         // ensure that theme is properly loaded
         chatroom.invalidateTheme();
+
+
+
+        // update member var for the current conversation's name
+        mConversationCurrentlyInView = conversationName;
+
+        // invalidate the chatroom's view
+        chatroom.getView().invalidate();
+
+
     }
 
     private String formatTopicText(String conversationName, String topic) {
@@ -246,8 +262,8 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
         if(x>1.0f || y>1.0f) {
             SwipeControls.SWIPE_DIRECTION swipe = SwipeControls.interpretSwipe(xStart,xEnd,yStart,yEnd);
 
-            Fragment leftDrawer =getFragmentManager().findFragmentByTag("LEFT DRAWER");
-            Fragment rightDrawer = getFragmentManager().findFragmentByTag("RIGHT DRAWER");
+            LeftDrawer leftDrawer = (LeftDrawer) getFragmentManager().findFragmentByTag("LEFT DRAWER");
+            RightDrawer rightDrawer = (RightDrawer) getFragmentManager().findFragmentByTag("RIGHT DRAWER");
 
             switch (swipe) {
                 case LEFT:
@@ -258,8 +274,11 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                         // Do nothing
                     }
                     else {
-                        if(Util.isChannel(Chatroom.getCurrentConversation()))
+                        if(Util.isChannel(mConversationCurrentlyInView)) {
+                            String[] userlist = ircService.getUserList(mConversationCurrentlyInView);
+                            rightDrawer.setUserlist(userlist);
                             showFragment(rightDrawer);
+                        }
                     }
                     break;
 
@@ -271,6 +290,10 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
                         hideFragment(rightDrawer);
                     }
                     else {
+                        String[] channelNames = ircService.getChannelNames();
+                        String[] privateConversationNames = ircService.getPrivateMessageNames();
+                        leftDrawer.addChannelNames(channelNames);
+                        leftDrawer.addPrivateConversationNames(privateConversationNames);
                         showFragment(leftDrawer);
                     }
                     break;
@@ -319,16 +342,18 @@ public class MainActivity extends Activity implements Chatroom.OnFragmentInterac
 
     @Override
     public void onConversationSelected(String conversationName) {
-
+        switchToConversation(conversationName);
     }
 
     @Override
     public void onUserNameSelected(String username) {
-
+        ircService.addPrivateConversation(username);
+        leftDrawer.addPrivateConversationName(username);
+        switchToConversation(username);
     }
 
     @Override
     public void onProcessUserInput(String rawMessage) {
-
+        ircService.processUserInput(rawMessage, mConversationCurrentlyInView);
     }
 }
